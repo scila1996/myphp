@@ -4,12 +4,10 @@ namespace System\Database;
 
 use System\Database\Interfaces\DatabaseInterface;
 
-class Pdo implements DatabaseInterface
+class Pdo extends \PDO implements DatabaseInterface
 {
 
-	private $pdo_stmt = NULL;
-	private $n_affected_rows = FALSE;
-
+	private
 	public function __construct($db)
 	{
 		$dsn = $db['driver'] . ':';
@@ -35,40 +33,6 @@ class Pdo implements DatabaseInterface
 		}
 	}
 
-	public function raw_query()
-	{
-		if (($r = call_user_func_array(array($this, 'parent::query'), func_get_args())))
-		{
-			return $r;
-		}
-		$arr_err = $this->errorInfo();
-		throw new DB_Exception($arr_err[2], $arr_err[1]);
-	}
-
-	/**
-	 * get result from stmt . Return DB_Result or TRUE
-	 * @return mixed
-	 */
-	private function _get_result_from_stmt()
-	{
-		if ($this->pdo_stmt->columnCount())
-		{
-			$num_rows = $this->pdo_stmt->rowCount();
-			switch (DB::$db_driver)
-			{
-				case 'mysql': {
-						if (preg_match('/^\s*\(*SELECT/i', $this->pdo_stmt->queryString)) // ONLY for SELECT QUERY
-						{
-							$num_rows = $this->raw_query('SELECT FOUND_ROWS() AS total')->fetchObject()->total;
-						}
-						break;
-					}
-			}
-			return new Result($this->pdo_stmt, $num_rows);
-		}
-		return TRUE;
-	}
-
 	public function begin()
 	{
 		return parent::beginTransaction();
@@ -84,45 +48,30 @@ class Pdo implements DatabaseInterface
 		return parent::rollBack();
 	}
 
-	public function query($query_str, $param = NULL)
+	public function query($str, $param = NULL)
 	{
-		if (!($this->pdo_stmt = parent::prepare($query_str)))
+		$stmt = parent::prepare($str);
+		if ($stmt)
 		{
-			$arr_err = $this->errorInfo();
-			throw new DB_Exception($arr_err[2], $arr_err[1]);
-		}
-		if (is_array($param))
-		{
-			foreach (array_keys($param) as $p => $key)
+			if (is_array($param))
 			{
-				if (!$this->pdo_stmt->bindParam($p + 1, $param[$key]))
+				foreach (array_keys($param) as $p => $key)
 				{
-					$arr_err = $this->errorInfo();
-					throw new DB_Exception($arr_err[2], $arr_err[1]);
+					$stmt->bindParam($p + 1, $param[$key]);
 				}
 			}
+			$result = $stmt->execute();
+			$count = $stmt->columnCount();
+			if ($count)
+			{
+				
+			}
 		}
-		if (!$this->pdo_stmt->execute())
-		{
-			$arr_err = $this->errorInfo();
-			throw new DB_Exception($arr_err[2], $arr_err[1]);
-		}
-		if (($r = $this->_get_result_from_stmt()) instanceof DB_Result)
-		{
-			return $r;
-		}
-		$this->n_affected_rows = $this->pdo_stmt->rowCount();
-		return $this->get_affected_rows();
 	}
 
-	public function get_affected_rows()
+	public function rawQuery()
 	{
-		return $this->n_affected_rows;
-	}
-
-	public function setBufferedQuery($f = TRUE)
-	{
-		$this->setAttribute(self::MYSQL_ATTR_USE_BUFFERED_QUERY, $f);
+		
 	}
 
 }

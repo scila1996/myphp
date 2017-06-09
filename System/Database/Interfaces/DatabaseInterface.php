@@ -5,8 +5,6 @@ namespace System\Database\Interfaces;
 interface DatabaseInterface
 {
 
-	public function __construct($db);
-
 	/** @var Traversable */
 	public function rawQuery();
 
@@ -19,7 +17,7 @@ interface DatabaseInterface
 	/** @var boolean */
 	public function rollback();
 
-	/** @var QueryInterface */
+	/** @var Traversable */
 	public function query($query_str, $param = NULL);
 
 	/** @var integer */
