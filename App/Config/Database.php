@@ -1,11 +1,13 @@
 <?php
 
-$database = array(
+use System\Database\DB;
+
+DB::$config = array(
 	'driver' => 'mysql',
-	'host' => 'chobatdongsan.com.vn',
-	'user' => 'emp',
-	'password' => '12345678',
+	'host' => 'localhost',
+	'user' => 'root',
+	'password' => '',
 	'charset' => 'utf8',
 	'collation' => 'utf8_unicode_ci',
-	'db' => 'emp'
+	'db' => 'data'
 );

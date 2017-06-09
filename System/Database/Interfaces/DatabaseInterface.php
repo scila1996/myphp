@@ -5,7 +5,7 @@ namespace System\Database\Interfaces;
 interface DatabaseInterface
 {
 
-	/** @var Traversable */
+	/** @var \Traversable */
 	public function rawQuery();
 
 	/** @var boolean */
@@ -17,9 +17,6 @@ interface DatabaseInterface
 	/** @var boolean */
 	public function rollback();
 
-	/** @var Traversable */
-	public function query($query_str, $param = NULL);
-
-	/** @var integer */
-	public function getAffectedRows();
+	/** @var integer|\Traversable */
+	public function query($str, $param = NULL);
 }

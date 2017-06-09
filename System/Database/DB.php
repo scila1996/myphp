@@ -2,88 +2,63 @@
 
 namespace System\Database;
 
-use System\Common\Config;
-use System\Database\DB_Query;
-
 class DB
 {
 
-	public static $auto_open_connect = TRUE;
-	private static $instance = NULL;
-	public static $db_driver = 'read from config file';
-	private $connect = NULL;
+	/** @var array */
+	public static $config = array();
+
+	/** @var self */
+	private static $instance = null;
+
+	/** @var Pdo */
+	private $connect = null;
 
 	private function __construct()
 	{
+		// default config //
 		$config = array(
 			'driver' => 'mysql',
 			'host' => 'localhost',
 			'port' => 3306,
 			'user' => 'root',
 			'password' => '',
+			'db' => '',
 			'charset' => 'utf8',
-			'collation' => 'utf8_unicode_ci',
-			'db' => ''
-		); // -> default config
-		$db = array_merge($config, Config::get('db'));
-		self::$db_driver = $db['driver'];
-		$this->connect = new PDO\Sql($db);
+			'collation' => 'utf8_unicode_ci'
+		);
+		$config = array_merge($config, self::$config);
+		$this->connect = new Pdo($config["driver"], $config["host"], $config["port"], $config["user"], $config["password"], $config["db"], $config["charset"], $config["collation"]);
 	}
 
-	public static function open($new_connect = FALSE)
+	/** @return self */
+	public static function getConnect()
 	{
-		if (self::$instance instanceof self and $new_connect === FALSE)
-		{
-			return FALSE;
-		}
-		else
+		if (self::$instance === null)
 		{
 			self::$instance = new self();
-			return TRUE;
 		}
+		return self::$instance->connect;
 	}
 
 	public static function begin()
 	{
-		return DB::get_connect()->begin();
+		return DB::getConnect()->begin();
 	}
 
 	public static function commit()
 	{
-		return DB::get_connect()->commit();
+		return DB::getConnect()->commit();
 	}
 
 	public static function rollback()
 	{
-		return DB::get_connect()->rollback();
+		return DB::getConnect()->rollback();
 	}
 
-	public static function query($query = '', $param = NULL)
+	public static function query($query = '', $param = null)
 	{
-		return new DB_Query($query, $param);
-	}
-
-	/** get data from quickly 'SELECT * FROM ...' clause */
-	public static function get($table)
-	{
-		return self::query()->table($table)->execute();
-	}
-
-	public static function close()
-	{
-		if (method_exists(self::$instance->connect, 'close'))
-		{
-			$r = self::$instance->connect->close();
-			self::$instance = NULL;
-		}
-		return FALSE;
-	}
-
-	/** @return DB_ISQL */
-	public static function get_connect()
-	{
-		DB::open();
-		return self::$instance->connect;
+		return new Query($query, $param);
 	}
 
 }

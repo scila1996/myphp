@@ -2,12 +2,10 @@
 
 namespace System\Database;
 
-class DB_Query
-{
+use System\Database\Interfaces\QueryInterface;
 
-	CONST DESC = 'DESC';
-	CONST ASC = 'ASC';
-	CONST SUBQUERY = 1;
+class Query implements QueryInterface
+{
 
 	private $_query = '';
 	private $_join = array();
@@ -27,7 +25,6 @@ class DB_Query
 			$this->_query = $query_str;
 		if ($parameter)
 			$this->_param = $parameter;
-		DB::open();
 	}
 
 	private function _get_condition($data)
@@ -416,7 +413,7 @@ class DB_Query
 		return $this;
 	}
 
-	/** @return $this */
+	/** @return self */
 	public function join($table)
 	{
 		return call_user_func_array(array($this, 'innerJoin'), func_get_args());
@@ -517,10 +514,14 @@ class DB_Query
 		return $this->_param;
 	}
 
-	/** @return DB_Result */
 	public function execute()
 	{
-		return DB::get_connect()->query($this->getQuery(), $this->getParams());
+		return DB::getConnect()->query($this->getQuery(), $this->getParams());
+	}
+
+	public function __toString()
+	{
+		return $this->getQuery();
 	}
 
 }

@@ -7,27 +7,38 @@ use System\Database\Interfaces\DatabaseInterface;
 class Pdo extends \PDO implements DatabaseInterface
 {
 
-	private
-	public function __construct($db)
+	private $driver = "";
+	private $database = "";
+
+	public function __construct($driver, $host, $port, $user, $password, $db, $charset = null, $collation = null)
 	{
-		$dsn = $db['driver'] . ':';
-		switch ($db['driver'])
+
+		$this->driver = $driver;
+		$this->database = $db;
+
+		$dsn = "{$driver}:";
+
+		switch ($driver)
 		{
 			case 'sqlsrv':
-				$dsn .= "Server={$db['host']},{$db['port']};Database={$db['db']}";
+				$dsn .= "Server={$host},{$port};Database={$db}";
 				break;
 			default:
-				$dsn .= "host={$db['host']};port={$db['port']};dbname={$db['db']};charset={$db['charset']}";
+				$dsn .= "host={$host};port={$port};dbname={$db}";
+				if ($charset)
+				{
+					$dsn .= ";charset={$charset}";
+				}
 		}
 
-		parent::__construct($dsn, $db['user'], $db['password'], array(self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION));
+		parent::__construct($dsn, $user, $password, array(self::ATTR_ERRMODE => self::ERRMODE_EXCEPTION));
 
-		if ($db['collation'])
+		if ($collation)
 		{
-			switch ($db['driver'])
+			switch ($driver)
 			{
 				case 'mysql':
-					parent::query("SET collation_connection = {$db['collation']}");
+					parent::query("SET collation_connection = {$collation}");
 					break;
 			}
 		}
@@ -48,6 +59,7 @@ class Pdo extends \PDO implements DatabaseInterface
 		return parent::rollBack();
 	}
 
+	/** @return Interfaces\CollectionInterface */
 	public function query($str, $param = NULL)
 	{
 		$stmt = parent::prepare($str);
@@ -61,17 +73,28 @@ class Pdo extends \PDO implements DatabaseInterface
 				}
 			}
 			$result = $stmt->execute();
-			$count = $stmt->columnCount();
-			if ($count)
+			if ($stmt->columnCount())
 			{
-				
+				switch ($this->driver)
+				{
+					case "mysql":
+						$rows = $this->rawQuery("SELECT FOUND_ROWS() AS rows")->fetchObject()->rows;
+						return new Collection($stmt, $rows);
+					default:
+						return new Collection($stmt);
+				}
+			}
+			else
+			{
+				return $result;
 			}
 		}
 	}
 
+	/** @return \PDOStatement */
 	public function rawQuery()
 	{
-		
+		return call_user_func_array(array($this, 'parent::query'), func_get_args());
 	}
 
 }

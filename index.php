@@ -12,14 +12,17 @@ use System\Libraries\Routing\MiddleWare;
 use System\Libraries\Routing\NotFoundException;
 use System\Libraries\View;
 
-$root = $_SERVER["DOCUMENT_ROOT"];
-View::$path = "{$root}/App/View";
-$ControllerNamespace = "\\App\\Controller";
-
 try
 {
+	$root = $_SERVER["DOCUMENT_ROOT"];
+	$ControllerNamespace = "\\App\\Controller";
+
+	View::$path = "{$root}/App/View";
+	require("{$root}//App//Config//Database.php");
+
 	$RequestObject = Route::getRequest();
-	require("{$root}//App//Config//routes.php");
+	require("{$root}//App//Config//Routes.php");
+
 	$RouteObject = Route::validate();
 	$MiddleWare = $RouteObject->middleware();
 	$Handler = $RouteObject->handler();

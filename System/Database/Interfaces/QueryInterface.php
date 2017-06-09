@@ -141,7 +141,7 @@ interface QueryInterface
 	 * @param string $table
 	 * @param array $data
 	 */
-	public function insert($table, array $data);
+	public function insert($table, $data);
 
 	/**
 	 * 

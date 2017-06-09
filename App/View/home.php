@@ -4,6 +4,7 @@
 		<title> Test PHP </title>
 		<link rel="stylesheet" href="/extensions/bootstrap-3.3.7-dist/css/bootstrap.min.css" />
 		<link rel="stylesheet" href="/extensions/bootstrap-3.3.7-dist/css/bootstrap-theme.min.css" />
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
 		<script src="/extensions/jquery-1.12.4.min.js"></script>
 		<script src="/extensions/bootstrap-3.3.7-dist/js/bootstrap.min.js"></script>
 	</head>
@@ -26,11 +27,11 @@
 				<div class="col-xs-12">
 					<form method="post" class="form-group">
 						<div class="form-group form-inline">
-							<input name="data" class="form-control" />
+							<input name="data" class="form-control" placeholder="Input Data" />
+							<button type="submit" name="submit" value="1" class="btn btn-primary"><span class="glyphicon glyphicon-check"></span></button>
 						</div>
-						<button type="submit" name="submit" value="1" class="btn btn-primary"> CLICK </button>
 					</form>
-					{{ content }}
+					<pre>{{ content }}</pre>
 				</div>
 			</div>
 		</div>

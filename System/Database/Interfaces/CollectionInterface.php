@@ -4,15 +4,18 @@ namespace System\Database\Interfaces;
 
 use Iterator;
 
-interface ResultInterface extends Iterator
+interface CollectionInterface extends Iterator
 {
-
-	/** @return integer */
-	public function getNumRows();
 
 	/** @return mixed */
 	public function first();
 
 	/** @return mixed */
 	public function fetch();
+
+	/** @return integer */
+	public function getNumRows();
+
+	/** @return array */
+	public function getFields();
 }
