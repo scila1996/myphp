@@ -1,8 +1,7 @@
 <?php
 
 ini_set('display_errors', '1');
-set_error_handler(function($severity, $message, $file, $line)
-{
+set_error_handler(function($severity, $message, $file, $line) {
 	throw new ErrorException($message, $severity, $severity, $file, $line);
 });
 
@@ -11,9 +10,16 @@ require_once 'autoload.php';
 use System\Libraries\Router\RouteCollector;
 use System\Libraries\Router\Dispatcher;
 use System\Libraries\Router\Exception\HttpRouteNotFoundException;
+use System\Libraries\Router\Exception\BadRouteException;
 use System\Libraries\Http\Request;
 use System\Libraries\View;
 use System\Config\Route;
+
+function getRequest()
+{
+	$r = Request::createFromGlobals($_SERVER);
+	return $r->withUri($r->getUri()->withPath(str_replace($r->getServerParam("SCRIPT_NAME"), "", $r->getUri()->getPath())));
+}
 
 try
 {
@@ -22,8 +28,7 @@ try
 	View::$path = "App/View";
 	$ControllerNamespace = "\\App\\Controller";
 
-	$RequestObject = Request::createFromGlobals($_SERVER);
-
+	$RequestObject = getRequest();
 	$router = new RouteCollector();
 
 	foreach (Route::$routes as $params)
@@ -32,10 +37,17 @@ try
 		if (count($controller) == 2)
 		{
 			$class = $controller[0];
-			$method = $controller[1];
-			$router->addRoute($params[0], $params[1], function() use ($class, $method, $RequestObject)
+			if (!class_exists($class))
 			{
+				throw new BadRouteException("Controller NOT FOUND !");
+			}
+			$method = $controller[1];
+			$router->addRoute($params[0], $params[1], function() use ($class, $method, $RequestObject) {
 				$obj = new $class($RequestObject);
+				if (!method_exists($obj, $method))
+				{
+					throw new BadRouteException("Method in Controller NOT FOUND !");
+				}
 				call_user_func_array(array($obj, $method), func_get_args());
 				$obj();
 			});

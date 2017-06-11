@@ -9,7 +9,7 @@ use System\Libraries\View;
 class Controller
 {
 
-	/** @var System\Libraries\Http\Interfaces\RequestInterface */
+	/** @var System\Libraries\Http\Interfaces\ServerRequestInterface */
 	protected $request = null;
 
 	/** @var System\Libraries\Http\Interfaces\ResponseInterface */

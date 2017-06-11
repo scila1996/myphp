@@ -36,8 +36,6 @@ class BaseQuery implements QueryInterface
 		}
 	}
 
-
-
 	public function select($column = '*')
 	{
 		$fields = array();

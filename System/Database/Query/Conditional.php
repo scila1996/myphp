@@ -31,7 +31,7 @@ class Conditional
 					}
 				}
 				else if (is_string($column))
-				break;
+					break;
 			case 2:
 				$value = $operator;
 				array_push($cons, new Conditional($column, "=", $value));

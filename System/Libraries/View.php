@@ -38,28 +38,20 @@ class View
 		return $html;
 	}
 
-	public static function put(&$var)
-	{
-		echo $var;
-	}
-
 	public function getHtml()
 	{
 		ob_start();
-		$dvars = array_merge(self::$data, $this->_data);
-		if (is_array($dvars))
+		$__vars = array_merge(self::$data, $this->_data);
+		foreach (array_keys($__vars) as $__name)
 		{
-			foreach (array_keys($dvars) as $var)
-			{
-				$$var = &$dvars[$var];
-			}
+			$$__name = &$__vars[$__name];
 		}
-		eval('?>' . file_get_contents($this->_file));
-		$__html_result = ob_get_contents();
+		$__pattern = '/(\{{2}\s*)([^\{\}]+)(\s*\}{2})/';
+		$__replace = "<?php try { echo $2; } catch (\Exception \$e) { echo ''; } ?>";
+		eval('?>' . preg_replace($__pattern, $__replace, file_get_contents($this->_file)));
+		$str = ob_get_contents();
 		ob_end_clean();
-		return preg_replace_callback('/(\{{2}\s*)(\w+)(\s*\}{2})/', function($m) use (&$dvars) {
-			return isset($dvars[$m[2]]) ? $dvars[$m[2]] : NULL;
-		}, $__html_result);
+		return $str;
 	}
 
 }

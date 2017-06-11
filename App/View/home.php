@@ -31,7 +31,7 @@
 							<button type="submit" name="submit" value="1" class="btn btn-primary"><span class="glyphicon glyphicon-check"></span></button>
 						</div>
 					</form>
-					<pre>{{ content }}</pre>
+					<pre>{{ $content }}</pre>
 				</div>
 			</div>
 		</div>
