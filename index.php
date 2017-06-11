@@ -1,79 +1,97 @@
 <?php
 
 ini_set('display_errors', '1');
-set_error_handler(function($severity, $message, $file, $line) {
+set_error_handler(function($severity, $message, $file, $line)
+{
 	throw new ErrorException($message, $severity, $severity, $file, $line);
 });
 
 require_once 'autoload.php';
 
-use System\Libraries\Routing\Route;
-use System\Libraries\Routing\MiddleWare;
-use System\Libraries\Routing\NotFoundException;
+use System\Libraries\Router\RouteCollector;
+use System\Libraries\Router\Dispatcher;
+use System\Libraries\Router\Exception\HttpRouteNotFoundException;
+use System\Libraries\Http\Request;
 use System\Libraries\View;
+use System\Config\Route;
 
 try
 {
-	$root = $_SERVER["DOCUMENT_ROOT"];
+	require '/App/Config/Route.php';
+	require '/App/Config/Database.php';
+	View::$path = "App/View";
 	$ControllerNamespace = "\\App\\Controller";
 
-	View::$path = "{$root}/App/View";
-	require("{$root}//App//Config//Database.php");
+	$RequestObject = Request::createFromGlobals($_SERVER);
 
-	$RequestObject = Route::getRequest();
-	require("{$root}//App//Config//Routes.php");
+	$router = new RouteCollector();
 
-	$RouteObject = Route::validate();
-	$MiddleWare = $RouteObject->middleware();
-	$Handler = $RouteObject->handler();
-
-	if ($MiddleWare instanceof MiddleWare)
+	foreach (Route::$routes as $params)
 	{
-		$MiddleWare($RequestObject);
+		$controller = explode("::", "{$ControllerNamespace}\\{$params[2]}");
+		if (count($controller) == 2)
+		{
+			$class = $controller[0];
+			$method = $controller[1];
+			$router->addRoute($params[0], $params[1], function() use ($class, $method, $RequestObject)
+			{
+				$obj = new $class($RequestObject);
+				call_user_func_array(array($obj, $method), func_get_args());
+				$obj();
+			});
+		}
 	}
 
-	if ($MiddleWare instanceof \Closure)
-	{
-		$Handler();
-	}
-	else if (is_string($Handler))
-	{
-		$parts = explode("::", $Handler);
-		$ControllerClass = "{$ControllerNamespace}\\{$parts[0]}";
-		$ControllerMethod = $parts[1];
-		$ControllerObject = new $ControllerClass($RequestObject);
-		call_user_func_array(array($ControllerObject, $ControllerMethod), $RouteObject->params());
-		$ControllerObject();
-	}
+	$dispatcher = (new Dispatcher($router->getData()));
+	$dispatcher->dispatch($RequestObject->getMethod(), $RequestObject->getUri()->getPath());
 }
-catch (NotFoundException $e)
+catch (HttpRouteNotFoundException $e)
 {
 	http_response_code(404);
-	try
-	{
-		echo View::get("error/404.php");
-	}
-	catch (\Exception $e)
-	{
-		var_dump("<pre> $e </pre>");
-	}
+	echo <<<EOF
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title> 404 </title>
+	</head>
+<body>
+	<p> 404 Not Found </p>
+</body>
+</html>
+EOF;
 	exit;
 }
 catch (\Exception $e)
 {
 	http_response_code(500);
-	$error = ob_get_contents();
-	ob_clean();
-	try
-	{
-		echo View::get("error/exception.php", array(
-			"e" => $e,
-			"error" => $error
-		));
-	}
-	catch (\Exception $e)
-	{
-		var_dump("<pre> $e </pre>");
-	}
+	$exception = get_class($e);
+	$time = date("F j, Y, g:i a");
+	echo <<<EOF
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title> Error </title>
+	</head>
+	<body>
+		<div>
+			<h4> Exception : <span style="color: #048CAD"> {$exception} </span></h4>
+			<hr />
+			<table>
+				<tbody>
+					<tr><td><b> Message </b></td><td> {$e->getMessage()} </td></tr>
+					<tr><td><b> Code </b></td><td> {$e->getCode()} </td></tr>
+					<tr><td><b> File </b></td><td> {$e->getFile()} </td></tr>
+					<tr><td><b> Line Number </b></td><td> {$e->getLine()} </td></tr>
+				</tbody>
+			</table>
+			<hr />
+			<pre>{$e->getTraceAsString()}</pre>
+			<hr />
+			<p><strong> Error Time</strong>: {$time} </p>
+			<em> Please report this error to "Administrator" </em>
+		</div>
+	</body>
+</html>
+EOF;
 	exit;
 }

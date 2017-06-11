@@ -1,13 +1,11 @@
 <?php
 
-use System\Database\DB;
+use System\Config\Database;
 
-DB::$config = array(
-	'driver' => 'mysql',
-	'host' => 'localhost',
-	'user' => 'root',
-	'password' => '',
-	'charset' => 'utf8',
-	'collation' => 'utf8_unicode_ci',
-	'db' => 'data'
-);
+Database::$driver = "mysql";
+Database::$host = "localhost";
+Database::$user = "root";
+Database::$password = "";
+Database::$charset = "utf8";
+Database::$collation = "utf8_unicode_ci";
+Database::$db = "data";

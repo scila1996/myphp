@@ -7,7 +7,6 @@ interface QueryInterface
 
 	CONST DESC = 'DESC';
 	CONST ASC = 'ASC';
-	CONST SUBQUERY = 1;
 
 	/**
 	 * 
