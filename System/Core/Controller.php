@@ -10,10 +10,10 @@ class Controller
 {
 
 	/** @var System\Libraries\Http\Interfaces\ServerRequestInterface */
-	protected $request = null;
+	public $request = null;
 
 	/** @var System\Libraries\Http\Interfaces\ResponseInterface */
-	protected $response = null;
+	public $response = null;
 
 	public function __construct(ServerRequestInterface $request)
 	{

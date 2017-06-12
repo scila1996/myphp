@@ -3,12 +3,7 @@
 namespace App\Controller;
 
 use System\Libraries\View;
-
-require 'database-5.4/vendor/autoload.php';
-
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Capsule\Manager as Capsule;
-use Illuminate\Container\Container;
+use System\Libraries\Database\Query\Builder;
 
 class Home extends \System\Core\Controller
 {
@@ -29,12 +24,9 @@ class Home extends \System\Core\Controller
 
 	public function database()
 	{
-		$pdo = new \PDO("mysql:host=localhost;dbname=data;charset=utf8", "root", "");
-		$connect = new \Illuminate\Database\SqlServerConnection($pdo, "data");
-		$query = $connect->table("abc")->select();
-		$query->where("id", 5)->join("def", "id", "id");
-		echo $query->grammar->compileUpdate($query, array("id" => 5));
-		var_dump($query->getBindings());
+		$builder = new Builder();
+		$builder->select()->from("category AS c")->join("user AS u", "u.id", "=", "c.user_id");
+		echo $builder->exists();
 	}
 
 }
