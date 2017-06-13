@@ -1,8 +1,8 @@
 <?php
 
-namespace System\Database;
+namespace System\Libraries\Database;
 
-use System\Database\Interfaces\CollectionInterface;
+use System\Libraries\Database\Interfaces\CollectionInterface;
 use PDOStatement;
 
 class Collection implements CollectionInterface

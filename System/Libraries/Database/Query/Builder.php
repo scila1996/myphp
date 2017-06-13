@@ -5,7 +5,8 @@ namespace System\Libraries\Database\Query;
 use Closure;
 use RuntimeException;
 use InvalidArgumentException;
-use System\Libraries\Database\Query\Support\Arr;
+use System\Libraries\Database\Query\Arr;
+use System\Libraries\Database\Query\Grammars\Grammar;
 
 class Builder
 {
@@ -169,9 +170,16 @@ class Builder
 	 * 
 	 * @return void
 	 */
-	public function __construct()
+	public function __construct(Grammar $grammar = null)
 	{
-		$this->grammar = new Grammars\MySqlGrammar();
+		if ($grammar === null)
+		{
+			$this->grammar = new Grammar();
+		}
+		else
+		{
+			$this->grammar = $grammar;
+		}
 	}
 
 	/**
@@ -523,7 +531,7 @@ class Builder
 		// If the column is making a JSON reference we'll check to see if the value
 		// is a boolean. If it is, we'll add the raw boolean string as an actual
 		// value to the query to ensure this is properly handled by the query.
-		if ($column != '' && mb_strpos($column, '->') !== false && is_bool($value))
+		if (mb_strpos($column, '->') !== false && is_bool($value))
 		{
 			$value = new Expression($value ? 'true' : 'false');
 		}

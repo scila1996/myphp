@@ -2,8 +2,7 @@
 
 namespace System\Libraries\Database\Query\Grammars;
 
-use System\Libraries\Database\Query\Support\Arr;
-use System\Libraries\Database\Query\Support\Str;
+use System\Libraries\Database\Query\Arr;
 use System\Libraries\Database\Query\Builder;
 
 class PostgresGrammar extends Grammar
@@ -250,7 +249,7 @@ class PostgresGrammar extends Grammar
 		// If the given value is a JSON selector we will wrap it differently than a
 		// traditional value. We will need to split this path and wrap each part
 		// wrapped, etc. Otherwise, we will simply wrap the value as a string.
-		if (Str::contains($value, '->'))
+		if (mb_strpos($value, '->'))
 		{
 			return $this->wrapJsonSelector($value);
 		}

@@ -1,12 +1,15 @@
 <?php
 
-namespace System\Database\Interfaces;
+namespace System\Libraries\Database\Interfaces;
 
 interface DatabaseInterface
 {
 
-	/** @var \Traversable */
-	public function rawQuery();
+	const MYSQL = "mysql";
+	const SQLSRV = "sqlsrv";
+	const ODBC = "odbc";
+	const SQLITE = "sqlite";
+	const PGSQL = "pgsql";
 
 	/** @var boolean */
 	public function begin();
@@ -16,6 +19,8 @@ interface DatabaseInterface
 
 	/** @var boolean */
 	public function rollback();
+
+	public function getBuilder();
 
 	/** @var integer|\Traversable */
 	public function query($str, $param = NULL);

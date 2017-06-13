@@ -1,6 +1,6 @@
 <?php
 
-use System\Config\Route;
+use System\Libraries\Router\Route;
 
 Route::get("/", "Home::index");
 Route::get("/get/{id:\d+}", "Home::index");

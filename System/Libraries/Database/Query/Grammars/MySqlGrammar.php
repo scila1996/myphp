@@ -2,7 +2,6 @@
 
 namespace System\Libraries\Database\Query\Grammars;
 
-use System\Libraries\Database\Query\Support\Str;
 use System\Libraries\Database\Query\Builder;
 use System\Libraries\Database\Query\JsonExpression;
 
@@ -305,7 +304,7 @@ class MySqlGrammar extends Grammar
 	 */
 	protected function isJsonSelector($value)
 	{
-		return Str::contains($value, '->');
+		return mb_strpos($value, '->');
 	}
 
 }

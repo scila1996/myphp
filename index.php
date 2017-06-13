@@ -13,7 +13,7 @@ use System\Libraries\Router\Exception\HttpRouteNotFoundException;
 use System\Libraries\Router\Exception\BadRouteException;
 use System\Libraries\Http\Request;
 use System\Libraries\View;
-use System\Config\Route;
+use System\Libraries\Router\Route;
 
 function getRequest()
 {

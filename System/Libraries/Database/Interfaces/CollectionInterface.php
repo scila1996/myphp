@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Database\Interfaces;
+namespace System\Libraries\Database\Interfaces;
 
 use Iterator;
 

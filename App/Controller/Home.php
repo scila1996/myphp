@@ -3,7 +3,7 @@
 namespace App\Controller;
 
 use System\Libraries\View;
-use System\Libraries\Database\Query\Builder;
+use System\Libraries\Database\SQL;
 
 class Home extends \System\Core\Controller
 {
@@ -24,9 +24,15 @@ class Home extends \System\Core\Controller
 
 	public function database()
 	{
-		$builder = new Builder();
-		$builder->select()->from("category AS c")->join("user AS u", "u.id", "=", "c.user_id");
-		echo $builder->exists();
+		$collect = SQL::execute(SQL::query()->select()->from("category"));
+		echo $collect->fetch()->name;
+		/*
+		  $connect = new Connector();
+		  $query = $connect->query();
+		  $query->select()->from("category AS c")->join("user AS u", "u.id", "=", "c.user_id");
+		  echo $connect->execute($query);
+		 * 
+		 */
 	}
 
 }
