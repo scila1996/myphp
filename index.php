@@ -7,13 +7,13 @@ set_error_handler(function($severity, $message, $file, $line) {
 
 require_once 'autoload.php';
 
+use System\Libraries\Http\Request;
+use System\Libraries\Http\Response;
+use System\Libraries\Router\Route;
 use System\Libraries\Router\RouteCollector;
 use System\Libraries\Router\Dispatcher;
 use System\Libraries\Router\Exception\HttpRouteNotFoundException;
-use System\Libraries\Router\Exception\BadRouteException;
-use System\Libraries\Http\Request;
 use System\Libraries\View;
-use System\Libraries\Router\Route;
 
 function getRequest()
 {
@@ -29,37 +29,28 @@ try
 	$ControllerNamespace = "\\App\\Controller";
 
 	$RequestObject = getRequest();
-	$router = new RouteCollector();
+	$ResponseObject = new Response();
+	$Router = new RouteCollector();
 
 	foreach (Route::$routes as $params)
 	{
-		$controller = explode("::", "{$ControllerNamespace}\\{$params[2]}");
-		if (count($controller) == 2)
-		{
-			$class = $controller[0];
-			if (!class_exists($class))
-			{
-				throw new BadRouteException("Controller NOT FOUND !");
-			}
-			$method = $controller[1];
-			$router->addRoute($params[0], $params[1], function() use ($class, $method, $RequestObject) {
-				$obj = new $class($RequestObject);
-				if (!method_exists($obj, $method))
-				{
-					throw new BadRouteException("Method in Controller NOT FOUND !");
-				}
-				call_user_func_array(array($obj, $method), func_get_args());
-				$obj();
-			});
-		}
+		list($httpMethod, $routePattern, $handlerCallback) = $params;
+		list($class, $method) = array_replace(array("", "index"), explode("::", "{$ControllerNamespace}\\{$handlerCallback}"));
+		$handlerCallback = function() use ($RequestObject, $ResponseObject, $class, $method) {
+			$Obj = new $class($RequestObject, $ResponseObject);
+			call_user_func_array(array($Obj, $method), func_get_args());
+			$Obj();
+		};
+		$Router->addRoute($httpMethod, $routePattern, $handlerCallback);
 	}
 
-	$dispatcher = (new Dispatcher($router->getData()));
+	$dispatcher = (new Dispatcher($Router->getData()));
 	$dispatcher->dispatch($RequestObject->getMethod(), $RequestObject->getUri()->getPath());
 }
 catch (HttpRouteNotFoundException $e)
 {
-	http_response_code(404);
+	$hcode = "{$RequestObject->getServerParam("SERVER_PROTOCOL")} 404 Not Found";
+	header($hcode);
 	echo <<<EOF
 <!DOCTYPE HTML>
 <html>
@@ -67,7 +58,7 @@ catch (HttpRouteNotFoundException $e)
 		<title> 404 </title>
 	</head>
 <body>
-	<p> 404 Not Found </p>
+	<p> $hcode </p>
 </body>
 </html>
 EOF;
@@ -75,7 +66,6 @@ EOF;
 }
 catch (\Exception $e)
 {
-	http_response_code(500);
 	$exception = get_class($e);
 	$time = date("F j, Y, g:i a");
 	echo <<<EOF

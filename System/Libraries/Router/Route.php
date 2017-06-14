@@ -28,7 +28,7 @@ class Route
 
 	public static function __callStatic($name, $arguments)
 	{
-		array_push(self::$routes, array_merge(array($name), $arguments));
+		array_push(self::$routes, array_merge(array(strtoupper($name)), $arguments));
 	}
 
 }

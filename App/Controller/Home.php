@@ -15,13 +15,6 @@ class Home extends \System\Core\Controller
 		));
 	}
 
-	public function test($id)
-	{
-		View::add("test.php", array(
-			"content" => var_export($this->request->getParsedBody(), TRUE)
-		));
-	}
-
 	public function database()
 	{
 		$pdo = SQL::getConnect()->getPDO();
