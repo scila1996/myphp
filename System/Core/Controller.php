@@ -33,15 +33,14 @@ class Controller
 		}
 		if ($data === NULL)
 		{
-			$data = $this->output(View::getAll());
+			$data = $this->renderView(View::getAll());
 		}
-		$this->response->getBody()->write($data);
-		$this->response->getBody()->rewind();
+		$this->response->write($data)->getBody()->rewind();
 		echo $this->response->getBody()->getContents();
 		exit;
 	}
 
-	protected function output($html)
+	protected function renderView($html)
 	{
 		return $html;
 	}
