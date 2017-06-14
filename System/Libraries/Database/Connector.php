@@ -58,11 +58,14 @@ class Connector implements DatabaseInterface
 				switch ($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME))
 				{
 					case self::MYSQL:
-						$rows = $this->pdo->query("SELECT FOUND_ROWS() AS rows")->fetchObject()->rows;
-						return new Collection($stmt, $rows);
-					default:
-						return new Collection($stmt);
+						if ($this->pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY) === TRUE)
+						{
+							$rows = $this->pdo->query("SELECT FOUND_ROWS() AS rows")->fetchObject()->rows;
+							return new Collection($stmt, $rows);
+						}
+						break;
 				}
+				return new Collection($stmt);
 			}
 			else
 			{
@@ -85,7 +88,6 @@ class Connector implements DatabaseInterface
 			case self::MYSQL:
 				return new Builder(new MySqlGrammar());
 			case self::SQLSRV:
-			case self::ODBC:
 				return new Builder(new SqlServerGrammar());
 			case self::SQLITE:
 				return new Builder(new SQLiteGrammar());

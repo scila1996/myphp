@@ -24,15 +24,14 @@ class Home extends \System\Core\Controller
 
 	public function database()
 	{
-		$collect = SQL::execute(SQL::query()->select()->from("category"));
-		echo $collect->fetch()->name;
-		/*
-		  $connect = new Connector();
-		  $query = $connect->query();
-		  $query->select()->from("category AS c")->join("user AS u", "u.id", "=", "c.user_id");
-		  echo $connect->execute($query);
-		 * 
-		 */
+		$pdo = SQL::getConnect()->getPDO();
+		$pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
+		$query = SQL::query()->select()->from("category");
+		$query->select()->from("category AS c")->join("user AS u", "u.id", "=", "c.user_id");
+		foreach (SQL::execute($query) as $row)
+		{
+			echo "{$row->name} <br />";
+		}
 	}
 
 }
