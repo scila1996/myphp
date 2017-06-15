@@ -174,12 +174,9 @@ class Builder
 	{
 		if ($grammar === null)
 		{
-			$this->grammar = new Grammar();
+			$grammar = new Grammar();
 		}
-		else
-		{
-			$this->grammar = $grammar;
-		}
+		$this->grammar = $grammar;
 	}
 
 	/**
@@ -1918,7 +1915,7 @@ class Builder
 	 */
 	public function raw($value)
 	{
-		return $this->connection->raw($value);
+		return new Expression($value);
 	}
 
 	/**

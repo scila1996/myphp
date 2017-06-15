@@ -60,7 +60,7 @@ class Connector implements DatabaseInterface
 					case self::MYSQL:
 						if ($this->pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY) === TRUE)
 						{
-							$rows = $this->pdo->query("SELECT FOUND_ROWS() AS rows")->fetchObject()->rows;
+							$rows = $this->pdo->query("select found_rows as rows")->fetchObject()->rows;
 							return new Collection($stmt, $rows);
 						}
 						break;

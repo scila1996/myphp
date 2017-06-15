@@ -41,8 +41,7 @@ class MySqlGrammar extends Grammar
 		{
 			$sql = '(' . $sql . ') ' . $this->compileUnions($query);
 		}
-
-		return $sql;
+		return preg_replace("/^(\s*select)/", "$1 sql_calc_found_rows", $sql, 1);
 	}
 
 	/**
