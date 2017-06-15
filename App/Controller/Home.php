@@ -21,6 +21,7 @@ class Home extends \System\Core\Controller
 		$pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
 		$query = SQL::query()->select()->from("category");
 		$query->select()->from("category AS c")->join("user AS u", "u.id", "=", "c.user_id");
+		echo "{$query->toSql()} <br />";
 		foreach (SQL::execute($query) as $row)
 		{
 			echo "{$row->name} <br />";
