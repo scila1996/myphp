@@ -15,10 +15,12 @@ class Connector implements DatabaseInterface
 
 	/** @var PDO PDO Object */
 	private $pdo = null;
+	private $driver = "";
 
 	public function __construct(PDO $pdo)
 	{
 		$this->pdo = $pdo;
+		$this->driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
 	}
 
 	/** @return boolean */
@@ -42,6 +44,10 @@ class Connector implements DatabaseInterface
 	/** @return Interfaces\CollectionInterface */
 	public function query($str, $param = NULL)
 	{
+		if ($this->driver == self::MYSQL)
+		{
+			$str = preg_replace("/^\s*(\(?\s*select)/i", "$1 sql_calc_found_rows", $str, 1);
+		}
 		$stmt = $this->pdo->prepare($str);
 		if ($stmt)
 		{
@@ -55,17 +61,15 @@ class Connector implements DatabaseInterface
 			$result = $stmt->execute();
 			if ($stmt->columnCount())
 			{
-				switch ($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME))
+				if ($this->driver == self::MYSQL and $this->pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY))
 				{
-					case self::MYSQL:
-						if ($this->pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY) === TRUE)
-						{
-							$rows = $this->pdo->query("select found_rows as rows")->fetchObject()->rows;
-							return new Collection($stmt, $rows);
-						}
-						break;
+					$rows = $this->pdo->query("select found_rows() as rows")->fetchObject()->rows;
+					return new Collection($stmt, $rows);
 				}
-				return new Collection($stmt);
+				else
+				{
+					return new Collection($stmt);
+				}
 			}
 			else
 			{

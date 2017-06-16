@@ -20,7 +20,9 @@ class Home extends \System\Core\Controller
 		$pdo = SQL::getConnect()->getPDO();
 		//$pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
 		$query = SQL::query();
-		$query->select()->distinct()->from("category AS c")->limit(5)->join("user AS u", "u.id", "=", "c.user_id");
+		$query->select()->from("category");
+		//$query->aggregate("count")->from("category");
+		$query->count()->from("category");
 		echo "{$query->toSql()} <br />";
 		echo SQL::execute($query)->getNumRows();
 	}
