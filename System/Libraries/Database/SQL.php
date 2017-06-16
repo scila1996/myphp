@@ -37,10 +37,7 @@ class SQL
 			{
 				case Connector::MYSQL:
 					$dsn .= sprintf("host=%s;port=%d;dbname=%s", self::$host, self::$port, self::$db);
-					if (self::$charset)
-					{
-						$dsn .= sprintf(";charset=%s", self::$charset);
-					}
+					$dsn .= self::$charset ? sprintf(";charset=%s", self::$charset) : ";";
 					break;
 				case Connector::SQLSRV:
 					$dsn .= sprintf("Server=%s,%d;Database=%s", self::$host, self::$port, self::$db);
@@ -107,7 +104,7 @@ class SQL
 	/** @return integer|\System\Libraries\Database\Collection */
 	public static function execute(Builder $query)
 	{
-		return self::getConnect()->query($query->toSql(), $query->getBindings());
+		return self::getConnect()->query(strval($query), $query->getBindings());
 	}
 
 }

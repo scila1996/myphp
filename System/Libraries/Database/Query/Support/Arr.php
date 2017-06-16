@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Libraries\Database\Query;
+namespace System\Libraries\Database\Query\Support;
 
 class Arr
 {

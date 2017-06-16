@@ -73,7 +73,7 @@ class Connector implements DatabaseInterface
 			}
 			else
 			{
-				return $result;
+				return $stmt->rowCount();
 			}
 		}
 	}

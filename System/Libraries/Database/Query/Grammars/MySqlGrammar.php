@@ -146,7 +146,7 @@ class MySqlGrammar extends Grammar
 	 */
 	protected function compileUpdateColumns($values)
 	{
-		return collect($values)->map(function ($value, $key) {
+		return implode(', ', array_map(function ($value, $key) {
 					if ($this->isJsonSelector($key))
 					{
 						return $this->compileJsonUpdateColumn($key, new JsonExpression($value));
@@ -155,7 +155,7 @@ class MySqlGrammar extends Grammar
 					{
 						return $this->wrap($key) . ' = ' . $this->parameter($value);
 					}
-				})->implode(', ');
+				}, $values, array_keys($values)));
 	}
 
 	/**
@@ -187,6 +187,14 @@ class MySqlGrammar extends Grammar
 	 */
 	public function prepareBindingsForUpdate(array $bindings, array $values)
 	{
+		$a = array_filter(array_keys($a), function ($k){ return strlen($k)>=4; }); 
+		$b = array_intersect_key($a, array_flip($f));
+		
+		$values = array_filter(function ($column) use ($values) {
+				return $this->isJsonSelector($column) &&
+							in_array(gettype($value), ['boolean', 'integer', 'double']);
+				}, $values);
+		
 		$values = collect($values)->reject(function ($value, $column) {
 					return $this->isJsonSelector($column) &&
 							in_array(gettype($value), ['boolean', 'integer', 'double']);

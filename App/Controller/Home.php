@@ -17,14 +17,17 @@ class Home extends \System\Core\Controller
 
 	public function database()
 	{
-		$pdo = SQL::getConnect()->getPDO();
-		//$pdo->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
+		// SQL::getConnect()->getPDO()->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
 		$query = SQL::query();
-		$query->select()->from("category");
-		//$query->aggregate("count")->from("category");
-		$query->count()->from("category");
-		echo "{$query->toSql()} <br />";
-		echo SQL::execute($query)->getNumRows();
+		$data = [
+			["user" => "admin", "pass" => sha1("admin"), "name" => "Trung"],
+			["user" => "administrator", "pass" => sha1("admin"), "name" => "Admin"],
+		];
+		$query->table("admin")->update(["pass" => sha1("12345678")])->where("user", "admin");
+		echo "{$query} <br />";
+		var_dump($query->getBindings());
+		echo "<br />";
+		echo SQL::execute($query);
 	}
 
 }
