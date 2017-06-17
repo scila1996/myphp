@@ -187,18 +187,17 @@ class MySqlGrammar extends Grammar
 	 */
 	public function prepareBindingsForUpdate(array $bindings, array $values)
 	{
-		$a = array_filter(array_keys($a), function ($k){ return strlen($k)>=4; }); 
-		$b = array_intersect_key($a, array_flip($f));
-		
-		$values = array_filter(function ($column) use ($values) {
-				return $this->isJsonSelector($column) &&
-							in_array(gettype($value), ['boolean', 'integer', 'double']);
-				}, $values);
-		
-		$values = collect($values)->reject(function ($value, $column) {
-					return $this->isJsonSelector($column) &&
-							in_array(gettype($value), ['boolean', 'integer', 'double']);
-				})->all();
+		$data = [];
+
+		foreach ($values as $column => $value)
+		{
+			if (!($this->isJsonSelector($column) && in_array(gettype($value), ['boolean', 'integer', 'double'])))
+			{
+				$data[$column] = $value;
+			}
+		}
+
+		$values = $data;
 
 		return parent::prepareBindingsForUpdate($bindings, $values);
 	}
@@ -299,9 +298,9 @@ class MySqlGrammar extends Grammar
 
 		$field = $this->wrapValue(array_shift($path));
 
-		return sprintf('%s->\'$.%s\'', $field, collect($path)->map(function ($part) {
-					return '"' . $part . '"';
-				})->implode('.'));
+		return sprintf('%s->\'$.%s\'', $field, implode('.', array_map(function ($part) {
+							return '"' . $part . '"';
+						}, $path)));
 	}
 
 	/**

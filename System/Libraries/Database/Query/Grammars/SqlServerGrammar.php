@@ -306,9 +306,10 @@ class SqlServerGrammar extends Grammar
 		// Each one of the columns in the update statements needs to be wrapped in the
 		// keyword identifiers, also a place-holder needs to be created for each of
 		// the values in the list of bindings so we can make the sets statements.
-		$columns = collect($values)->map(function ($value, $key) {
+		$columns = implode(', ', array_map(function ($value, $key) {
 					return $this->wrap($key) . ' = ' . $this->parameter($value);
-				})->implode(', ');
+				}, $values, array_keys($values)));
+
 
 		// If the query has any "join" clauses, we will setup the joins on the builder
 		// and compile them so we can attach them to this update, as update queries

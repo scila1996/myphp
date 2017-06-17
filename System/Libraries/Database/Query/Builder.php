@@ -158,14 +158,8 @@ class Builder
 		'not similar to', 'not ilike', '~~*', '!~~*',
 	];
 
-	/** @var array */
-	private $insert = null;
-
-	/** @var array */
-	private $update = null;
-
-	/** @var boolean */
-	private $delete = null;
+	/** @var string */
+	private $compile = "select";
 
 	/**
 	 * Create a new query builder instance.
@@ -190,7 +184,7 @@ class Builder
 	public function select($columns = ['*'])
 	{
 		$this->columns = is_array($columns) ? $columns : func_get_args();
-
+		$this->compile = __FUNCTION__;
 		return $this;
 	}
 
@@ -512,7 +506,7 @@ class Builder
 					{
 						if (is_numeric($key) && is_array($value))
 						{
-							$query->{$method}(...array_values($value));
+							call_user_func_array(array($query, $method), array_values($value));
 						}
 						else
 						{
@@ -1184,15 +1178,17 @@ class Builder
 	/**
 	 * Add a "group by" clause to the query.
 	 *
-	 * @param  array  ...$groups
+	 * @param  string $groups
 	 * @return $this
 	 */
-	public function groupBy(...$groups)
+	public function groupBy($groups)
 	{
+		$groups = func_get_args();
+
 		foreach ($groups as $group)
 		{
 			$this->groups = array_merge(
-					(array) $this->groups, array_wrap($group)
+					(array) $this->groups, !is_array($group) ? [$group] : $group
 			);
 		}
 
@@ -1480,43 +1476,40 @@ class Builder
 	 * Retrieve the "count" result of the query.
 	 *
 	 * @param  string  $columns
-	 * @return static
+	 * @return $this
 	 */
-	public function count($columns = ["*"])
+	public function count($columns = '*')
 	{
-		$columns = is_array($columns) ? $columns : func_get_args();
-		return $this->aggregate(__FUNCTION__, $columns);
+		return $this->aggregate(__FUNCTION__, !is_array($columns) ? [$columns] : $columns);
 	}
 
 	/**
 	 * Retrieve the minimum value of a given column.
 	 *
 	 * @param  string  $column
-	 * @return static
+	 * @return $this
 	 */
-	public function min($columns)
+	public function min($column)
 	{
-		$columns = is_array($columns) ? $columns : func_get_args();
-		return $this->aggregate(__FUNCTION__, $columns);
+		return $this->aggregate(__FUNCTION__, [$column]);
 	}
 
 	/**
 	 * Retrieve the maximum value of a given column.
 	 *
 	 * @param  string  $column
-	 * @return static
+	 * @return $this
 	 */
-	public function max($columns)
+	public function max($column)
 	{
-		$columns = is_array($columns) ? $columns : func_get_args();
-		return $this->aggregate(__FUNCTION__, $columns);
+		return $this->aggregate(__FUNCTION__, [$column]);
 	}
 
 	/**
 	 * Retrieve the sum of the values of a given column.
 	 *
 	 * @param  string  $column
-	 * @return static
+	 * @return $this
 	 */
 	public function sum($column)
 	{
@@ -1527,7 +1520,7 @@ class Builder
 	 * Retrieve the average of the values of a given column.
 	 *
 	 * @param  string  $column
-	 * @return mixed
+	 * @return $this
 	 */
 	public function avg($column)
 	{
@@ -1554,11 +1547,10 @@ class Builder
 	 */
 	public function aggregate($function, $columns = ['*'])
 	{
-		$this->withoutProperties(["columns"]);
-		$this->withoutBindings(["select"]);
-		$this->aggregate["function"] = $function;
-		$this->aggregate["columns"] = $columns;
-		return $this;
+		$this->select();
+		$this->columns = null;
+		$this->bindings["select"] = [];
+		return $this->setAggregate($function, $columns);
 	}
 
 	/**
@@ -1616,7 +1608,8 @@ class Builder
 			}
 		}
 
-		$this->insert = $values;
+		$this->compile = __FUNCTION__;
+		$this->{__FUNCTION__} = $values;
 		return $this;
 	}
 
@@ -1624,33 +1617,23 @@ class Builder
 	 * Update a record in the database.
 	 *
 	 * @param  array  $values
-	 * @return static
+	 * @return $this
 	 */
 	public function update(array $values)
 	{
-		$this->update = $values;
+		$this->compile = __FUNCTION__;
+		$this->{__FUNCTION__} = $values;
 		return $this;
 	}
 
 	/**
 	 * Delete a record from the database.
 	 *
-	 * @param  mixed  $id
-	 * @return int
+	 * @return $this
 	 */
-	public function delete($id = null)
+	public function delete()
 	{
-		// If an ID is passed to the method, we will set the where clause to check the
-		// ID to let developers to simply and quickly remove a single row from this
-		// database without manually specifying the "where" clauses on the query.
-		if (!is_null($id))
-		{
-			$this->where($this->from . '.id', '=', $id);
-		}
-
-		return $this->connection->delete(
-						$this->grammar->compileDelete($this), $this->getBindings()
-		);
+		$this->compile = __FUNCTION__;
 	}
 
 	/**
@@ -1681,13 +1664,12 @@ class Builder
 	 */
 	public function getBindings()
 	{
-		if ($this->insert)
+		switch ($this->compile)
 		{
-			return $this->cleanBindings(Arr::flatten($this->insert, 1));
-		}
-		if ($this->update)
-		{
-			return $this->cleanBindings($this->grammar->prepareBindingsForUpdate($this->bindings, $this->update));
+			case 'insert':
+				return $this->cleanBindings(Arr::flatten($this->insert, 1));
+			case 'update':
+				return $this->cleanBindings($this->grammar->prepareBindingsForUpdate($this->bindings, $this->update));
 		}
 		return Arr::flatten($this->bindings);
 	}
@@ -1788,49 +1770,18 @@ class Builder
 	}
 
 	/**
-	 * Without the given properties.
-	 *
-	 * @param  array  $except
-	 * @return void
-	 */
-	protected function withoutProperties(array $except)
-	{
-		foreach ($except as $property)
-		{
-			$this->{$property} = null;
-		}
-	}
-
-	/**
-	 * Without the given bindings.
-	 *
-	 * @param  array  $except
-	 * @return void
-	 */
-	protected function withoutBindings(array $except)
-	{
-		foreach ($except as $type)
-		{
-			$this->bindings[$type] = [];
-		}
-	}
-
-	/**
 	 * Get the SQL representation of the query.
 	 *
 	 * @return string
 	 */
 	public function toSql()
 	{
-		if ($this->insert)
+		$params = [$this];
+		if (property_exists($this, $this->compile))
 		{
-			return $this->grammar->compileInsert($this, $this->insert);
+			$params[] = $this->{$this->compile};
 		}
-		if ($this->update)
-		{
-			return $this->grammar->compileUpdate($this, $this->update);
-		}
-		return $this->grammar->compileSelect($this);
+		return call_user_func_array(array($this->grammar, 'compile' . ucfirst($this->compile)), $params);
 	}
 
 	public function __toString()

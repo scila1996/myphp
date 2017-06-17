@@ -118,9 +118,9 @@ class PostgresGrammar extends Grammar
 		// When gathering the columns for an update statement, we'll wrap each of the
 		// columns and convert it to a parameter value. Then we will concatenate a
 		// list of the columns that can be added into this update query clauses.
-		return collect($values)->map(function ($value, $key) {
+		return implode(', ', array_map(function ($value, $key) {
 					return $this->wrap($key) . ' = ' . $this->parameter($value);
-				})->implode(', ');
+				}, $values, array_keys($values)));
 	}
 
 	/**
@@ -139,10 +139,10 @@ class PostgresGrammar extends Grammar
 		// When using Postgres, updates with joins list the joined tables in the from
 		// clause, which is different than other systems like MySQL. Here, we will
 		// compile out the tables that are joined and add them to a from clause.
-		$froms = collect($query->joins)->map(function ($join) {
-					return $this->wrapTable($join->table);
-				})->all();
 
+		$froms = array_map(function ($join) {
+			return $this->wrapTable($join->table);
+		}, $query->joins);
 		if (count($froms) > 0)
 		{
 			return ' from ' . implode(', ', $froms);
