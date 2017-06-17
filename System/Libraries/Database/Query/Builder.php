@@ -240,11 +240,9 @@ class Builder
 	 * @param  string  $table
 	 * @return $this
 	 */
-	public function from($table)
+	public function from($table, $alias = null)
 	{
-		$this->from = $table;
-
-		return $this;
+		return $this->table($table, $alias);
 	}
 
 	/**
@@ -253,9 +251,11 @@ class Builder
 	 * @param  string  $table
 	 * @return $this
 	 */
-	public function table($table)
+	public function table($table, $alias = null)
 	{
-		return $this->from($table);
+		$table = $alias ? "$table as $alias" : $table;
+		$this->from = $table;
+		return $this;
 	}
 
 	/**
@@ -271,6 +271,7 @@ class Builder
 	 */
 	public function join($table, $first, $operator = null, $second = null, $type = 'inner', $where = false)
 	{
+		$table = is_array($table) ? "{$table[0]} as {$table[1]}" : $table;
 		$join = new JoinClause($this, $type, $table);
 
 		// If the first "column" of the join is really a Closure instance the developer
@@ -1435,41 +1436,14 @@ class Builder
 	}
 
 	/**
-	 * Remove the column aliases since they will break count queries.
-	 *
-	 * @param  array  $columns
-	 * @return array
-	 */
-	protected function withoutSelectAliases(array $columns)
-	{
-		return array_map(function ($column) {
-			return is_string($column) && ($aliasPosition = strpos(strtolower($column), ' as ')) !== false ? substr($column, 0, $aliasPosition) : $column;
-		}, $columns);
-	}
-
-	/**
-	 * Throw an exception if the query doesn't have an orderBy clause.
-	 *
-	 * @return void
-	 *
-	 * @throws \RuntimeException
-	 */
-	protected function enforceOrderBy()
-	{
-		if (empty($this->orders) && empty($this->unionOrders))
-		{
-			throw new RuntimeException('You must specify an orderBy clause when using this function.');
-		}
-	}
-
-	/**
 	 * Determine if any rows exist for the current query.
 	 *
 	 * @return string
 	 */
 	public function exists()
 	{
-		return $this->grammar->compileExists($this);
+		$this->compile = __FUNCTION__;
+		return $this;
 	}
 
 	/**
