@@ -3,6 +3,7 @@
 namespace System\Libraries\Database\Query\Grammars;
 
 use System\Libraries\Database\Query\Expression;
+use System\Libraries\Database\Query\Builder;
 
 abstract class BaseGrammar
 {
@@ -33,9 +34,20 @@ abstract class BaseGrammar
 	 */
 	public function wrapTable($table)
 	{
-		if (!$this->isExpression($table))
+		if (is_array($table))
 		{
-			return $this->wrap($this->tablePrefix . $table, true);
+			if ($table[0] instanceof Builder)
+			{
+				return "({$table[0]->toSql()}) as {$this->wrapSegments([$table[1]])}";
+			}
+			else
+			{
+				return $this->wrap("{$this->tablePrefix}{$table[0]} as {$table[1]}", true);
+			}
+		}
+		else if (!$this->isExpression($table))
+		{
+			return $this->wrap("{$this->tablePrefix}{$table}", true);
 		}
 
 		return $this->getValue($table);

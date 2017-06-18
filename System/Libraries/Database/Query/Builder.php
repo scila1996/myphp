@@ -3,7 +3,6 @@
 namespace System\Libraries\Database\Query;
 
 use Closure;
-use RuntimeException;
 use InvalidArgumentException;
 use System\Libraries\Database\Query\Support\Arr;
 use System\Libraries\Database\Query\Grammars\Grammar;
@@ -25,6 +24,8 @@ class Builder
 	 */
 	public $bindings = [
 		'select' => [],
+		'subs' => [],
+		'subj' => [],
 		'join' => [],
 		'where' => [],
 		'having' => [],
@@ -253,7 +254,15 @@ class Builder
 	 */
 	public function table($table, $alias = null)
 	{
-		$table = $alias ? "$table as $alias" : $table;
+		if ($table instanceof static)
+		{
+			if ($alias === null)
+			{
+				throw new InvalidArgumentException("Alias MUST be set for subquery.");
+			}
+			$this->bindings['subs'] = $table->getBindings();
+		}
+		$table = $alias ? [$table, $alias] : $table;
 		$this->from = $table;
 		return $this;
 	}
@@ -271,7 +280,10 @@ class Builder
 	 */
 	public function join($table, $first, $operator = null, $second = null, $type = 'inner', $where = false)
 	{
-		$table = is_array($table) ? "{$table[0]} as {$table[1]}" : $table;
+		if (is_array($table) && $table[0] instanceof static)
+		{
+			$this->bindings["subj"] = $table[0]->getBindings();
+		}
 		$join = new JoinClause($this, $type, $table);
 
 		// If the first "column" of the join is really a Closure instance the developer
