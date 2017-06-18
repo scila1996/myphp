@@ -24,8 +24,7 @@ class Builder
 	 */
 	public $bindings = [
 		'select' => [],
-		'subs' => [],
-		'subj' => [],
+		'sub' => ['select' => [], 'join' => []],
 		'join' => [],
 		'where' => [],
 		'having' => [],
@@ -260,7 +259,7 @@ class Builder
 			{
 				throw new InvalidArgumentException("Alias MUST be set for subquery.");
 			}
-			$this->bindings['subs'] = $table->getBindings();
+			$this->bindings['sub']['select'] = $table->getBindings();
 		}
 		$table = $alias ? [$table, $alias] : $table;
 		$this->from = $table;
@@ -282,7 +281,7 @@ class Builder
 	{
 		if (is_array($table) && $table[0] instanceof static)
 		{
-			$this->bindings["subj"] = $table[0]->getBindings();
+			$this->bindings['sub']['join'] = $table[0]->getBindings();
 		}
 		$join = new JoinClause($this, $type, $table);
 
