@@ -25,8 +25,8 @@ try
 {
 	require '/App/Config/Route.php';
 	require '/App/Config/Database.php';
-	View::$path = "App/View";
-	$ControllerNamespace = "\\App\\Controller";
+	View::$path = "App/Views";
+	$ControllerNamespace = "\\App\\Controllers";
 
 	$RequestObject = getRequest();
 	$ResponseObject = new Response();

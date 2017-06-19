@@ -1,9 +1,9 @@
 <?php
 
-namespace System\Libraries;
+namespace System\Libraries\Datatable;
 
-use System\Database\DB_Query;
-use System\Database\DB_Result;
+use System\Libraries\Database\SQL;
+use System\Libraries\Database\Query\Builder;
 
 abstract class Table
 {
