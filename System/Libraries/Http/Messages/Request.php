@@ -1,14 +1,14 @@
 <?php
 
-namespace System\Libraries\Http;
+namespace System\Libraries\Http\Messages;
 
 use Closure;
 use InvalidArgumentException;
-use System\Libraries\Http\Interfaces\UploadedFileInterface;
+use System\Libraries\Http\Messages\Interfaces\UploadedFileInterface;
 use RuntimeException;
-use System\Libraries\Http\Interfaces\ServerRequestInterface;
-use System\Libraries\Http\Interfaces\UriInterface;
-use System\Libraries\Http\Interfaces\StreamInterface;
+use System\Libraries\Http\Messages\Interfaces\ServerRequestInterface;
+use System\Libraries\Http\Messages\Interfaces\UriInterface;
+use System\Libraries\Http\Messages\Interfaces\StreamInterface;
 
 /**
  * Request
@@ -34,7 +34,7 @@ class Request extends Message implements ServerRequestInterface
 	/**
 	 * The request URI object
 	 *
-	 * @var \System\Libraries\Http\Interfaces\UriInterface
+	 * @var \System\Libraries\Http\Messages\Interfaces\UriInterface
 	 */
 	protected $uri;
 
@@ -768,7 +768,7 @@ class Request extends Message implements ServerRequestInterface
 	 * Retrieve normalized file upload data.
 	 *
 	 * This method returns upload metadata in a normalized tree, with each leaf
-	 * an instance of System\Libraries\Http\Interfaces\UploadedFileInterface.
+	 * an instance of System\Libraries\Http\Messages\Interfaces\UploadedFileInterface.
 	 *
 	 * These values MAY be prepared from $_FILES or the message body during
 	 * instantiation, or MAY be injected via withUploadedFiles().

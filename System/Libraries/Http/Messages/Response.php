@@ -1,11 +1,11 @@
 <?php
 
-namespace System\Libraries\Http;
+namespace System\Libraries\Http\Messages;
 
 use InvalidArgumentException;
-use System\Libraries\Http\Interfaces\ResponseInterface;
-use System\Libraries\Http\Interfaces\StreamInterface;
-use System\Libraries\Http\Interfaces\UriInterface;
+use System\Libraries\Http\Messages\Interfaces\ResponseInterface;
+use System\Libraries\Http\Messages\Interfaces\StreamInterface;
+use System\Libraries\Http\Messages\Interfaces\UriInterface;
 
 /**
  * Response

@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Libraries\Http;
+namespace System\Libraries\Http\Messages;
 
 /**
  * Provides a PSR-7 implementation of a reusable raw request body

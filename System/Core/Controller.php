@@ -2,17 +2,17 @@
 
 namespace System\Core;
 
-use System\Libraries\Http\Interfaces\ServerRequestInterface;
-use System\Libraries\Http\Interfaces\ResponseInterface;
+use System\Libraries\Http\Messages\Interfaces\ServerRequestInterface;
+use System\Libraries\Http\Messages\Interfaces\ResponseInterface;
 use System\Libraries\View;
 
 class Controller
 {
 
-	/** @var \System\Libraries\Http\Request */
+	/** @var \System\Libraries\Http\Messages\Request */
 	public $request = null;
 
-	/** @var \System\Libraries\Http\Response */
+	/** @var \System\Libraries\Http\Messages\Response */
 	public $response = null;
 
 	public function __construct(ServerRequestInterface $request, ResponseInterface $response)
@@ -45,4 +45,9 @@ class Controller
 		return $html;
 	}
 
+}
+
+function view()
+{
+	echo "123";
 }

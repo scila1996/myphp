@@ -1,9 +1,9 @@
 <?php
 
-namespace System\Libraries\Http;
+namespace System\Libraries\Http\Messages;
 
 use InvalidArgumentException;
-use \System\Libraries\Http\Interfaces\UriInterface;
+use \System\Libraries\Http\Messages\Interfaces\UriInterface;
 
 /**
  * Value object representing a URI.

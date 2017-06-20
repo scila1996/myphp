@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Libraries\Http;
+namespace System\Libraries\Http\Messages;
 
 interface CollectionInterface extends \ArrayAccess, \Countable, \IteratorAggregate
 {

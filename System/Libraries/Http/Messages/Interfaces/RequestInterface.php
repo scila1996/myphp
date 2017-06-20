@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Libraries\Http\Interfaces;
+namespace System\Libraries\Http\Messages\Interfaces;
 
 /**
  * Representation of an outgoing, client-side request.

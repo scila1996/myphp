@@ -2,15 +2,17 @@
 
 namespace App\Controllers;
 
-use System\Libraries\View;
+use System\Core\Controller;
+use System\Libraries\View\Manager;
 use System\Libraries\Database\SQL;
 
-class Home extends \System\Core\Controller
+class Home extends Controller
 {
 
 	public function index($id = null)
 	{
-		View::add("home.php", array(
+		view();
+		Manager::add("home.php", array(
 			"content" => $id
 		));
 	}

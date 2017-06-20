@@ -1,11 +1,11 @@
 <?php
 
-namespace System\Libraries\Http;
+namespace System\Libraries\Http\Messages;
 
 use RuntimeException;
 use InvalidArgumentException;
-use System\Libraries\Http\Interfaces\StreamInterface;
-use System\Libraries\Http\Interfaces\UploadedFileInterface;
+use System\Libraries\Http\Messages\Interfaces\StreamInterface;
+use System\Libraries\Http\Messages\Interfaces\UploadedFileInterface;
 
 /**
  * Represents Uploaded Files.
