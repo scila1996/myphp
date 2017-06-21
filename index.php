@@ -14,8 +14,13 @@ use System\Libraries\Router\RouteCollector;
 use System\Libraries\Router\Dispatcher;
 use System\Libraries\Router\Exception\HttpRouteNotFoundException;
 
+require 'System/Libraries/HTML/vendor/autoload.php';
 
-$obj = new Environment($loader)
+use Illuminate\View\ViewServiceProvider;
+
+$obj = new ViewServiceProvider(['view']);
+
+exit;
 
 function getRequest()
 {
