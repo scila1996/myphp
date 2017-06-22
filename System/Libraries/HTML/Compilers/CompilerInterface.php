@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\View\Compilers;
+namespace System\Libraries\ViewCompilers;
 
 interface CompilerInterface
 {

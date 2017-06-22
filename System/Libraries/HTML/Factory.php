@@ -7,7 +7,7 @@ use Illuminate\Support\Str;
 use InvalidArgumentException;
 use Illuminate\Contracts\Events\Dispatcher;
 use Illuminate\Contracts\Support\Arrayable;
-use Illuminate\View\Engines\EngineResolver;
+use System\Libraries\ViewEngines\EngineResolver;
 use Illuminate\Contracts\Container\Container;
 use Illuminate\Contracts\View\Factory as FactoryContract;
 
@@ -23,14 +23,14 @@ class Factory implements FactoryContract
     /**
      * The engine implementation.
      *
-     * @var \Illuminate\View\Engines\EngineResolver
+     * @var \System\Libraries\ViewEngines\EngineResolver
      */
     protected $engines;
 
     /**
      * The view finder implementation.
      *
-     * @var \Illuminate\View\ViewFinderInterface
+     * @var \System\Libraries\ViewViewFinderInterface
      */
     protected $finder;
 
@@ -83,8 +83,8 @@ class Factory implements FactoryContract
     /**
      * Create a new view factory instance.
      *
-     * @param  \Illuminate\View\Engines\EngineResolver  $engines
-     * @param  \Illuminate\View\ViewFinderInterface  $finder
+     * @param  \System\Libraries\ViewEngines\EngineResolver  $engines
+     * @param  \System\Libraries\ViewViewFinderInterface  $finder
      * @param  \Illuminate\Contracts\Events\Dispatcher  $events
      * @return void
      */
@@ -248,7 +248,7 @@ class Factory implements FactoryContract
      * Get the appropriate view engine for the given path.
      *
      * @param  string  $path
-     * @return \Illuminate\View\Engines\EngineInterface
+     * @return \System\Libraries\ViewEngines\EngineInterface
      *
      * @throws \InvalidArgumentException
      */
@@ -438,7 +438,7 @@ class Factory implements FactoryContract
     /**
      * Get the engine resolver instance.
      *
-     * @return \Illuminate\View\Engines\EngineResolver
+     * @return \System\Libraries\ViewEngines\EngineResolver
      */
     public function getEngineResolver()
     {
@@ -448,7 +448,7 @@ class Factory implements FactoryContract
     /**
      * Get the view finder instance.
      *
-     * @return \Illuminate\View\ViewFinderInterface
+     * @return \System\Libraries\ViewViewFinderInterface
      */
     public function getFinder()
     {
@@ -458,7 +458,7 @@ class Factory implements FactoryContract
     /**
      * Set the view finder instance.
      *
-     * @param  \Illuminate\View\ViewFinderInterface  $finder
+     * @param  \System\Libraries\ViewViewFinderInterface  $finder
      * @return void
      */
     public function setFinder(ViewFinderInterface $finder)

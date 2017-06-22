@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\View\Concerns;
+namespace System\Libraries\ViewConcerns;
 
 use Closure;
 use Illuminate\Support\Str;

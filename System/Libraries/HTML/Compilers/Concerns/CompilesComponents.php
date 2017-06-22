@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\View\Compilers\Concerns;
+namespace System\Libraries\ViewCompilers\Concerns;
 
 trait CompilesComponents
 {

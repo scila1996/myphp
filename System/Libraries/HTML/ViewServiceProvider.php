@@ -2,12 +2,12 @@
 
 namespace Illuminate\View;
 
-use Illuminate\View\Engines\PhpEngine;
+use System\Libraries\ViewEngines\PhpEngine;
 use Illuminate\Support\ServiceProvider;
-use Illuminate\View\Engines\FileEngine;
-use Illuminate\View\Engines\CompilerEngine;
-use Illuminate\View\Engines\EngineResolver;
-use Illuminate\View\Compilers\BladeCompiler;
+use System\Libraries\ViewEngines\FileEngine;
+use System\Libraries\ViewEngines\CompilerEngine;
+use System\Libraries\ViewEngines\EngineResolver;
+use System\Libraries\ViewCompilers\BladeCompiler;
 
 class ViewServiceProvider extends ServiceProvider
 {
@@ -89,7 +89,7 @@ class ViewServiceProvider extends ServiceProvider
     /**
      * Register the file engine implementation.
      *
-     * @param  \Illuminate\View\Engines\EngineResolver  $resolver
+     * @param  \System\Libraries\ViewEngines\EngineResolver  $resolver
      * @return void
      */
     public function registerFileEngine($resolver)
@@ -102,7 +102,7 @@ class ViewServiceProvider extends ServiceProvider
     /**
      * Register the PHP engine implementation.
      *
-     * @param  \Illuminate\View\Engines\EngineResolver  $resolver
+     * @param  \System\Libraries\ViewEngines\EngineResolver  $resolver
      * @return void
      */
     public function registerPhpEngine($resolver)
@@ -115,7 +115,7 @@ class ViewServiceProvider extends ServiceProvider
     /**
      * Register the Blade engine implementation.
      *
-     * @param  \Illuminate\View\Engines\EngineResolver  $resolver
+     * @param  \System\Libraries\ViewEngines\EngineResolver  $resolver
      * @return void
      */
     public function registerBladeEngine($resolver)

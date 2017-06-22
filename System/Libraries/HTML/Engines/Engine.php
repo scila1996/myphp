@@ -1,6 +1,6 @@
 <?php
 
-namespace Illuminate\View\Engines;
+namespace System\Libraries\ViewEngines;
 
 abstract class Engine
 {

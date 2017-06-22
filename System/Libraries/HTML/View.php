@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\MessageBag;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Contracts\Support\Renderable;
-use Illuminate\View\Engines\EngineInterface;
+use System\Libraries\ViewEngines\EngineInterface;
 use Illuminate\Contracts\Support\MessageProvider;
 use Illuminate\Contracts\View\View as ViewContract;
 
@@ -19,14 +19,14 @@ class View implements ArrayAccess, ViewContract
     /**
      * The view factory instance.
      *
-     * @var \Illuminate\View\Factory
+     * @var \System\Libraries\ViewFactory
      */
     protected $factory;
 
     /**
      * The engine implementation.
      *
-     * @var \Illuminate\View\Engines\EngineInterface
+     * @var \System\Libraries\ViewEngines\EngineInterface
      */
     protected $engine;
 
@@ -54,8 +54,8 @@ class View implements ArrayAccess, ViewContract
     /**
      * Create a new view instance.
      *
-     * @param  \Illuminate\View\Factory  $factory
-     * @param  \Illuminate\View\Engines\EngineInterface  $engine
+     * @param  \System\Libraries\ViewFactory  $factory
+     * @param  \System\Libraries\ViewEngines\EngineInterface  $engine
      * @param  string  $view
      * @param  string  $path
      * @param  mixed  $data
@@ -277,7 +277,7 @@ class View implements ArrayAccess, ViewContract
     /**
      * Get the view factory instance.
      *
-     * @return \Illuminate\View\Factory
+     * @return \System\Libraries\ViewFactory
      */
     public function getFactory()
     {
@@ -287,7 +287,7 @@ class View implements ArrayAccess, ViewContract
     /**
      * Get the view's rendering engine.
      *
-     * @return \Illuminate\View\Engines\EngineInterface
+     * @return \System\Libraries\ViewEngines\EngineInterface
      */
     public function getEngine()
     {
@@ -389,7 +389,7 @@ class View implements ArrayAccess, ViewContract
      *
      * @param  string  $method
      * @param  array   $parameters
-     * @return \Illuminate\View\View
+     * @return \System\Libraries\ViewView
      *
      * @throws \BadMethodCallException
      */

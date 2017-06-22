@@ -1,17 +1,17 @@
 <?php
 
-namespace Illuminate\View\Engines;
+namespace System\Libraries\ViewEngines;
 
 use Exception;
 use ErrorException;
-use Illuminate\View\Compilers\CompilerInterface;
+use System\Libraries\ViewCompilers\CompilerInterface;
 
 class CompilerEngine extends PhpEngine
 {
     /**
      * The Blade compiler instance.
      *
-     * @var \Illuminate\View\Compilers\CompilerInterface
+     * @var \System\Libraries\ViewCompilers\CompilerInterface
      */
     protected $compiler;
 
@@ -25,7 +25,7 @@ class CompilerEngine extends PhpEngine
     /**
      * Create a new Blade view engine instance.
      *
-     * @param  \Illuminate\View\Compilers\CompilerInterface  $compiler
+     * @param  \System\Libraries\ViewCompilers\CompilerInterface  $compiler
      * @return void
      */
     public function __construct(CompilerInterface $compiler)
@@ -93,7 +93,7 @@ class CompilerEngine extends PhpEngine
     /**
      * Get the compiler implementation.
      *
-     * @return \Illuminate\View\Compilers\CompilerInterface
+     * @return \System\Libraries\ViewCompilers\CompilerInterface
      */
     public function getCompiler()
     {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Illuminate\View\Compilers\Concerns;
+namespace System\Libraries\ViewCompilers\Concerns;
 
-use Illuminate\View\Factory as ViewFactory;
+use System\Libraries\ViewFactory as ViewFactory;
 
 trait CompilesLayouts
 {
