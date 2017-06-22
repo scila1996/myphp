@@ -9,28 +9,28 @@ class Collection implements CollectionInterface
 {
 
 	/** @var PDOStatement */
-	private $pdo_stmt = NULL;
+	private $pdoStmt = NULL;
 
 	/** @var array */
 	private $fields = array();
 
 	/** @var integer */
-	private $num_rows = NULL;
+	private $numRows = NULL;
 
 	/** @var \stdClass */
 	private $row = NULL;
 
 	/** @var \stdClass */
-	private $first_row = NULL;
+	private $firstRow = NULL;
 
 	/** @var integer */
 	private $key = 1;
 
 	private function _fields()
 	{
-		for ($i = 0; $i < $this->pdo_stmt->columnCount(); $i++)
+		for ($i = 0; $i < $this->pdoStmt->columnCount(); $i++)
 		{
-			$field = $this->pdo_stmt->getColumnMeta($i);
+			$field = $this->pdoStmt->getColumnMeta($i);
 			if ($field)
 			{
 				array_push($this->fields, $field["name"]);
@@ -38,10 +38,10 @@ class Collection implements CollectionInterface
 		}
 	}
 
-	public function __construct(PDOStatement $stmt, $num_rows = null)
+	public function __construct(PDOStatement $stmt, $numRows = null)
 	{
-		$this->pdo_stmt = $stmt;
-		$this->num_rows = $num_rows === null ? $stmt->rowCount() : $num_rows;
+		$this->pdoStmt = $stmt;
+		$this->numRows = $numRows === null ? $stmt->rowCount() : $numRows;
 		$this->_fields();
 		$this->next();
 	}
@@ -49,7 +49,7 @@ class Collection implements CollectionInterface
 	/** @return \stdClass */
 	public function first()
 	{
-		return $this->first_row;
+		return $this->firstRow;
 	}
 
 	/** @return \stdClass */
@@ -75,18 +75,18 @@ class Collection implements CollectionInterface
 	/** @return void */
 	public function next()
 	{
-		$this->row = $this->pdo_stmt->fetchObject();
+		$this->row = $this->pdoStmt->fetchObject();
 		if ($this->row !== FALSE)
 		{
 			$this->key += 1;
-			if ($this->first_row === NULL)
+			if ($this->firstRow === NULL)
 			{
-				$this->first_row = $this->row;
+				$this->firstRow = $this->row;
 			}
 		}
 		else
 		{
-			$this->pdo_stmt->closeCursor();
+			$this->pdoStmt->closeCursor();
 		}
 	}
 
@@ -105,7 +105,7 @@ class Collection implements CollectionInterface
 	/** @return integer */
 	public function getNumRows()
 	{
-		return $this->num_rows;
+		return $this->numRows;
 	}
 
 	/** @return array */
