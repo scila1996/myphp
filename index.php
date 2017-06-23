@@ -14,11 +14,15 @@ use System\Libraries\Router\RouteCollector;
 use System\Libraries\Router\Dispatcher;
 use System\Libraries\Router\Exception\HttpRouteNotFoundException;
 
-require 'System/Libraries/HTML/vendor/autoload.php';
+use System\Libraries\Mvc\View\View;
 
-use Illuminate\View\ViewServiceProvider;
+$view = new View();
+$view->setViewsDir('App/Views/');
+$view->start();
+$view->render('', 'test');
+$view->finish();
 
-$obj = new ViewServiceProvider(['view']);
+echo $view->getContent();
 
 exit;
 
