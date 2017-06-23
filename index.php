@@ -1,6 +1,8 @@
 <?php
 
 ini_set('display_errors', '1');
+ini_set('short_open_tag', '1');
+
 set_error_handler(function($severity, $message, $file, $line) {
 	throw new ErrorException($message, $severity, $severity, $file, $line);
 });
@@ -13,16 +15,14 @@ use System\Libraries\Router\Route;
 use System\Libraries\Router\RouteCollector;
 use System\Libraries\Router\Dispatcher;
 use System\Libraries\Router\Exception\HttpRouteNotFoundException;
+use System\Libraries\View\LightnCandy;
 
-use System\Libraries\Mvc\View\View;
-
-$view = new View();
-$view->setViewsDir('App/Views/');
-$view->start();
-$view->render('', 'test');
-$view->finish();
-
-echo $view->getContent();
+$template = "Welcome {{name}} , You win \${{value}} dollars!!\n";
+$phpStr = LightnCandy::compile($template);  // set compiled PHP code into $phpStr
+$render = LightnCandy::prepare($phpStr);
+var_dump($render);
+//echo $render(['name' => 'PHP', 'value' => 'Web']);
+//echo $phpStr;
 
 exit;
 
