@@ -8,7 +8,7 @@ use PDO;
 class SQL
 {
 
-	public static $driver = Connector::MYSQL;
+	public static $driver = Connection::MYSQL;
 	public static $host = "localhost";
 	public static $port = 3306;
 	public static $user = "root";
@@ -22,7 +22,7 @@ class SQL
 	/** @var self */
 	private static $instance = null;
 
-	/** @var Connector */
+	/** @var Connection */
 	private $connect = null;
 
 	public function __construct()
@@ -35,17 +35,17 @@ class SQL
 			$dsn = sprintf("%s:", self::$driver);
 			switch (self::$driver)
 			{
-				case Connector::MYSQL:
+				case Connection::MYSQL:
 					$dsn .= sprintf("host=%s;port=%d;dbname=%s", self::$host, self::$port, self::$db);
 					$dsn .= self::$charset ? sprintf(";charset=%s", self::$charset) : ";";
 					break;
-				case Connector::SQLSRV:
+				case Connection::SQLSRV:
 					$dsn .= sprintf("Server=%s,%d;Database=%s", self::$host, self::$port, self::$db);
 					break;
-				case Connector::SQLITE:
+				case Connection::SQLITE:
 					$dsn .= self::$file;
 					break;
-				case Connector::PGSQL:
+				case Connection::PGSQL:
 					$dsn .= sprintf("host=%s;port=%d;dbname=%s;user=%s;password=%s", self::$host, self::$port, self::$db, self::$user, self::$password);
 					break;
 			}
@@ -53,12 +53,12 @@ class SQL
 
 		$pdo = new PDO($dsn, self::$user, self::$password, array(PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION));
 
-		if (self::$driver === Connector::MYSQL and self::$collation)
+		if (self::$driver === Connection::MYSQL and self::$collation)
 		{
 			$pdo->query(sprintf("SET collation_connection = %s", self::$collation));
 		}
 
-		$this->connect = new Connector($pdo);
+		$this->connect = new Connection($pdo);
 	}
 
 	/** @return self */
@@ -71,7 +71,7 @@ class SQL
 		return self::$instance;
 	}
 
-	/** @return Connector */
+	/** @return Connection */
 	public static function getConnect()
 	{
 		return self::getInstance()->connect;
