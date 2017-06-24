@@ -15,14 +15,12 @@ use System\Libraries\Router\Route;
 use System\Libraries\Router\RouteCollector;
 use System\Libraries\Router\Dispatcher;
 use System\Libraries\Router\Exception\HttpRouteNotFoundException;
-use System\Libraries\View\LightnCandy;
 
-$template = "Welcome {{name}} , You win \${{value}} dollars!!\n";
-$phpStr = LightnCandy::compile($template);  // set compiled PHP code into $phpStr
-$render = LightnCandy::prepare($phpStr);
-var_dump($render);
-//echo $render(['name' => 'PHP', 'value' => 'Web']);
-//echo $phpStr;
+use System\Plates\Engine;
+
+$e = new Engine('App/Views');
+
+echo $e->render('test', ['content' => 'PHP DATA']);
 
 exit;
 
@@ -32,13 +30,20 @@ function getRequest()
 	return $r->withUri($r->getUri()->withPath(str_replace($r->getServerParam("SCRIPT_NAME"), "", $r->getUri()->getPath())));
 }
 
+function view($file, $data = [])
+{
+	return View::addTemplate($file, $data);
+}
+
 try
 {
 	require '/App/Config/Route.php';
 	require '/App/Config/Database.php';
-	View\Manager::setViewPath("App/Views");
-	$ControllerNamespace = "\\App\\Controllers";
 
+	View::init();
+	View::setTemplateDir('App\Views');
+
+	$ControllerNamespace = "\\App\\Controllers";
 	$RequestObject = getRequest();
 	$ResponseObject = new Response();
 	$Router = new RouteCollector();

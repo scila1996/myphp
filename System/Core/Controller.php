@@ -4,7 +4,7 @@ namespace System\Core;
 
 use System\Libraries\Http\Messages\Interfaces\ServerRequestInterface;
 use System\Libraries\Http\Messages\Interfaces\ResponseInterface;
-use System\Libraries\View;
+use System\Libraries\View\View;
 
 class Controller
 {
@@ -33,7 +33,7 @@ class Controller
 		}
 		if ($data === NULL)
 		{
-			$data = $this->renderView(View::getAll());
+			$data = $this->renderView(View::getContent());
 		}
 		$this->response->write($data)->getBody()->rewind();
 		echo $this->response->getBody()->getContents();
@@ -45,9 +45,4 @@ class Controller
 		return $html;
 	}
 
-}
-
-function view()
-{
-	echo "123";
 }

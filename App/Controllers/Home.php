@@ -3,7 +3,6 @@
 namespace App\Controllers;
 
 use System\Core\Controller;
-use System\Libraries\View\Manager;
 use System\Libraries\Database\SQL;
 
 class Home extends Controller
@@ -11,10 +10,7 @@ class Home extends Controller
 
 	public function index($id = null)
 	{
-		view();
-		Manager::add("home.php", array(
-			"content" => $id
-		));
+		view('test', ['content' => 'PHP TEST']);
 	}
 
 	public function database()
