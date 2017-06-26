@@ -4,6 +4,6 @@
 		<title> data </title>
 	</head>
 	<body>
-		<?php echo $content ?>
+		<p> {{ pow }} </p>
 	</body>
 </html>

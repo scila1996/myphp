@@ -16,11 +16,10 @@ use System\Libraries\Router\RouteCollector;
 use System\Libraries\Router\Dispatcher;
 use System\Libraries\Router\Exception\HttpRouteNotFoundException;
 
-use System\Plates\Engine;
-
-$e = new Engine('App/Views');
-
-echo $e->render('test', ['content' => 'PHP DATA']);
+$loader = new System_Libraries_Twig_Loader_Filesystem('App/Views');
+$twig = new System_Libraries_Twig_Environment($loader);
+$template = $twig->load('test.php');
+echo $template->render(['pow' => pow(2, 16)]);
 
 exit;
 
