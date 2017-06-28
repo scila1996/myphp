@@ -42,7 +42,7 @@ class Connection implements DatabaseInterface
 	}
 
 	/** @return Interfaces\CollectionInterface */
-	public function query($str, $param = NULL)
+	public function query($str, $param = null)
 	{
 		if ($this->driver == self::MYSQL)
 		{

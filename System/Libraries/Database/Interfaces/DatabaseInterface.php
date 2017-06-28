@@ -24,5 +24,5 @@ interface DatabaseInterface
 	public function getBuilder();
 
 	/** @return integer|\Traversable */
-	public function query($str, $param = NULL);
+	public function query($str, $param = null);
 }

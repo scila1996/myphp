@@ -15,13 +15,7 @@ use System\Libraries\Router\Route;
 use System\Libraries\Router\RouteCollector;
 use System\Libraries\Router\Dispatcher;
 use System\Libraries\Router\Exception\HttpRouteNotFoundException;
-
-$loader = new System_Libraries_Twig_Loader_Filesystem('App/Views');
-$twig = new System_Libraries_Twig_Environment($loader);
-$template = $twig->load('test.php');
-echo $template->render(['pow' => pow(2, 16)]);
-
-exit;
+use System\Libraries\View\View;
 
 function getRequest()
 {
@@ -29,18 +23,12 @@ function getRequest()
 	return $r->withUri($r->getUri()->withPath(str_replace($r->getServerParam("SCRIPT_NAME"), "", $r->getUri()->getPath())));
 }
 
-function view($file, $data = [])
-{
-	return View::addTemplate($file, $data);
-}
-
 try
 {
 	require '/App/Config/Route.php';
 	require '/App/Config/Database.php';
 
-	View::init();
-	View::setTemplateDir('App\Views');
+	View::setTemplateDir('App/Views');
 
 	$ControllerNamespace = "\\App\\Controllers";
 	$RequestObject = getRequest();

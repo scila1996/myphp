@@ -4,13 +4,14 @@ namespace App\Controllers;
 
 use System\Core\Controller;
 use System\Libraries\Database\SQL;
+use System\Libraries\View\View;
 
 class Home extends Controller
 {
 
 	public function index($id = null)
 	{
-		view('test', ['content' => 'PHP TEST']);
+		$this->container['view'] = View::load('test');
 	}
 
 	public function database()

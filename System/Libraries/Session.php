@@ -46,7 +46,7 @@ class Session
 	public static function get($key)
 	{
 		self::start();
-		return self::has($key) ? $_SESSION[self::KEY][$key] : NULL;
+		return self::has($key) ? $_SESSION[self::KEY][$key] : null;
 	}
 
 	public static function remove($key)

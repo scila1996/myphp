@@ -4,7 +4,6 @@ namespace System\Core;
 
 use System\Libraries\Http\Messages\Interfaces\ServerRequestInterface;
 use System\Libraries\Http\Messages\Interfaces\ResponseInterface;
-use System\Libraries\View\View;
 
 class Controller
 {
@@ -15,14 +14,19 @@ class Controller
 	/** @var \System\Libraries\Http\Messages\Response */
 	public $response = null;
 
+	/** @var Container */
+	public $container = null;
+
 	public function __construct(ServerRequestInterface $request, ResponseInterface $response)
 	{
 		$this->request = $request;
 		$this->response = $response;
+		$this->container = new Container();
 	}
 
-	final public function __invoke($data = NULL)
+	final public function __invoke()
 	{
+		$this->process();
 		header("{$this->request->getServerParam("SERVER_PROTOCOL")} {$this->response->getStatusCode()} {$this->response->getReasonPhrase()}");
 		foreach ($this->response->getHeaders() as $name => $values)
 		{
@@ -31,18 +35,15 @@ class Controller
 				header("{$name}: {$value}", false);
 			}
 		}
-		if ($data === NULL)
-		{
-			$data = $this->renderView(View::getContent());
-		}
-		$this->response->write($data)->getBody()->rewind();
+		$this->response->getBody()->rewind();
+		$this->response->getBody()->write(strval($this->container['view']));
+		$this->response->getBody()->rewind();
 		echo $this->response->getBody()->getContents();
-		exit;
 	}
 
-	protected function renderView($html)
+	protected function process()
 	{
-		return $html;
+		
 	}
 
 }

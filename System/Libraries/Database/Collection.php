@@ -9,19 +9,19 @@ class Collection implements CollectionInterface
 {
 
 	/** @var PDOStatement */
-	private $pdoStmt = NULL;
+	private $pdoStmt = null;
 
 	/** @var array */
 	private $fields = array();
 
 	/** @var integer */
-	private $numRows = NULL;
+	private $numRows = null;
 
 	/** @var \stdClass */
-	private $row = NULL;
+	private $row = null;
 
 	/** @var \stdClass */
-	private $firstRow = NULL;
+	private $firstRow = null;
 
 	/** @var integer */
 	private $key = 1;
@@ -79,7 +79,7 @@ class Collection implements CollectionInterface
 		if ($this->row !== FALSE)
 		{
 			$this->key += 1;
-			if ($this->firstRow === NULL)
+			if ($this->firstRow === null)
 			{
 				$this->firstRow = $this->row;
 			}

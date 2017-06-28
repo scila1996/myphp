@@ -1,24 +1,14 @@
 <?php
 
 spl_autoload_register(function($class) {
-	if (strpos($class, 'Twig_') !== false)
+
+	$class = str_replace('\\', DIRECTORY_SEPARATOR, $class . '.php');
+	if (file_exists($class))
 	{
-		$file = str_replace('_', DIRECTORY_SEPARATOR, $class) . '.php';
-		if (file_exists($file))
-		{
-			require $file;
-		}
+		require_once $class;
 	}
 	else
 	{
-		$class = str_replace('\\', DIRECTORY_SEPARATOR, $class . '.php');
-		if (file_exists($class))
-		{
-			require_once $class;
-		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 });
