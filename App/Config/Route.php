@@ -1,7 +1,9 @@
 <?php
 
-use System\Libraries\Router\Route;
+use System\Core\Config;
 
-Route::GET("/", "Home");
-Route::GET("/get/{id}", "Home::index");
-Route::GET("/database", "Home::database");
+Config::$route->get('/', ["App\\Controllers\\Home", "index"]);
+Config::$route->get("/get/{id}", ["App\\Controllers\\Home", "index"]);
+
+Config::$route->get('/sqlsrv', ["App\\Controllers\\Home", "sqlsrv"]);
+Config::$route->get("/mysql", ["App\\Controllers\\Home", "mysql"]);

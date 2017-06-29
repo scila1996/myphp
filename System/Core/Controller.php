@@ -2,8 +2,7 @@
 
 namespace System\Core;
 
-use System\Libraries\Http\Messages\Interfaces\ServerRequestInterface;
-use System\Libraries\Http\Messages\Interfaces\ResponseInterface;
+use BadMethodCallException;
 
 class Controller
 {
@@ -17,28 +16,44 @@ class Controller
 	/** @var Container */
 	public $container = null;
 
-	public function __construct(ServerRequestInterface $request, ResponseInterface $response)
+	/** @var string */
+	private $__method = '';
+
+	public function __construct()
 	{
-		$this->request = $request;
-		$this->response = $response;
 		$this->container = new Container();
 	}
 
 	final public function __invoke()
 	{
+		call_user_func_array([$this, $this->__method['method']], $this->__method['args']);
 		$this->process();
-		header("{$this->request->getServerParam("SERVER_PROTOCOL")} {$this->response->getStatusCode()} {$this->response->getReasonPhrase()}");
-		foreach ($this->response->getHeaders() as $name => $values)
-		{
-			foreach ($values as $value)
-			{
-				header("{$name}: {$value}", false);
-			}
-		}
+
+		/*
+		  header("{$this->request->getServerParam("SERVER_PROTOCOL")} {$this->response->getStatusCode()} {$this->response->getReasonPhrase()}");
+		  foreach ($this->response->getHeaders() as $name => $values)
+		  {
+		  foreach ($values as $value)
+		  {
+		  header("{$name}: {$value}", false);
+		  }
+		  }
+		 */
+
 		$this->response->getBody()->rewind();
 		$this->response->getBody()->write(strval($this->container['view']));
 		$this->response->getBody()->rewind();
 		echo $this->response->getBody()->getContents();
+	}
+
+	public function __call($name, $arguments)
+	{
+		if (!method_exists($this, $name))
+		{
+			throw new BadMethodCallException(sprintf("Method \"%s::%s\" is not exists.", get_class($this), $name));
+		}
+		$this->__method = ['method' => $name, 'args' => $arguments];
+		return $this;
 	}
 
 	protected function process()

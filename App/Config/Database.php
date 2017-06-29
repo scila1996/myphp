@@ -1,11 +1,18 @@
 <?php
 
-use System\Libraries\Database\SQL;
+use System\Core\Config;
 
-SQL::$driver = "mysql";
-SQL::$host = "localhost";
-SQL::$user = "root";
-SQL::$password = "";
-SQL::$charset = "utf8";
-SQL::$collation = "utf8_unicode_ci";
-SQL::$db = "data";
+/*
+  Config::$database = [
+  "driver" => "mysql",
+  "host" => "localhost",
+  "username" => "root",
+  "password" => "",
+  "database" => "data",
+  "charset" => "utf8",
+  "collation" => "utf8_unicode_ci",
+  "prefix" => ""
+  ];
+ */
+
+Config::$database['database'] = 'data';

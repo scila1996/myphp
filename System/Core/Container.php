@@ -8,6 +8,7 @@ use ArrayAccess;
 class Container implements ArrayAccess
 {
 
+	/** @var array */
 	protected $components = [];
 
 	public function __construct()

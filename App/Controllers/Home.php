@@ -9,14 +9,15 @@ use System\Libraries\View\View;
 class Home extends Controller
 {
 
-	public function index($id = null)
+	protected function index($id = null)
 	{
 		$this->container['view'] = View::load('test');
 	}
 
-	public function database()
+	protected function mysql()
 	{
-		SQL::getConnect()->getPDO()->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
+		var_dump(SQL::connection()->getPDO()->getAvailableDrivers());
+		SQL::connection()->getPDO()->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
 		$select = SQL::query()->table("category", "c");
 		$select->select()->where(function($where) {
 			$where->where("name", "like", "%a%");
@@ -30,6 +31,18 @@ class Home extends Controller
 		{
 			echo "{$row->user} : {$row->cname} <br />";
 		}
+	}
+
+	protected function sqlsrv()
+	{
+		$sql = new \System\Libraries\Database\Connectors\SqlServerConnector();
+		$sql->connect([
+			'driver' => 'sqlsrv',
+			'host' => '192.168.1.21',
+			'database' => 'master',
+			'username' => 'sa',
+			'password' => 123456
+		]);
 	}
 
 }

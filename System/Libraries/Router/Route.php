@@ -24,11 +24,4 @@ class Route
 	const DELETE = 'DELETE';
 	const OPTIONS = 'OPTIONS';
 
-	public static $routes = array();
-
-	public static function __callStatic($name, $arguments)
-	{
-		array_push(self::$routes, array_merge(array(strtoupper($name)), $arguments));
-	}
-
 }
