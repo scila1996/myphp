@@ -2,6 +2,8 @@
 
 namespace System\Core;
 
+use System\Libraries\View\View;
+use System\Libraries\Http\Messages\Interfaces\ResponseInterface;
 use BadMethodCallException;
 
 class Controller
@@ -13,50 +15,33 @@ class Controller
 	/** @var \System\Libraries\Http\Messages\Response */
 	public $response = null;
 
-	/** @var Container */
-	public $container = null;
+	/** @var View|ResponseInterface */
+	public $view = null;
 
-	/** @var string */
-	private $__method = '';
-
-	public function __construct()
+	final public function __call($name, $arguments)
 	{
-		$this->container = new Container();
-	}
 
-	final public function __invoke()
-	{
-		call_user_func_array([$this, $this->__method['method']], $this->__method['args']);
-		$this->process();
-
-		/*
-		  header("{$this->request->getServerParam("SERVER_PROTOCOL")} {$this->response->getStatusCode()} {$this->response->getReasonPhrase()}");
-		  foreach ($this->response->getHeaders() as $name => $values)
-		  {
-		  foreach ($values as $value)
-		  {
-		  header("{$name}: {$value}", false);
-		  }
-		  }
-		 */
-
-		$this->response->getBody()->rewind();
-		$this->response->getBody()->write(strval($this->container['view']));
-		$this->response->getBody()->rewind();
-		echo $this->response->getBody()->getContents();
-	}
-
-	public function __call($name, $arguments)
-	{
 		if (!method_exists($this, $name))
 		{
 			throw new BadMethodCallException(sprintf("Method \"%s::%s\" is not exists.", get_class($this), $name));
 		}
-		$this->__method = ['method' => $name, 'args' => $arguments];
+
+		call_user_func_array([$this, $name], $arguments);
+		$this->__process();
+
+		if ($this->view instanceof View)
+		{
+			echo $this->view->getContent();
+		}
+		else if ($this->view instanceof ResponseInterface)
+		{
+			echo $this->view->getBody();
+		}
+
 		return $this;
 	}
 
-	protected function process()
+	protected function __process()
 	{
 		
 	}

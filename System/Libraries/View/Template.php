@@ -2,9 +2,10 @@
 
 namespace System\Libraries\View;
 
+use ArrayAccess;
 use RuntimeException;
 
-class Template
+class Template implements ArrayAccess
 {
 
 	/** @var string */
@@ -12,6 +13,9 @@ class Template
 
 	/** @var array */
 	protected $data = [];
+
+	/** @var self[] */
+	protected $layout = [];
 
 	/**
 	 * 
@@ -32,13 +36,33 @@ class Template
 	public function render()
 	{
 		ob_start();
-		extract($this->data);
+		extract($this->layout, EXTR_SKIP);
+		extract($this->data, EXTR_SKIP);
 		eval('?>' . file_get_contents($this->file));
 		$str = ob_get_contents();
 		ob_end_clean();
 		return $str;
 	}
 
+	public function offsetExists($offset)
+	{
+		return isset($this->layout[$offset]);
+	}
+
+	public function offsetGet($offset)
+	{
+		return $this->layout[$offset];
+	}
+
+	public function offsetSet($offset, $value)
+	{
+		$this->layout[$offset] = $value;
+	}
+
+	public function offsetUnset($offset)
+	{
+		unset($this->layout[$offset]);
+	}
 	public function __toString()
 	{
 		return $this->render();

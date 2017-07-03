@@ -9,40 +9,16 @@ set_error_handler(function($severity, $message, $file, $line) {
 
 require_once 'autoload.php';
 
-use System\Libraries\Http\Messages\Request;
-use System\Libraries\Http\Messages\Response;
-use System\Libraries\Router\RouteCollector;
-use System\Libraries\Router\Dispatcher;
 use System\Libraries\Router\Exception\HttpRouteNotFoundException;
-use System\Libraries\View\View;
-use System\Core\Config;
-use System\Libraries\Database\SQL;
+use System\Core\App;
 
 try
 {
-	Config::$route = new RouteCollector();
-
-	require '/App/Config/Route.php';
-	require '/App/Config/Database.php';
-
-	SQL::$database = Config::$database;
-	View::setTemplateDir('App/Views');
-
-	$RequestObject = Request::createFromGlobals($_SERVER);
-	$ResponseObject = new Response();
-
-	$dispatcher = new Dispatcher(Config::$route->getData());
-
-	/* @var $objController \System\Core\Controller */
-
-	$objController = $dispatcher->dispatch($RequestObject->getMethod(), $RequestObject->getUri()->getPath());
-	$objController->request = $RequestObject;
-	$objController->response = $ResponseObject;
-	$objController();
+	App::start();
 }
 catch (HttpRouteNotFoundException $e)
 {
-	$hcode = "{$RequestObject->getServerParam("SERVER_PROTOCOL")} 404 Not Found";
+	$hcode = "{$_SERVER["SERVER_PROTOCOL"]} 404 Not Found";
 	header($hcode);
 	echo <<<EOF
 <!DOCTYPE HTML>
@@ -57,7 +33,7 @@ catch (HttpRouteNotFoundException $e)
 EOF;
 	exit;
 }
-catch (\Exception $e)
+catch (Exception $e)
 {
 	$exception = get_class($e);
 	$time = date("F j, Y, g:i a");

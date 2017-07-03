@@ -2,7 +2,7 @@
 
 use System\Core\Config;
 
-Config::$route->get('/', ["App\\Controllers\\Home", "index"]);
+Config::$route->any('/', ["App\\Controllers\\Home", "index"]);
 Config::$route->get("/get/{id}", ["App\\Controllers\\Home", "index"]);
 
 Config::$route->get('/sqlsrv', ["App\\Controllers\\Home", "sqlsrv"]);

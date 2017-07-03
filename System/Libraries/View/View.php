@@ -6,28 +6,34 @@ class View
 {
 
 	/** @var string */
-	protected static $dir = '.';
+	protected $dir = '.';
 
 	/** @var string */
-	protected static $fileExt = '.php';
+	protected $fileExt = '.php';
+
+	/** @var Template */
+	protected $layout = null;
 
 	/**
 	 * 
 	 * @param string $directory
-	 * @return void
+	 * @return $this
 	 */
-	public static function setTemplateDir($directory)
+	public function setTemplateDir($directory)
 	{
-		self::$dir = $directory;
+		$this->dir = $directory;
+		return $this;
 	}
 
 	/**
 	 * 
 	 * @param string $extension
+	 * @return $this
 	 */
-	public static function setFileExtension($extension)
+	public function setFileExtension($extension)
 	{
-		self::$fileExt = $extension;
+		$this->fileExt = $extension;
+		return $this;
 	}
 
 	/**
@@ -36,10 +42,37 @@ class View
 	 * @param array $data
 	 * @return Template
 	 */
-	public static function load($file, $data = [])
+	public function template($file, $data = [])
 	{
-		$file = self::$dir . DIRECTORY_SEPARATOR . $file . self::$fileExt;
+		$file = $this->dir . DIRECTORY_SEPARATOR . $file . $this->fileExt;
 		return new Template($file, $data);
+	}
+
+	/**
+	 * 
+	 * @param string $file
+	 * @param array $data
+	 * @return $this
+	 */
+	public function set($file, $data = [])
+	{
+		$this->layout = $this->template($file, $data);
+		return $this;
+	}
+
+	/**
+	 * @param Template
+	 * @return $this
+	 */
+	public function layout($name, $file, $data = [])
+	{
+		$this->layout[$name] = $this->template($file, $data);
+	}
+
+	/** @return string */
+	public function getContent()
+	{
+		return $this->layout->render();
 	}
 
 }

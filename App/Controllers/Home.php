@@ -4,14 +4,21 @@ namespace App\Controllers;
 
 use System\Core\Controller;
 use System\Libraries\Database\SQL;
-use System\Libraries\View\View;
 
 class Home extends Controller
 {
 
 	protected function index($id = null)
 	{
-		$this->container['view'] = View::load('test');
+		if ($this->request->isPost())
+		{
+			echo $this->request->getParam('name');
+		}
+		else
+		{
+			$this->view->set('home');
+			$this->view->layout('form', 'form');
+		}
 	}
 
 	protected function mysql()
