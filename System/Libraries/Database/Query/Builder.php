@@ -4,7 +4,6 @@ namespace System\Libraries\Database\Query;
 
 use Closure;
 use InvalidArgumentException;
-use System\Libraries\Database\Query\Support\Arr;
 use System\Libraries\Database\Query\Grammars\Grammar;
 
 class Builder
