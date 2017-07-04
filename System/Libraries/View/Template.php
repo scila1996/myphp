@@ -2,10 +2,7 @@
 
 namespace System\Libraries\View;
 
-use ArrayAccess;
-use RuntimeException;
-
-class Template implements ArrayAccess
+class Template
 {
 
 	/** @var string */
@@ -14,19 +11,29 @@ class Template implements ArrayAccess
 	/** @var array */
 	protected $data = [];
 
-	/** @var self[] */
-	protected $layout = [];
-
 	/**
 	 * 
 	 * @param string $file
 	 * @param array $data
-	 * @throws RuntimeException
+	 * @throws \RuntimeException
 	 */
 	public function __construct($file, $data = [])
 	{
 		$this->file = $file;
 		$this->data = $data;
+	}
+
+	/** @return string */
+	public function getFilePath()
+	{
+		return $this->file;
+	}
+
+	/* @return array */
+
+	public function getData()
+	{
+		return $this->data;
 	}
 
 	/**
@@ -36,33 +43,17 @@ class Template implements ArrayAccess
 	public function render()
 	{
 		ob_start();
-		extract($this->layout, EXTR_SKIP);
-		extract($this->data, EXTR_SKIP);
-		eval('?>' . file_get_contents($this->file));
+		extract((array) $this->data, EXTR_SKIP);
+		include $this->file;
 		$str = ob_get_contents();
 		ob_end_clean();
 		return $str;
 	}
 
-	public function offsetExists($offset)
-	{
-		return isset($this->layout[$offset]);
-	}
-
-	public function offsetGet($offset)
-	{
-		return $this->layout[$offset];
-	}
-
-	public function offsetSet($offset, $value)
-	{
-		$this->layout[$offset] = $value;
-	}
-
-	public function offsetUnset($offset)
-	{
-		unset($this->layout[$offset]);
-	}
+	/**
+	 * 
+	 * @return string
+	 */
 	public function __toString()
 	{
 		return $this->render();

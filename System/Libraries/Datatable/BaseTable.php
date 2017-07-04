@@ -9,10 +9,12 @@ class BaseTable
 
 	protected $columns = [];
 	protected $rows = [];
+	protected $paginator = null;
 
 	public function __construct(Iterator $data)
 	{
 		$this->setData($data);
+		$this->paginator = new Paginator(count($data), 10, 1);
 	}
 
 	/**
@@ -52,7 +54,16 @@ class BaseTable
 	 */
 	public function getData()
 	{
-		return $this->row;
+		return $this->rows;
+	}
+
+	/**
+	 * 
+	 * @return Paginator
+	 */
+	public function getPaginator()
+	{
+		return $this->paginator;
 	}
 
 }

@@ -25,7 +25,7 @@
 			</nav>
 			<div class="row">
 				<div class="col-xs-12">
-					<?php echo $form ?>
+					<?php echo $table ?>
 				</div>
 			</div>
 		</div>

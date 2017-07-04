@@ -11,7 +11,9 @@ class SQLTable extends BaseTable
 	public function __construct(Builder $query, $page = 1, $num = 10)
 	{
 		$query->limit($num)->offset(($page - 1) * 10);
-		parent::__construct(SQL::execute($query));
+		$data = SQL::execute($query);
+		parent::__construct($data);
+		$this->paginator = new Paginator($data->getNumRows(), $num, $page);
 	}
 
 }

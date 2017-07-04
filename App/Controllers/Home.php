@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use System\Core\Controller;
+use System\Libraries\Datatable\SQLTable;
 use System\Libraries\Database\SQL;
 
 class Home extends Controller
@@ -12,44 +13,23 @@ class Home extends Controller
 	{
 		if ($this->request->isPost())
 		{
-			echo $this->request->getParam('name');
+			echo $this->request->getParam('data');
+			exit;
 		}
 		else
 		{
 			$this->view->set('home');
-			$this->view->layout('form', 'form');
+			$this->view['form'] = $this->view->template('form');
 		}
 	}
 
-	protected function mysql()
+	protected function table()
 	{
-		var_dump(SQL::connection()->getPDO()->getAvailableDrivers());
-		SQL::connection()->getPDO()->setAttribute(\PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, FALSE);
-		$select = SQL::query()->table("category", "c");
-		$select->select()->where(function($where) {
-			$where->where("name", "like", "%a%");
-		});
-		$join = SQL::query()->select()->from("user")->where('user', 'test');
-		$query = SQL::query()->select('*', 'c.name as cname')->from($select, 'c')->join([$join, 'u'], 'u.id', '=', 'c.user_id');
-		echo "{$query} <br />";
-		var_dump($query->getBindings());
-		echo "<br />";
-		foreach (SQL::execute($query) as $row)
-		{
-			echo "{$row->user} : {$row->cname} <br />";
-		}
-	}
-
-	protected function sqlsrv()
-	{
-		$sql = new \System\Libraries\Database\Connectors\SqlServerConnector();
-		$sql->connect([
-			'driver' => 'sqlsrv',
-			'host' => '192.168.1.21',
-			'database' => 'master',
-			'username' => 'sa',
-			'password' => 123456
-		]);
+		$this->view->set('home');
+		$query = SQL::query()->table('category');
+		$table = new SQLTable($query);
+		$table->getPaginator()->setUrlPattern('/get/(:num)');
+		$this->view['table'] = $this->view->template('table', ['data' => $table]);
 	}
 
 }

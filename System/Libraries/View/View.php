@@ -2,7 +2,10 @@
 
 namespace System\Libraries\View;
 
-class View
+use ArrayObject;
+use ArrayAccess;
+
+class View implements ArrayAccess
 {
 
 	/** @var string */
@@ -54,25 +57,36 @@ class View
 	 * @param array $data
 	 * @return $this
 	 */
-	public function set($file, $data = [])
+	public function set($file)
 	{
-		$this->layout = $this->template($file, $data);
+		$this->layout = $this->template($file, new ArrayObject());
 		return $this;
-	}
-
-	/**
-	 * @param Template
-	 * @return $this
-	 */
-	public function layout($name, $file, $data = [])
-	{
-		$this->layout[$name] = $this->template($file, $data);
 	}
 
 	/** @return string */
 	public function getContent()
 	{
 		return $this->layout->render();
+	}
+
+	public function offsetExists($offset)
+	{
+		return isset($this->layout->getData()[$offset]);
+	}
+
+	public function offsetGet($offset)
+	{
+		return $this->layout->getData()[$offset];
+	}
+
+	public function offsetSet($offset, $value)
+	{
+		$this->layout->getData()[$offset] = $value;
+	}
+
+	public function offsetUnset($offset)
+	{
+		unset($this->layout->getData()[$offset]);
 	}
 
 }
