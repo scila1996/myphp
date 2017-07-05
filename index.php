@@ -1,7 +1,6 @@
 <?php
 
 ini_set('display_errors', '1');
-ini_set('short_open_tag', '1');
 
 set_error_handler(function($severity, $message, $file, $line) {
 	throw new ErrorException($message, $severity, $severity, $file, $line);

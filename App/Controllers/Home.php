@@ -3,8 +3,7 @@
 namespace App\Controllers;
 
 use System\Core\Controller;
-use System\Libraries\Datatable\SQLTable;
-use System\Libraries\Database\SQL;
+use App\Models\Category;
 
 class Home extends Controller
 {
@@ -25,11 +24,10 @@ class Home extends Controller
 
 	protected function table()
 	{
+		echo $this->request->getUri()->getPath();
 		$this->view->set('home');
-		$query = SQL::query()->table('category');
-		$table = new SQLTable($query);
-		$table->getPaginator()->setUrlPattern('/get/(:num)');
-		$this->view['table'] = $this->view->template('table', ['data' => $table]);
+		$cmodel = new Category($this);
+		$this->view['table'] = $cmodel->table();
 	}
 
 }

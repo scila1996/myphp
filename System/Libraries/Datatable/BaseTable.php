@@ -7,14 +7,19 @@ use Iterator;
 class BaseTable
 {
 
+	/** @var array */
 	protected $columns = [];
+
+	/** @var array */
 	protected $rows = [];
+
+	/** @var Paginator */
 	protected $paginator = null;
 
 	public function __construct(Iterator $data)
 	{
 		$this->setData($data);
-		$this->paginator = new Paginator(count($data), 10, 1);
+		$this->setPaginator(new Paginator(count($data), 10, 1));
 	}
 
 	/**
@@ -36,6 +41,17 @@ class BaseTable
 	public function setData(Iterator $data)
 	{
 		$this->rows = $data;
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @param Paginator
+	 * @return $this;
+	 */
+	public function setPaginator(Paginator $paginator)
+	{
+		$this->paginator = $paginator;
 		return $this;
 	}
 
