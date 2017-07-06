@@ -17,6 +17,11 @@ class View implements ArrayAccess
 	/** @var Template */
 	protected $layout = null;
 
+	public function __construct()
+	{
+		$this->layout = new Template('php://memory');
+	}
+
 	/**
 	 * 
 	 * @param string $directory

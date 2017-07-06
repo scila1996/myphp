@@ -44,7 +44,7 @@ class Template
 	{
 		ob_start();
 		extract((array) $this->data, EXTR_SKIP);
-		require $this->file;
+		eval('?>' . file_get_contents($this->file));
 		$str = ob_get_contents();
 		ob_end_clean();
 		return $str;

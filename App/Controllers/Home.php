@@ -3,7 +3,8 @@
 namespace App\Controllers;
 
 use System\Core\Controller;
-use App\Models\Category;
+use App\Models\User;
+use System\Libraries\Http\Messages\Session;
 
 class Home extends Controller
 {
@@ -18,16 +19,33 @@ class Home extends Controller
 		else
 		{
 			$this->view->set('home');
-			$this->view['form'] = $this->view->template('form');
+			$this->view['table'] = $this->view->template('form');
 		}
 	}
 
 	protected function table()
 	{
-		echo $this->request->getUri()->getPath();
 		$this->view->set('home');
-		$cmodel = new Category($this);
-		$this->view['table'] = $cmodel->table();
+		$user = new User($this);
+		$this->view['table'] = $user->table();
+	}
+
+	protected function ss($a)
+	{
+		Session::start();
+		$ss = new Session('php');
+		switch ($a)
+		{
+			case 'set':
+				$ss->set('a', 10);
+				break;
+			case 'get':
+				echo $ss->get('a', 'no session data');
+				break;
+			default:
+				$ss->delete('a');
+				break;
+		}
 	}
 
 }

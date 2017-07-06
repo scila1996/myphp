@@ -3,6 +3,7 @@
 namespace System\Libraries\Datatable;
 
 use Iterator;
+use Closure;
 
 class BaseTable
 {
@@ -16,10 +17,39 @@ class BaseTable
 	/** @var Paginator */
 	protected $paginator = null;
 
-	public function __construct(Iterator $data)
+	/** @var Closure */
+	protected $callback = null;
+
+	/** @var array */
+	protected $tbclass = ['table', 'table-striped'];
+
+	public function __construct(Iterator $data, Closure $callback = null)
 	{
 		$this->setData($data);
 		$this->setPaginator(new Paginator(count($data), 10, 1));
+		if ($callback === null)
+		{
+			$callback = function ($row) {
+				$tr = '';
+				foreach ($row as $field)
+				{
+					$tr .= "<td> $field </td>";
+				}
+				return "<tr> $tr </tr>";
+			};
+		}
+		$this->setCallback($callback);
+	}
+
+	/**
+	 * 
+	 * @param Closure $callback
+	 * @return $this
+	 */
+	public function setCallback(Closure $callback)
+	{
+		$this->callback = $callback;
+		return $this;
 	}
 
 	/**
@@ -80,6 +110,27 @@ class BaseTable
 	public function getPaginator()
 	{
 		return $this->paginator;
+	}
+
+	/**
+	 * @return string
+	 */
+	public function toHtml()
+	{
+		$cb = $this->callback;
+		$tbclass = is_array($this->tbclass) ? implode(' ', $this->tbclass) : $this->tbclass;
+		$thead = '';
+		$tbody = '';
+		$pagi = $this->getPaginator()->toHtml();
+		foreach ($this->getColumns() as $column)
+		{
+			$thead .= "<th> {$column} </th>";
+		}
+		foreach ($this->getData() as $row)
+		{
+			$tbody .= $cb($row);
+		}
+		return "<table class=\"{$tbclass}\"><thead> {$thead} </thead><tbody> {$tbody} </tbody></table>{$pagi}";
 	}
 
 }

@@ -26,7 +26,7 @@ class Controller
 			throw new BadMethodCallException(sprintf("Method \"%s::%s\" is not exists.", get_class($this), $name));
 		}
 
-		call_user_func_array([$this, $name], $arguments);
+		$ret = call_user_func_array([$this, $name], $arguments);
 		$this->__process();
 
 		if ($this->view instanceof View)
@@ -38,12 +38,12 @@ class Controller
 			echo $this->view->getBody();
 		}
 
-		return $this;
+		return $ret;
 	}
 
 	protected function __process()
 	{
-		
+		return $this;
 	}
 
 }
