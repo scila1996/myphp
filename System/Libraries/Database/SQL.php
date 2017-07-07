@@ -14,7 +14,7 @@ class SQL
 	/** @var self */
 	private static $instance = null;
 
-	/** @var connection */
+	/** @var Connection */
 	private $connect = null;
 
 	public function __construct()
@@ -35,7 +35,7 @@ class SQL
 		return self::$instance;
 	}
 
-	/** @return connection */
+	/** @return Connection */
 	public static function connection()
 	{
 		return self::getInstance()->connect;
@@ -44,19 +44,19 @@ class SQL
 	/** @return integer */
 	public static function begin()
 	{
-		return self::connection()->begin();
+		return self::connection()->getPDO()->beginTransaction();
 	}
 
 	/** @return integer */
 	public static function commit()
 	{
-		return self::connection()->commit();
+		return self::connection()->getPDO()->commit();
 	}
 
 	/** @return integer */
 	public static function rollback()
 	{
-		return self::connection()->rollback();
+		return self::connection()->getPDO()->rollBack();
 	}
 
 	/** @return \System\Libraries\Database\Query\Builder */
@@ -68,7 +68,7 @@ class SQL
 	/** @return integer|\System\Libraries\Database\Collection */
 	public static function execute(Builder $query)
 	{
-		return self::connection()->query(strval($query), $query->getBindings());
+		return self::connection()->query($query);
 	}
 
 }

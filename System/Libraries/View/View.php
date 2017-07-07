@@ -2,10 +2,7 @@
 
 namespace System\Libraries\View;
 
-use ArrayObject;
-use ArrayAccess;
-
-class View implements ArrayAccess
+class View extends Template
 {
 
 	/** @var string */
@@ -14,12 +11,9 @@ class View implements ArrayAccess
 	/** @var string */
 	protected $fileExt = '.php';
 
-	/** @var Template */
-	protected $layout = null;
-
 	public function __construct()
 	{
-		$this->layout = new Template('php://memory');
+		$this->data = [];
 	}
 
 	/**
@@ -52,8 +46,7 @@ class View implements ArrayAccess
 	 */
 	public function template($file, $data = [])
 	{
-		$file = $this->dir . DIRECTORY_SEPARATOR . $file . $this->fileExt;
-		return new Template($file, $data);
+		return new Template($this->getViewPath($file), $data);
 	}
 
 	/**
@@ -64,34 +57,19 @@ class View implements ArrayAccess
 	 */
 	public function set($file)
 	{
-		$this->layout = $this->template($file, new ArrayObject());
+		$this->file = $this->getViewPath($file);
 		return $this;
 	}
 
 	/** @return string */
 	public function getContent()
 	{
-		return $this->layout->render();
+		return $this->render();
 	}
 
-	public function offsetExists($offset)
+	private function getViewPath($file)
 	{
-		return isset($this->layout->getData()[$offset]);
-	}
-
-	public function offsetGet($offset)
-	{
-		return $this->layout->getData()[$offset];
-	}
-
-	public function offsetSet($offset, $value)
-	{
-		$this->layout->getData()[$offset] = $value;
-	}
-
-	public function offsetUnset($offset)
-	{
-		unset($this->layout->getData()[$offset]);
+		return $this->dir . DIRECTORY_SEPARATOR . $file . $this->fileExt;
 	}
 
 }

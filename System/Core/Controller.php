@@ -23,9 +23,10 @@ class Controller
 
 		if (!method_exists($this, $name))
 		{
-			throw new BadMethodCallException(sprintf("Method \"%s::%s\" is not exists.", get_class($this), $name));
+			throw new BadMethodCallException(sprintf("Method <b>[%s::%s]</b> does not exists.", get_class($this), $name));
 		}
 
+		$this->__init();
 		$ret = call_user_func_array([$this, $name], $arguments);
 		$this->__process();
 
@@ -39,6 +40,11 @@ class Controller
 		}
 
 		return $ret;
+	}
+
+	protected function __init()
+	{
+		return $this;
 	}
 
 	protected function __process()

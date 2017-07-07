@@ -13,7 +13,7 @@ use PDO;
 class Connection implements DatabaseInterface
 {
 
-	/** @var PDO PDO Object */
+	/** @var \PDO  */
 	private $pdo = null;
 	private $driver = "";
 
@@ -23,58 +23,30 @@ class Connection implements DatabaseInterface
 		$this->driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
 	}
 
-	/** @return boolean */
-	public function begin()
+	/**
+	 * 
+	 * @param Builder $query
+	 * @return \System\Libraries\Database\Collection
+	 */
+	public function query(Builder $query)
 	{
-		return $this->pdo->beginTransaction();
-	}
-
-	/** @return boolean */
-	public function commit()
-	{
-		return $this->pdo->commit();
-	}
-
-	/** @return boolean */
-	public function rollback()
-	{
-		return $this->pdo->rollBack();
-	}
-
-	/** @return Interfaces\CollectionInterface */
-	public function query($str, $param = null)
-	{
-		if ($this->driver == self::MYSQL)
+		$stmt = $this->runQuery($query->toSql(), $query->getBindings());
+		if ($stmt->columnCount())
 		{
-			$str = preg_replace("/^\s*(\(?\s*select)/i", "$1 sql_calc_found_rows", $str, 1);
-		}
-		$stmt = $this->pdo->prepare($str);
-		if ($stmt)
-		{
-			if (is_array($param))
+			if ($this->driver == self::MYSQL && !$this->pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY))
 			{
-				foreach (array_keys($param) as $p => $key)
-				{
-					$stmt->bindParam($p + 1, $param[$key]);
-				}
-			}
-			$result = $stmt->execute();
-			if ($stmt->columnCount())
-			{
-				if ($this->driver == self::MYSQL and $this->pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY))
-				{
-					$rows = $this->pdo->query("select found_rows() as rows")->fetchObject()->rows;
-					return new Collection($stmt, $rows);
-				}
-				else
-				{
-					return new Collection($stmt);
-				}
+				return new Collection($stmt);
 			}
 			else
 			{
-				return $stmt->rowCount();
+				$count = clone $query;
+				$count = $this->runQuery($count->offset(0)->count()->toSql(), $count->getBindings())->fetchObject()->aggregate;
+				return new Collection($stmt, $count);
 			}
+		}
+		else
+		{
+			return $stmt->rowCount();
 		}
 	}
 
@@ -99,6 +71,29 @@ class Connection implements DatabaseInterface
 				return new Builder(new PostgresGrammar());
 		}
 		return new Builder();
+	}
+
+	/**
+	 * 
+	 * @param string $str
+	 * @param array $param
+	 * @return \PDOStatement
+	 */
+	protected function runQuery($str, $param = null)
+	{
+
+		$stmt = $this->pdo->prepare($str);
+
+		if (is_array($param))
+		{
+			foreach (array_keys($param) as $p => $key)
+			{
+				$stmt->bindParam($p + 1, $param[$key]);
+			}
+		}
+
+		$stmt->execute();
+		return $stmt;
 	}
 
 }

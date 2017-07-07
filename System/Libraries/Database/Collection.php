@@ -114,4 +114,9 @@ class Collection implements CollectionInterface
 		return $this->fields;
 	}
 
+	public function count()
+	{
+		return $this->getNumRows();
+	}
+
 }

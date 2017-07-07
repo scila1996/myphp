@@ -3,8 +3,9 @@
 namespace System\Libraries\Database\Interfaces;
 
 use Iterator;
+use Countable;
 
-interface CollectionInterface extends Iterator
+interface CollectionInterface extends Iterator, Countable
 {
 
 	/** @return mixed */

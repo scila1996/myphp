@@ -2,7 +2,9 @@
 
 namespace System\Libraries\View;
 
-class Template
+use ArrayAccess;
+
+class Template implements ArrayAccess
 {
 
 	/** @var string */
@@ -57,6 +59,26 @@ class Template
 	public function __toString()
 	{
 		return $this->render();
+	}
+
+	public function offsetExists($offset)
+	{
+		return isset($this->data[$offset]);
+	}
+
+	public function offsetGet($offset)
+	{
+		return $this->data[$offset];
+	}
+
+	public function offsetSet($offset, $value)
+	{
+		$this->data[$offset] = $value;
+	}
+
+	public function offsetUnset($offset)
+	{
+		unset($this->data[$offset]);
 	}
 
 }

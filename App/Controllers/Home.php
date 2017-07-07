@@ -2,50 +2,25 @@
 
 namespace App\Controllers;
 
-use System\Core\Controller;
-use App\Models\User;
-use System\Libraries\Http\Messages\Session;
+use App\Models\Lands;
+use System\Libraries\Database\SQL;
+use PDO;
 
-class Home extends Controller
+class Home extends MainCtrl
 {
 
-	protected function index($id = null)
+	protected function index()
 	{
-		if ($this->request->isPost())
-		{
-			echo $this->request->getParam('data');
-			exit;
-		}
-		else
-		{
-			$this->view->set('home');
-			$this->view['table'] = $this->view->template('form');
-		}
+		$this->view['content'] = $this->view->template('home');
 	}
 
-	protected function table()
+	protected function viewArticle($type = 'cms')
 	{
-		$this->view->set('home');
-		$user = new User($this);
-		$this->view['table'] = $user->table();
-	}
-
-	protected function ss($a)
-	{
-		Session::start();
-		$ss = new Session('php');
-		switch ($a)
-		{
-			case 'set':
-				$ss->set('a', 10);
-				break;
-			case 'get':
-				echo $ss->get('a', 'no session data');
-				break;
-			default:
-				$ss->delete('a');
-				break;
-		}
+		$table = new Lands($this);
+		$table->setType($type);
+		$table->setDate($this->request->getParsedBodyParam('date', null));
+		$this->view['content'] = $this->view->template('analytic');
+		$this->view['content']['table'] = $table->getHtmlTable();		
 	}
 
 }

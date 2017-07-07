@@ -3,8 +3,5 @@
 use System\Core\Config;
 
 Config::$route->any('/', ["App\\Controllers\\Home", "index"]);
-Config::$route->get("/get/{id}", ["App\\Controllers\\Home", "index"]);
-
-Config::$route->get('/table', ["App\\Controllers\\Home", "table"]);
-
-Config::$route->get('/ss/{:\w+}', ["App\\Controllers\\Home", "ss"]);
+Config::$route->any('/view/{:customer}', ["App\\Controllers\\Home", "viewArticle"]);
+Config::$route->any('/view/{:cms}', ["App\\Controllers\\Home", "viewArticle"]);

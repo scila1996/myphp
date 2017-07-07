@@ -11,18 +11,4 @@ interface DatabaseInterface
 	const SQLITE = "sqlite";
 	const PGSQL = "pgsql";
 
-	/** @return boolean */
-	public function begin();
-
-	/** @return boolean */
-	public function commit();
-
-	/** @return boolean */
-	public function rollback();
-
-	/** @return \System\Libraries\Database\Query\Builder */
-	public function getBuilder();
-
-	/** @return integer|\Traversable */
-	public function query($str, $param = null);
 }

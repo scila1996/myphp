@@ -26,7 +26,7 @@ class App implements HandlerResolverInterface
 	{
 		if (is_array($handler) && is_string($handler[0]))
 		{
-			$handler[0] = new $handler[0]($this->container);
+			$handler[0] = new $handler[0]();
 			foreach ($this->container->getIterator() as $prop => $obj)
 			{
 				$handler[0]->{$prop} = $obj;
