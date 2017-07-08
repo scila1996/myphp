@@ -2,10 +2,10 @@
 
 namespace System\Libraries\Datatable;
 
+use Closure;
+
 class Paginator
 {
-
-	const NUM_PLACEHOLDER = '(:num)';
 
 	protected $totalItems;
 	protected $numPages;
@@ -20,9 +20,9 @@ class Paginator
 	 * @param int $totalItems The total number of items.
 	 * @param int $itemsPerPage The number of items per page.
 	 * @param int $currentPage The current page number.
-	 * @param string $urlPattern A URL for each page, with (:num) as a placeholder for the page number. Ex. '/foo/page/(:num)'
+	 * @param \Closure $urlPattern A function return URL for each page, first parameter is a page number.
 	 */
-	public function __construct($totalItems, $itemsPerPage, $currentPage, $urlPattern = '')
+	public function __construct($totalItems, $itemsPerPage, $currentPage, Closure $urlPattern = null)
 	{
 		$this->totalItems = $totalItems;
 		$this->itemsPerPage = $itemsPerPage;
@@ -117,9 +117,9 @@ class Paginator
 	}
 
 	/**
-	 * @param string $urlPattern
+	 * @param \Closure $urlPattern
 	 */
-	public function setUrlPattern($urlPattern)
+	public function setUrlPattern(Closure $urlPattern)
 	{
 		$this->urlPattern = $urlPattern;
 	}
@@ -138,7 +138,8 @@ class Paginator
 	 */
 	public function getPageUrl($pageNum)
 	{
-		return str_replace(self::NUM_PLACEHOLDER, $pageNum, $this->urlPattern);
+		$func = $this->urlPattern;
+		return $func($pageNum);
 	}
 
 	public function getNextPage()

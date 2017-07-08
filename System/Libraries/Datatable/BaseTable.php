@@ -3,7 +3,6 @@
 namespace System\Libraries\Datatable;
 
 use Iterator;
-use Closure;
 
 class BaseTable
 {
@@ -17,39 +16,20 @@ class BaseTable
 	/** @var Paginator */
 	protected $paginator = null;
 
-	/** @var Closure */
-	protected $callback = null;
+	/** @var integer */
+	protected $page = null;
 
-	/** @var array */
-	protected $tbclass = ['table', 'table-striped'];
+	/** @var integer */
+	protected $total = null;
 
-	public function __construct(Iterator $data, Closure $callback = null)
+	/** @var integer */
+	protected $num = null;
+
+	public function __construct(Iterator $data, $page = 1, $num = 10)
 	{
-		$this->setData($data);
-		$this->setPaginator(new Paginator(count($data), 10, 1));
-		if ($callback === null)
-		{
-			$callback = function ($row) {
-				$tr = '';
-				foreach ($row as $field)
-				{
-					$tr .= "<td> $field </td>";
-				}
-				return "<tr> $tr </tr>";
-			};
-		}
-		$this->setCallback($callback);
-	}
-
-	/**
-	 * 
-	 * @param Closure $callback
-	 * @return $this
-	 */
-	public function setCallback(Closure $callback)
-	{
-		$this->callback = $callback;
-		return $this;
+		$this->setData($data)->setPaginator(new Paginator(
+				$this->total = $data->count(), $this->num = $num, $this->page = $page
+		));
 	}
 
 	/**
@@ -117,8 +97,6 @@ class BaseTable
 	 */
 	public function toHtml()
 	{
-		$cb = $this->callback;
-		$tbclass = is_array($this->tbclass) ? implode(' ', $this->tbclass) : $this->tbclass;
 		$thead = '';
 		$tbody = '';
 		$pagi = $this->getPaginator()->toHtml();
@@ -128,9 +106,11 @@ class BaseTable
 		}
 		foreach ($this->getData() as $row)
 		{
-			$tbody .= $cb($row);
+			$tbody .= '<tr>' . implode('', array_map(function($field) {
+								return "<td> {$field} </td>";
+							}, (array) $row)) . '</tr>';
 		}
-		return "<table class=\"{$tbclass}\"><thead> {$thead} </thead><tbody> {$tbody} </tbody></table>{$pagi}";
+		return "<table class=\"table\"><thead> {$thead} </thead><tbody> {$tbody} </tbody></table>{$pagi}";
 	}
 
 }

@@ -10,7 +10,7 @@
 		</div>
 		<div id="collapse1" class="panel-collapse collapse">
 			<div class="panel-body">
-				<form method="post" class="form-group">
+				<form method="get" class="form-group">
 					<label for="contain"> Thời gian </label>
 					<div class="form-group form-inline">
 						<input type="text" class="form-control" name="date" id="selectDateTime" value="<?php echo date('Y-m-d') ?>">

@@ -20,7 +20,7 @@ class Home extends MainCtrl
 		$table->setType($type);
 		$table->setDate($this->request->getParsedBodyParam('date', null));
 		$this->view['content'] = $this->view->template('analytic');
-		$this->view['content']['table'] = $table->getHtmlTable();		
+		$this->view['content']['table'] = $table->getHtmlTable();
 	}
 
 }

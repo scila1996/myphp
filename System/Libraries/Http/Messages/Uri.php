@@ -3,7 +3,7 @@
 namespace System\Libraries\Http\Messages;
 
 use InvalidArgumentException;
-use \System\Libraries\Http\Messages\Interfaces\UriInterface;
+use System\Libraries\Http\Messages\Interfaces\UriInterface;
 
 /**
  * Value object representing a URI.

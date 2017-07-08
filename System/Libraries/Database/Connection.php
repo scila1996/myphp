@@ -40,8 +40,7 @@ class Connection implements DatabaseInterface
 			else
 			{
 				$count = clone $query;
-				$count = $this->runQuery($count->offset(0)->count()->toSql(), $count->getBindings())->fetchObject()->aggregate;
-				return new Collection($stmt, $count);
+				return new Collection($stmt, $this->runQuery($count->offset(0)->count()->toSql(), $count->getBindings())->fetchObject()->aggregate);
 			}
 		}
 		else

@@ -56,9 +56,6 @@ class Lands extends Model
 	{
 		$table = new Table($this->query, $this->controller->request);
 		$table->setColumns("Mã", "Tiêu đề");
-		$table->setCallback(function($row) {
-			return "<tr><td> {$row->id} </td> <td> {$row->title} </td></tr>";
-		});
 		return $table->toHtml();
 	}
 
