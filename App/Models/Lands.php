@@ -54,8 +54,7 @@ class Lands extends Model
 	/** @return string */
 	public function getHtmlTable()
 	{
-		$table = new Table($this->query, $this->controller->request);
-		$table->setColumns("Mã", "Tiêu đề");
+		$table = new Table\LandsTable($this->query, $this->controller->request);
 		return $table->toHtml();
 	}
 

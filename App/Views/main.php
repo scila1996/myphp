@@ -16,8 +16,10 @@
 						<a class="navbar-brand" href="/"> Thống kê tin đăng </a>
 					</div>
 					<ul class="nav navbar-nav">
-						<li><a href="<?php echo $url->customer ?>"> Khách Đăng Tin </a></li>
-						<li><a href="<?php echo $url->cms ?>"> Quản trị CMS </a></li>
+						<li class="<?php echo $menu->customer ?>"><a href="<?php echo $url->customer ?>"> Khách Đăng Tin </a></li>
+						<li class="<?php echo $menu->cms ?>"><a href="<?php echo $url->cms ?>"> Quản trị CMS </a></li>
+						<li class="<?php echo $menu->update ?>"><a href="<?php echo $url->update ?>"> Cập nhật tin đăng </a></li>
+
 					</ul>
 				</div>
 			</nav>
@@ -32,6 +34,11 @@
 		$(document).ready(function () {
 			$('body').on('click', 'a', function () {
 				$(this).blur();
+			});
+			$('.datepicker').datepicker({
+				todayHighlight: true,
+				format: "yyyy-mm-dd",
+				autoclose: true
 			});
 		});
 	</script>

@@ -13,7 +13,7 @@
 				<form method="get" class="form-group">
 					<label for="contain"> Thời gian </label>
 					<div class="form-group form-inline">
-						<input type="text" class="form-control" name="date" id="selectDateTime" value="<?php echo date('Y-m-d') ?>">
+						<input type="text" class="form-control datepicker" name="date" value="<?php echo date('Y-m-d') ?>">
 					</div>
 					<button type="submit" class="btn btn-primary"> Search </button>
 				</form>
@@ -27,14 +27,5 @@
 		text-decoration: none;
 	}
 </style>
-<script>
-	$(document).ready(function () {
-		$('#selectDateTime').datepicker({
-			todayHighlight: true,
-			format: "yyyy-mm-dd",
-			autoclose: true
-		});
-	});
-</script>
 <?php
 echo $table;

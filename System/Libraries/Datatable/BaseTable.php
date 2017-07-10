@@ -17,18 +17,18 @@ class BaseTable
 	protected $paginator = null;
 
 	/** @var integer */
-	protected $page = null;
+	protected $page = 1;
 
 	/** @var integer */
-	protected $total = null;
+	protected $total = 0;
 
 	/** @var integer */
-	protected $num = null;
+	protected $num = 10;
 
 	public function __construct(Iterator $data, $page = 1, $num = 10)
 	{
 		$this->setData($data)->setPaginator(new Paginator(
-				$this->total = $data->count(), $this->num = $num, $this->page = $page
+				$this->total, $this->num = $num, $this->page = $page
 		));
 	}
 
@@ -51,6 +51,7 @@ class BaseTable
 	public function setData(Iterator $data)
 	{
 		$this->rows = $data;
+		$this->total = $data->count();
 		return $this;
 	}
 
