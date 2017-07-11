@@ -7,20 +7,44 @@
 	<div class="form-group form-inline">
 		<input type="text" class="form-control datepicker" name="old"  value="<?php echo $old ?>">
 	</div>
-
+	<label for="contain"> Loại tin </label>
+	<div class="form-group form-inline">
+		<input type="checkbox" checked="checked" name="type" value="customer" /> Khách đăng
+		<input type="checkbox" checked="checked" name="type" value="cms" /> Quản trị đăng
+	</div>
+	<div class="form-group form-inline">
+		<div class="input-group">
+			<span class="input-group-addon"> Số tin </span>
+			<input type="number" class="form-control" readonly id="count" />
+		</div>
+	</div>
+	<hr />
 	<label for="contain"> Cập nhật đến </label>
 	<div class="form-group form-inline">
 		<input type="text" class="form-control datepicker" name="new"  value="<?php echo $new ?>">
 	</div>
-
-	<label for="contain"> Loại tin </label>
-	<div class="form-group form-inline">
-		<input type="checkbox" checked="true" name="type[customer]" /> Khách đăng
-		<input type="checkbox" checked="true" name="type[cms]" /> Quản trị đăng
-	</div>
-
 	<button type="submit" class="btn btn-primary"><span class="fa fa-check"></span> SET </button>
 </form>
 
-
+<script>
+	$(document).ready(function () {
+		$('form').on('submit', function () {
+			var data = $(this).serializeArray();
+			console.log(data);
+			$.ajax({
+				url: '/update/count',
+				method: 'post',
+				async: false,
+				data: data,
+				dataType: 'json'
+			}).success(function (r) {
+				$('#count').val(r);
+			});
+			return false;
+		});
+		$('[name="old"]').on('change', function () {
+			$(this).closest('form').submit();
+		}).trigger('change');
+	});
+</script>
 

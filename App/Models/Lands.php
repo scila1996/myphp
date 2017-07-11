@@ -63,10 +63,9 @@ class Lands extends Model
 	 * @param string $day
 	 * @return integer
 	 */
-	public function countByDay($day)
+	public function countByDay()
 	{
-		$this->setDate($day);
-		return SQL::execute($this->query->count())->fetch()->arregate;
+		return SQL::execute($this->query->count())->fetch()->aggregate;
 	}
 
 	/**

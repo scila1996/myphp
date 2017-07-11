@@ -27,7 +27,12 @@ class Table extends BaseTable
 			return $request->getUri()->withQuery(
 							http_build_query(array_merge($request->getQueryParams(), ['page' => $page]))
 			);
-		});
+		})->setTotalItems($this->countTotal(clone $query));
+	}
+
+	protected function countTotal(Builder $query)
+	{
+		return SQL::execute($query->offset(null)->count())->fetch()->aggregate;
 	}
 
 	/**

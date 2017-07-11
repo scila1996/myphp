@@ -33,15 +33,7 @@ class Connection implements DatabaseInterface
 		$stmt = $this->runQuery($query->toSql(), $query->getBindings());
 		if ($stmt->columnCount())
 		{
-			if ($this->driver == self::MYSQL && !$this->pdo->getAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY))
-			{
-				return new Collection($stmt);
-			}
-			else
-			{
-				$count = clone $query;
-				return new Collection($stmt, $this->runQuery($count->offset(0)->count()->toSql(), $count->getBindings())->fetchObject()->aggregate);
-			}
+			return new Collection($stmt);
 		}
 		else
 		{
@@ -80,7 +72,6 @@ class Connection implements DatabaseInterface
 	 */
 	protected function runQuery($str, $param = null)
 	{
-
 		$stmt = $this->pdo->prepare($str);
 
 		if (is_array($param))

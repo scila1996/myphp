@@ -7,7 +7,7 @@ use System\Core\Controller;
 class MainCtrl extends Controller
 {
 
-	protected function __init()
+	public function __init()
 	{
 		$this->view->set('main');
 		$this->view['title'] = 'Analytic';

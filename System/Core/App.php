@@ -8,33 +8,9 @@ use System\Libraries\Router\RouteCollector;
 use System\Libraries\Router\Dispatcher;
 use System\Libraries\View\View;
 use System\Libraries\Database\SQL;
-use System\Libraries\Router\HandlerResolverInterface;
 
-class App implements HandlerResolverInterface
+class App
 {
-
-	/** @var Container */
-	protected $container = null;
-
-	public function __construct(Container $container)
-	{
-		$this->container = $container;
-	}
-
-	/** @return Controller */
-	public function resolve($handler)
-	{
-		if (is_array($handler) && is_string($handler[0]))
-		{
-			$handler[0] = new $handler[0]();
-			foreach ($this->container->getIterator() as $prop => $obj)
-			{
-				$handler[0]->{$prop} = $obj;
-			}
-		}
-
-		return $handler;
-	}
 
 	public static function start()
 	{
@@ -45,14 +21,17 @@ class App implements HandlerResolverInterface
 
 		SQL::$database = Config::$database;
 
-		$container = new Container();
-		$container['request'] = Request::createFromGlobals($_SERVER);
-		$container['response'] = new Response();
-		$container['view'] = (new View())->setTemplateDir('App/Views');
+		$container = new Container([
+			'request' => Request::createFromGlobals($_SERVER),
+			'response' => new Response(),
+			'view' => (new View())->setTemplateDir('App/Views')
+		]);
 
-		$dispatcher = new Dispatcher(Config::$route->getData(), new static($container));
-		$ret = $dispatcher->dispatch($container['request']->getMethod(), $container['request']->getUri()->getPath());
+		$handler = new Handler($container);
 		$outstream = null;
+		$dispatcher = new Dispatcher(Config::$route->getData(), $handler);
+		$ret = $dispatcher->dispatch($container['request']->getMethod(), $container['request']->getUri()->getPath());
+		$handler->getController()->__process();
 
 		if ($ret instanceof Response)
 		{
@@ -60,7 +39,7 @@ class App implements HandlerResolverInterface
 		}
 		else
 		{
-			$outstream = $container['view']->getContent();
+			$outstream = $handler->getController()->view->getContent();
 		}
 
 		echo $outstream;

@@ -175,6 +175,15 @@ class Builder
 	}
 
 	/**
+	 * 
+	 * @return string
+	 */
+	public function getCompile()
+	{
+		return $this->compile;
+	}
+
+	/**
 	 * Set the columns to be selected.
 	 *
 	 * @param  array|mixed  $columns
@@ -1355,7 +1364,7 @@ class Builder
 	{
 		$property = $this->unions ? 'unionOffset' : 'offset';
 
-		$this->$property = max(0, $value);
+		$this->$property = max(null, $value);
 
 		return $this;
 	}

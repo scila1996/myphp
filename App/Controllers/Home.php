@@ -5,19 +5,16 @@ namespace App\Controllers;
 use App\Models\Lands;
 use DateInterval;
 use DateTime;
-use System\Libraries\Database\SQL;
-use PDO;
 
 class Home extends MainCtrl
 {
 
-	protected function index()
+	public function index()
 	{
-		echo SQL::connection()->getPDO()->getAttribute(PDO::ATTR_AUTOCOMMIT);
 		$this->view['content'] = $this->view->template('home');
 	}
 
-	protected function viewArticle($type = 'cms')
+	public function viewArticle($type = 'cms')
 	{
 		$this->view['menu']->{$type} = 'active';
 		$table = new Lands($this);
@@ -27,7 +24,7 @@ class Home extends MainCtrl
 		$this->view['content']['table'] = $table->getHtmlTable();
 	}
 
-	protected function updateArticle()
+	public function updateArticle()
 	{
 		$this->view['menu']->update = 'active';
 		$this->view['content'] = $this->view->template('update', [
@@ -36,12 +33,19 @@ class Home extends MainCtrl
 		]);
 	}
 
-	protected function countArticleByDay()
+	/**
+	 * 
+	 * @return \System\Libraries\Http\Messages\Response
+	 */
+	public function countArticleByDay()
 	{
-		return $this->response->withJson(["data" => "php", "var" => 5])->getBody();
+		$land = new Lands($this);
+		$land->setDate($this->request->getParsedBodyParam('old'));
+		$land->setType($this->request->getParsedBodyParam('type'));
+		return $this->response->withJson($land->countByDay());
 	}
 
-	protected function processUpdateArticle()
+	public function processUpdateArticle()
 	{
 		$land = new Lands($this);
 		$this->view['content'] = $land->test();

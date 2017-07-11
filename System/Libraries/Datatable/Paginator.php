@@ -39,6 +39,7 @@ class Paginator
 
 	/**
 	 * @param int $maxPagesToShow
+	 * @return $this
 	 * @throws \InvalidArgumentException if $maxPagesToShow is less than 3.
 	 */
 	public function setMaxPagesToShow($maxPagesToShow)
@@ -48,6 +49,7 @@ class Paginator
 			throw new \InvalidArgumentException('maxPagesToShow cannot be less than 3.');
 		}
 		$this->maxPagesToShow = $maxPagesToShow;
+		return $this;
 	}
 
 	/**
@@ -60,10 +62,12 @@ class Paginator
 
 	/**
 	 * @param int $currentPage
+	 * @return $this
 	 */
 	public function setCurrentPage($currentPage)
 	{
 		$this->currentPage = $currentPage;
+		return $this;
 	}
 
 	/**
@@ -72,15 +76,18 @@ class Paginator
 	public function getCurrentPage()
 	{
 		return $this->currentPage;
+		return $this;
 	}
 
 	/**
 	 * @param int $itemsPerPage
+	 * @return $this
 	 */
 	public function setItemsPerPage($itemsPerPage)
 	{
 		$this->itemsPerPage = $itemsPerPage;
 		$this->updateNumPages();
+		return $this;
 	}
 
 	/**
@@ -93,11 +100,13 @@ class Paginator
 
 	/**
 	 * @param int $totalItems
+	 * @return $this
 	 */
 	public function setTotalItems($totalItems)
 	{
 		$this->totalItems = $totalItems;
 		$this->updateNumPages();
+		return $this;
 	}
 
 	/**
@@ -118,10 +127,12 @@ class Paginator
 
 	/**
 	 * @param \Closure $urlPattern
+	 * @return $this
 	 */
 	public function setUrlPattern(Closure $urlPattern)
 	{
 		$this->urlPattern = $urlPattern;
+		return $this;
 	}
 
 	/**
@@ -360,12 +371,22 @@ class Paginator
 		return $last;
 	}
 
+	/**
+	 * 
+	 * @param string $text
+	 * @return $this
+	 */
 	public function setPreviousText($text)
 	{
 		$this->previousText = $text;
 		return $this;
 	}
 
+	/**
+	 * 
+	 * @param string $text
+	 * @return $this
+	 */
 	public function setNextText($text)
 	{
 		$this->nextText = $text;
