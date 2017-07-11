@@ -3,7 +3,6 @@
 namespace System\Core;
 
 use System\Libraries\View\View;
-use System\Libraries\Http\Messages\Interfaces\ResponseInterface;
 use BadMethodCallException;
 
 class Controller
@@ -15,7 +14,7 @@ class Controller
 	/** @var \System\Libraries\Http\Messages\Response */
 	public $response = null;
 
-	/** @var View|ResponseInterface */
+	/** @var View */
 	public $view = null;
 
 	final public function __call($name, $arguments)
@@ -30,16 +29,14 @@ class Controller
 		$ret = call_user_func_array([$this, $name], $arguments);
 		$this->__process();
 
+		if ($ret)
+		{
+			return $ret;
+		}
 		if ($this->view instanceof View)
 		{
-			echo $this->view->getContent();
+			return $this->view->getContent();
 		}
-		else if ($this->view instanceof ResponseInterface)
-		{
-			echo $this->view->getBody();
-		}
-
-		return $ret;
 	}
 
 	protected function __init()

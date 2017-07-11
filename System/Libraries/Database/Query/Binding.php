@@ -40,21 +40,6 @@ class Binding
 	 */
 	public static function except($array, $keys)
 	{
-		static::forget($array, $keys);
-
-		return $array;
-	}
-
-	/**
-	 * Remove one or many array items from a given array using "dot" notation.
-	 *
-	 * @param  array  $array
-	 * @param  array|string  $keys
-	 * @return void
-	 */
-	public static function forget(&$array, $keys)
-	{
-		$original = &$array;
 
 		$keys = (array) $keys;
 
@@ -63,37 +48,7 @@ class Binding
 			return;
 		}
 
-		foreach ($keys as $key)
-		{
-			// if the exact key exists in the top-level, remove it
-			if (array_key_exists($key, $array))
-			{
-				unset($array[$key]);
-
-				continue;
-			}
-
-			$parts = explode('.', $key);
-
-			// clean up before each pass
-			$array = &$original;
-
-			while (count($parts) > 1)
-			{
-				$part = array_shift($parts);
-
-				if (isset($array[$part]) && is_array($array[$part]))
-				{
-					$array = &$array[$part];
-				}
-				else
-				{
-					continue 2;
-				}
-			}
-
-			unset($array[array_shift($parts)]);
-		}
+		return array_diff_key($array, array_flip($keys));
 	}
 
 }

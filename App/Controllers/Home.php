@@ -6,12 +6,14 @@ use App\Models\Lands;
 use DateInterval;
 use DateTime;
 use System\Libraries\Database\SQL;
+use PDO;
 
 class Home extends MainCtrl
 {
 
 	protected function index()
 	{
+		echo SQL::connection()->getPDO()->getAttribute(PDO::ATTR_AUTOCOMMIT);
 		$this->view['content'] = $this->view->template('home');
 	}
 
@@ -34,17 +36,15 @@ class Home extends MainCtrl
 		]);
 	}
 
+	protected function countArticleByDay()
+	{
+		return $this->response->withJson(["data" => "php", "var" => 5])->getBody();
+	}
+
 	protected function processUpdateArticle()
 	{
-		$old = $this->request->getParam('old');
-		$new = $this->request->getParam('new');
-		$query = SQL::query()->table('fs_lands');
-		$query->update([
-			'land_date_start' => $query->raw('land_date_start + INTERVAL DATEDIFF(?, ?) DAY')
-		])->setBindings([$new, $old])->whereDate('land_date_start', $old);
-		echo "{$query->toSql()} <br />";
-		var_dump($query->getRawBindings());
-		exit;
+		$land = new Lands($this);
+		$this->view['content'] = $land->test();
 	}
 
 }

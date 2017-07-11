@@ -51,7 +51,19 @@ class App implements HandlerResolverInterface
 		$container['view'] = (new View())->setTemplateDir('App/Views');
 
 		$dispatcher = new Dispatcher(Config::$route->getData(), new static($container));
-		$dispatcher->dispatch($container['request']->getMethod(), $container['request']->getUri()->getPath());
+		$ret = $dispatcher->dispatch($container['request']->getMethod(), $container['request']->getUri()->getPath());
+		$outstream = null;
+
+		if ($ret instanceof Response)
+		{
+			$outstream = $ret->getBody();
+		}
+		else
+		{
+			$outstream = $container['view']->getContent();
+		}
+
+		echo $outstream;
 	}
 
 }

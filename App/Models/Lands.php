@@ -58,4 +58,34 @@ class Lands extends Model
 		return $table->toHtml();
 	}
 
+	/**
+	 * 
+	 * @param string $day
+	 * @return integer
+	 */
+	public function countByDay($day)
+	{
+		$this->setDate($day);
+		return SQL::execute($this->query->count())->fetch()->arregate;
+	}
+
+	/**
+	 * 
+	 * @return integer
+	 */
+	public function updateLands()
+	{
+		SQL::begin();
+		$time = (object) [
+					'old' => $this->controller->request->getParam('old'),
+					'new' => $this->controller->request->getParam('new')
+		];
+		$this->query->update([
+			'land_date_start' => $this->query->raw('land_date_start + INTERVAL DATEDIFF(?, ?) DAY')
+		])->setBindings([$time->new, $time->old]);
+		$this->setDate($time->old);
+		$r = SQL::execute($this->query);
+		return $r;
+	}
+
 }

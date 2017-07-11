@@ -9,3 +9,4 @@ Config::$route->any('/view/{:cms}', ["App\\Controllers\\Home", "viewArticle"]);
 Config::$route->get('/update', ["App\\Controllers\\Home", "updateArticle"]);
 Config::$route->post('/update', ["App\\Controllers\\Home", "processUpdateArticle"]);
 
+Config::$route->get('/json', ["App\\Controllers\\Home", "countArticleByDay"]);

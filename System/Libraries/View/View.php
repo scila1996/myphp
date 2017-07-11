@@ -13,6 +13,7 @@ class View extends Template
 
 	public function __construct()
 	{
+		$this->file = 'php://temp';
 		$this->data = [];
 	}
 
