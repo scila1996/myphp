@@ -5,6 +5,7 @@ namespace App\Models;
 use System\Core\Controller;
 use System\Core\Model;
 use System\Libraries\Database\SQL;
+use System\Libraries\Database\Query\Builder;
 
 class Lands extends Model
 {
@@ -25,14 +26,24 @@ class Lands extends Model
 	 */
 	public function setType($type)
 	{
-		switch ($type)
+		$type = is_array($type) ? $type : [$type];
+
+		if ($type)
 		{
-			case 'customer':
-				$this->query->where('outweb', 1);
-				break;
-			case 'cms':
-				$this->query->whereNull('outweb');
-				break;
+			$this->query->where(function (Builder $where) use ($type) {
+				foreach ($type as $t)
+				{
+					switch ($t)
+					{
+						case 'customer':
+							$where->orWhere('outweb', 1);
+							break;
+						case 'cms':
+							$where->orWhereNull('outweb');
+							break;
+					}
+				}
+			});
 		}
 		return $this;
 	}
@@ -72,13 +83,9 @@ class Lands extends Model
 	 * 
 	 * @return integer
 	 */
-	public function updateLands()
+	public function updateLands($old, $new)
 	{
-		SQL::begin();
-		$time = (object) [
-					'old' => $this->controller->request->getParam('old'),
-					'new' => $this->controller->request->getParam('new')
-		];
+		$time = (object) ['old' => $old, 'new' => $new];
 		$this->query->update([
 			'land_date_start' => $this->query->raw('land_date_start + INTERVAL DATEDIFF(?, ?) DAY')
 		])->setBindings([$time->new, $time->old]);

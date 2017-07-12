@@ -29,8 +29,10 @@ class Home extends MainCtrl
 		$this->view['menu']->update = 'active';
 		$this->view['content'] = $this->view->template('update', [
 			'old' => (new DateTime())->sub(new DateInterval('P5D'))->format('Y-m-d'),
-			'new' => (new DateTime())->format('Y-m-d')
+			'new' => (new DateTime())->format('Y-m-d'),
+			'message' => $this->ss->get('message')
 		]);
+		$this->ss->delete('message');
 	}
 
 	/**
@@ -39,16 +41,21 @@ class Home extends MainCtrl
 	 */
 	public function countArticleByDay()
 	{
+		//return $this->response->withJson($this->request->getQueryParam('type'));
 		$land = new Lands($this);
-		$land->setDate($this->request->getParsedBodyParam('old'));
-		$land->setType($this->request->getParsedBodyParam('type'));
+		$land->setDate($this->request->getQueryParam('old'));
+		$land->setType($this->request->getQueryParam('type', []));
 		return $this->response->withJson($land->countByDay());
 	}
 
 	public function processUpdateArticle()
 	{
 		$land = new Lands($this);
-		$this->view['content'] = $land->test();
+		$this->view['content'] = $land->updateLands(
+				$this->request->getParam('old'), $this->request->getParam('new')
+		);
+		$this->ss->set('message', 'Đã cập nhật thành công');
+		header("Location: " . $this->request->getUri()->getPath());
 	}
 
 }

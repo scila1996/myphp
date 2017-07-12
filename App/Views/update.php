@@ -1,6 +1,9 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
 
+<?php if ($message !== null): ?>
+	<div class="alert alert-success"> <?php echo $message ?> </div>
+<?php endif; ?>
 
 <form method="post" class="form-group">
 	<label for="contain"> Tin đăng </label>
@@ -9,8 +12,8 @@
 	</div>
 	<label for="contain"> Loại tin </label>
 	<div class="form-group form-inline">
-		<input type="checkbox" checked="checked" name="type" value="customer" /> Khách đăng
-		<input type="checkbox" checked="checked" name="type" value="cms" /> Quản trị đăng
+		<input type="checkbox" checked="checked" name="type[]" value="customer" /> Khách đăng
+		<input type="checkbox" checked="checked" name="type[]" value="cms" /> Quản trị đăng
 	</div>
 	<div class="form-group form-inline">
 		<div class="input-group">
@@ -28,23 +31,29 @@
 
 <script>
 	$(document).ready(function () {
-		$('form').on('submit', function () {
+		$('form').on('submit', function (e, a) {
+			if (a === undefined)
+			{
+				return true;
+			}
+
 			var data = $(this).serializeArray();
 			console.log(data);
 			$.ajax({
 				url: '/update/count',
-				method: 'post',
+				method: 'get',
 				async: false,
 				data: data,
 				dataType: 'json'
 			}).success(function (r) {
+				console.log(r);
 				$('#count').val(r);
 			});
 			return false;
 		});
-		$('[name="old"]').on('change', function () {
-			$(this).closest('form').submit();
-		}).trigger('change');
+		$('form [name]').on('change', function () {
+			$(this).closest('form').trigger('submit', [1]);
+		}).first().trigger('change');
 	});
 </script>
 

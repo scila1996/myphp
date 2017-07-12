@@ -37,7 +37,7 @@ class App
 		{
 			$outstream = $ret->getBody();
 		}
-		else
+		else if ($handler->getController()->view instanceof View)
 		{
 			$outstream = $handler->getController()->view->getContent();
 		}

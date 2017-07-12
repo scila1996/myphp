@@ -3,12 +3,21 @@
 namespace App\Controllers;
 
 use System\Core\Controller;
+use System\Libraries\Http\Messages\Session;
 
 class MainCtrl extends Controller
 {
 
+	/**
+	 *
+	 * @var Session
+	 */
+	protected $ss = null;
+
 	public function __init()
 	{
+		Session::start();
+		$this->ss = new Session('iland');
 		$this->view->set('main');
 		$this->view['title'] = 'Analytic';
 		$this->view['url'] = (object) [
