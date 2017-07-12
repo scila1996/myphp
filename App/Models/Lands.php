@@ -87,7 +87,8 @@ class Lands extends Model
 	{
 		$time = (object) ['old' => $old, 'new' => $new];
 		$this->query->update([
-			'land_date_start' => $this->query->raw('land_date_start + INTERVAL DATEDIFF(?, ?) DAY')
+			'land_date_start' => $this->query->raw('land_date_start + INTERVAL DATEDIFF(?, ?) DAY'),
+			'land_date_finish' => $this->query->raw('land_date_finish + INTERVAL DATEDIFF(?, ?) DAY'),
 		])->setBindings([$time->new, $time->old]);
 		$this->setDate($time->old);
 		$r = SQL::execute($this->query);
