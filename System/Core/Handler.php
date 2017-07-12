@@ -3,6 +3,7 @@
 namespace System\Core;
 
 use System\Libraries\Router\HandlerResolverInterface;
+use Closure;
 
 class Handler implements HandlerResolverInterface
 {
@@ -18,9 +19,18 @@ class Handler implements HandlerResolverInterface
 		$this->container = $container;
 	}
 
-	/** @return Controller */
+	/**
+	 * 
+	 * @param array|Closure $handler
+	 * @return array|Closure
+	 */
 	public function resolve($handler)
 	{
+		if ($handler instanceof Closure)
+		{
+			return $handler;
+		}
+
 		if (is_array($handler) && is_string($handler[0]))
 		{
 			$this->controller = new $handler[0]();

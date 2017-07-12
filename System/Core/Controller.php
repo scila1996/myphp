@@ -27,11 +27,20 @@ class Controller
 
 	/**
 	 * 
-	 * @return $this
+	 * @param string $uri
+	 * @param array $data
 	 */
-	public function __process()
+	protected function redirect($uri = null, $data = [])
 	{
-		return $this;
+		if ($uri === null)
+		{
+			$uri = $this->request->getUri();
+		}
+		else if ($data)
+		{
+			$uri .= "?" . http_build_query($data);
+		}
+		header("Location: {$uri}");
 	}
 
 }

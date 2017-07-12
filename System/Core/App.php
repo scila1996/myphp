@@ -31,7 +31,6 @@ class App
 		$outstream = null;
 		$dispatcher = new Dispatcher(Config::$route->getData(), $handler);
 		$ret = $dispatcher->dispatch($container['request']->getMethod(), $container['request']->getUri()->getPath());
-		$handler->getController()->__process();
 
 		if ($ret instanceof Response)
 		{
