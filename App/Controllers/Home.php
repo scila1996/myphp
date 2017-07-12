@@ -52,10 +52,16 @@ class Home extends MainCtrl
 	public function processUpdateArticle()
 	{
 		$land = new Lands($this);
-		$this->view['content'] = $land->updateLands(
-				$this->request->getParam('old'), $this->request->getParam('new')
-		);
-		$this->ss->set('message', 'Đã cập nhật thành công');
+		if ($land->updateLands(
+						$this->request->getParam('old'), $this->request->getParam('new')
+				))
+		{
+			$this->ss->set('message', ["type" => "success", "str" => "Đã cập nhật thành công"]);
+		}
+		else
+		{
+			$this->ss->set('message', ["type" => "info", "str" => "Không có tin nào để cập nhật"]);
+		}
 		header("Location: " . $this->request->getUri()->getPath());
 	}
 

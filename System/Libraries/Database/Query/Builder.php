@@ -1363,9 +1363,7 @@ class Builder
 	public function offset($value)
 	{
 		$property = $this->unions ? 'unionOffset' : 'offset';
-
-		$this->$property = max(null, $value);
-
+		$this->$property = max(0, $value);
 		return $this;
 	}
 

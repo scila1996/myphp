@@ -91,8 +91,7 @@ class Lands extends Model
 			'land_date_finish' => $this->query->raw('land_date_finish + INTERVAL DATEDIFF(?, ?) DAY'),
 		])->setBindings([$time->new, $time->old, $time->new, $time->old]);
 		$this->setDate($time->old);
-		$r = SQL::execute($this->query);
-		return $r;
+		return SQL::execute($this->query);
 	}
 
 }

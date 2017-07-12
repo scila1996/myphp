@@ -2,7 +2,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
 
 <?php if ($message !== null): ?>
-	<div class="alert alert-success"> <?php echo $message ?> </div>
+	<div class="alert alert-<?php echo $message["type"] ?>"> <?php echo $message["str"] ?> </div>
 <?php endif; ?>
 
 <form method="post" class="form-group">

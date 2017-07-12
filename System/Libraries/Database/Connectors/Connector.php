@@ -36,18 +36,9 @@ class Connector
 			isset($config['password']) ? $config['password'] : null,
 		];
 
-		try
-		{
-			return $this->createPdoConnection(
-							$dsn, $username, $password, $options
-			);
-		}
-		catch (Exception $e)
-		{
-			return $this->tryAgainIfCausedByLostConnection(
-							$e, $dsn, $username, $password, $options
-			);
-		}
+		return $this->createPdoConnection(
+						$dsn, $username, $password, $options
+		);
 	}
 
 	/**
@@ -62,28 +53,6 @@ class Connector
 	protected function createPdoConnection($dsn, $username, $password, $options)
 	{
 		return new PDO($dsn, $username, $password, $options);
-	}
-
-	/**
-	 * Handle an exception that occurred during connect execution.
-	 *
-	 * @param  \Exception  $e
-	 * @param  string  $dsn
-	 * @param  string  $username
-	 * @param  string  $password
-	 * @param  array   $options
-	 * @return \PDO
-	 *
-	 * @throws \Exception
-	 */
-	protected function tryAgainIfCausedByLostConnection(Exception $e, $dsn, $username, $password, $options)
-	{
-		if ($this->causedByLostConnection($e))
-		{
-			return $this->createPdoConnection($dsn, $username, $password, $options);
-		}
-
-		throw $e;
 	}
 
 	/**

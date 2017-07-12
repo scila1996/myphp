@@ -32,7 +32,7 @@ class Table extends BaseTable
 
 	protected function countTotal(Builder $query)
 	{
-		return SQL::execute($query->offset(null)->count())->fetch()->aggregate;
+		return SQL::execute($query->offset(0)->count())->fetch()->aggregate;
 	}
 
 	/**
