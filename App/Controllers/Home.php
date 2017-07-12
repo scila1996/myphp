@@ -31,9 +31,9 @@ class Home extends MainCtrl
 		$this->view['content'] = $this->view->template('update', [
 			'old' => (new DateTime())->sub(new DateInterval('P5D'))->format('Y-m-d'),
 			'new' => (new DateTime())->format('Y-m-d'),
-			'message' => $this->ss->get('message')
+			'message' => $this->session->get('message')
 		]);
-		$this->ss->delete('message');
+		$this->session->delete('message');
 	}
 
 	/**
@@ -56,11 +56,11 @@ class Home extends MainCtrl
 						$this->request->getParam('old'), $this->request->getParam('new')
 				))
 		{
-			$this->ss->set('message', ["type" => "success", "str" => "Đã cập nhật thành công"]);
+			$this->session->set('message', ["type" => "success", "str" => "Đã cập nhật thành công"]);
 		}
 		else
 		{
-			$this->ss->set('message', ["type" => "info", "str" => "Không có tin nào để cập nhật"]);
+			$this->session->set('message', ["type" => "info", "str" => "Không có tin nào để cập nhật"]);
 		}
 		header("Location: " . $this->request->getUri()->getPath());
 	}

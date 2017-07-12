@@ -12,12 +12,12 @@ class MainCtrl extends Controller
 	 *
 	 * @var Session
 	 */
-	protected $ss = null;
+	protected $session = null;
 
 	public function __init()
 	{
 		Session::start();
-		$this->ss = new Session('iland');
+		$this->session = new Session('iland');
 		$this->view->set('main');
 		$this->view['title'] = 'Analytic';
 		$this->view['url'] = (object) [
