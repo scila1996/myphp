@@ -21,6 +21,7 @@ class Home extends MainCtrl
 		$table->setType($type);
 		$table->setDate($this->request->getQueryParam('date', null));
 		$this->view['content'] = $this->view->template('analytic');
+		$this->view['content']['search_date'] = $this->request->getQueryParam('date', date('Y-m-d'));
 		$this->view['content']['table'] = $table->getHtmlTable();
 	}
 

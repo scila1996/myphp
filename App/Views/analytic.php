@@ -13,7 +13,7 @@
 				<form method="get" class="form-group">
 					<label for="contain"> Thời gian </label>
 					<div class="form-group form-inline">
-						<input type="text" class="form-control datepicker" name="date" value="<?php echo date('Y-m-d') ?>">
+						<input type="text" class="form-control datepicker" name="date" value="<?php echo $search_date ?>">
 					</div>
 					<button type="submit" class="btn btn-primary"> Search </button>
 				</form>
