@@ -22,4 +22,6 @@ Config::$route->group(['before' => 'auth'], function (RouteCollector $router) {
 	$router->post('/update', ["App\\Controllers\\Home", "processUpdateArticle"]);
 
 	$router->get('/update/count', ["App\\Controllers\\Home", "countArticleByDay"]);
+
+	$router->any('/logout', ["App\\Controllers\\Home", "logout"]);
 });

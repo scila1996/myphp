@@ -65,4 +65,10 @@ class Home extends MainCtrl
 		header("Location: " . $this->request->getUri()->getPath());
 	}
 
+	public function logout()
+	{
+		$this->session->delete('login');
+		$this->redirect();
+	}
+
 }

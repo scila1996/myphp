@@ -3,7 +3,7 @@
 namespace App\Controllers;
 
 use System\Core\Controller;
-use System\Libraries\Http\Messages\Session;
+use App\Models\Session;
 
 class MainCtrl extends Controller
 {
@@ -16,15 +16,15 @@ class MainCtrl extends Controller
 
 	public function __init()
 	{
-		Session::start();
-		$this->session = new Session('iland');
-
+		$this->session = new Session();
 		$this->view->set('main');
+		$this->view['admin'] = $this->session->get('login');
 		$this->view['title'] = 'Analytic';
 		$this->view['url'] = (object) [
 					'customer' => '/view/customer',
 					'cms' => '/view/cms',
-					'update' => '/update'
+					'update' => '/update',
+					'logout' => '/logout'
 		];
 		$this->view['menu'] = (object) array_fill_keys(array_keys((array) $this->view['url']), null);
 	}

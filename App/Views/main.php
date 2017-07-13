@@ -16,10 +16,20 @@
 						<a class="navbar-brand" href="/"> Thống kê tin đăng </a>
 					</div>
 					<ul class="nav navbar-nav">
-						<li class="<?php echo $menu->customer ?>"><a href="<?php echo $url->customer ?>"> Khách Đăng Tin </a></li>
-						<li class="<?php echo $menu->cms ?>"><a href="<?php echo $url->cms ?>"> Quản trị CMS </a></li>
-						<li class="<?php echo $menu->update ?>"><a href="<?php echo $url->update ?>"> Cập nhật tin đăng </a></li>
-
+						<li class="<?php echo $menu->customer ?>"><a href="<?php echo $url->customer ?>"><span class="fa fa-address-book"></span> Khách Đăng Tin </a></li>
+						<li class="<?php echo $menu->cms ?>"><a href="<?php echo $url->cms ?>"><span class="fa fa-star"></span> Quản trị CMS </a></li>
+						<li class="<?php echo $menu->update ?>"><a href="<?php echo $url->update ?>"><span class="fa fa-pencil-square"></span> Cập nhật tin đăng </a></li>
+					</ul>
+					<ul class="nav navbar-nav navbar-right">
+						<li class="dropdown">
+							<a class="dropdown-toggle" data-toggle="dropdown" href="#"> <?= $admin->email ?>
+								<span class="caret"></span></a>
+							<ul class="dropdown-menu">
+								<li class="dropdown-header"><span class="fa fa-user"></span> <?= $admin->username ?> </li>
+								<li class="divider"></li>
+								<li><a href="<?= $url->logout ?>"><span class="fa fa-sign-out"></span> Đăng xuất </a></li>
+							</ul>
+						</li>
 					</ul>
 				</div>
 			</nav>

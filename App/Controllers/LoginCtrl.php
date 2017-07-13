@@ -38,7 +38,7 @@ class LoginCtrl extends Controller
 		}
 		else
 		{
-			$this->session->set('message', ['type' => 'danger', 'str' => 'Sai tên TK hoặc MK.']);
+			$this->session->set('message', ['type' => 'danger', 'str' => 'Sai tên tài khoản hoặc mật khẩu.']);
 		}
 		$this->redirect();
 	}
