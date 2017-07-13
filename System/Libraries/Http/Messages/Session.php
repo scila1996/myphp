@@ -81,6 +81,18 @@ class Session
 	}
 
 	/**
+	 * 
+	 * @param string $key
+	 * @return mixed
+	 */
+	public function splice($key, $default = null)
+	{
+		$r = $this->get($key, $default);
+		$this->delete($key);
+		return $r;
+	}
+
+	/**
 	 * @return mixed
 	 */
 	public static function start()

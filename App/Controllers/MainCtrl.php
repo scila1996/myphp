@@ -19,7 +19,6 @@ class MainCtrl extends Controller
 		Session::start();
 		$this->session = new Session('iland');
 
-
 		$this->view->set('main');
 		$this->view['title'] = 'Analytic';
 		$this->view['url'] = (object) [

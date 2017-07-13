@@ -1,16 +1,25 @@
 <?php
 
 use System\Core\Config;
+use System\Libraries\Router\RouteCollector;
 
-Config::$route->filter('login', ["App\\Controllers\\Middle", "validate"]);
+Config::$route->filter('login', ["App\\Controllers\\Middle", "validLogin"]);
+Config::$route->filter('auth', ["App\\Controllers\\Middle", "requireLogin"]);
+
 // Route for login page
-Config::$route->get('/login', ["App\\Controllers\\LoginCtrl", "index"], ['before' => 'login']);
+Config::$route->group(['before' => 'login'], function (RouteCollector $router) {
+	Config::$route->get('/login', ["App\\Controllers\\LoginCtrl", "index"]);
+	Config::$route->post('/login', ["App\\Controllers\\LoginCtrl", "submitForm"]);
+});
 
-Config::$route->any('/', ["App\\Controllers\\Home", "index"]);
-Config::$route->any('/view/{:customer}', ["App\\Controllers\\Home", "viewArticle"]);
-Config::$route->any('/view/{:cms}', ["App\\Controllers\\Home", "viewArticle"]);
+Config::$route->group(['before' => 'auth'], function (RouteCollector $router) {
 
-Config::$route->get('/update', ["App\\Controllers\\Home", "updateArticle"]);
-Config::$route->post('/update', ["App\\Controllers\\Home", "processUpdateArticle"]);
+	$router->any('/', ["App\\Controllers\\Home", "index"]);
+	$router->any('/view/{:customer}', ["App\\Controllers\\Home", "viewArticle"]);
+	$router->any('/view/{:cms}', ["App\\Controllers\\Home", "viewArticle"]);
 
-Config::$route->get('/update/count', ["App\\Controllers\\Home", "countArticleByDay"]);
+	$router->get('/update', ["App\\Controllers\\Home", "updateArticle"]);
+	$router->post('/update', ["App\\Controllers\\Home", "processUpdateArticle"]);
+
+	$router->get('/update/count', ["App\\Controllers\\Home", "countArticleByDay"]);
+});

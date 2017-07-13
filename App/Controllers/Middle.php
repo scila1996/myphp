@@ -3,31 +3,44 @@
 namespace App\Controllers;
 
 use System\Core\Controller;
-use System\Libraries\Http\Messages\Session;
+use App\Models\Session;
 
 class Middle extends Controller
 {
 
 	/**
 	 *
-	 * @var Session
+	 * @var Session 
 	 */
 	protected $session = null;
 
 	public function __construct()
 	{
-		Session::start();
-		$this->session = new Session('auth');
+		$this->session = new Session();
 	}
 
-	public function validate()
+	public function requireLogin()
 	{
-		//return $this->session->get('data', false);
+
+		if (!$this->isLogin())
+		{
+			header('Location: /login');
+			return true;
+		}
 	}
 
-	public function getSession()
+	public function validLogin()
 	{
-		return $this->session;
+		if ($this->isLogin())
+		{
+			header('Location: /');
+			return true;
+		}
+	}
+
+	public function isLogin()
+	{
+		return $this->session->has('login');
 	}
 
 }
