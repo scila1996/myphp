@@ -1,6 +1,10 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/css/bootstrap-datepicker.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.7.1/js/bootstrap-datepicker.min.js"></script>
 
+<link rel="stylesheet" href="https://cdn.datatables.net/1.10.15/css/dataTables.bootstrap.min.css" />
+<script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
+
 <div class="panel-group">
 	<div class="panel panel-default">
 		<div class="panel-heading">
@@ -27,5 +31,21 @@
 		text-decoration: none;
 	}
 </style>
+<script>
+	$(document).ready(function (){
+		$('#data-table').DataTable();
+	});
+</script>
+<table id="data-table">
+	<thead>
+		<tr>
+			<th> No. </th>
+			<th> Name </th>
+		</tr>
+	</thead>
+	<tbody>
+		
+	</tbody>
+</table>
 <?php
-echo $table;
+//echo $table;
