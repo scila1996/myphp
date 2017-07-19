@@ -85,7 +85,9 @@ class Lands extends Model
 		$no = $this->controller->request->getQueryParam('start') + 1;
 		return [
 			"data" => array_map(function ($row) use (&$no) {
-						return [$no++, $row->title, (new DateTime($row->land_date_start))->format('d/m/Y')];
+						return [
+							$no++, "<a href=\"https://chobatdongsan.com.vn/d{$row->alias}-{$row->id}.html\" target=\"_blank\"> {$row->title} <a/>", (new DateTime($row->land_date_start))->format('d/m/Y'), $row->poster_name, $row->poster_mobile
+						];
 					}, iterator_to_array($data, false)),
 			"recordsTotal" => $data->getNumRows(),
 			"recordsFiltered" => $data->getNumRows()

@@ -17,14 +17,18 @@
 		var table = $('#data-table').DataTable({
 			serverSide: true,
 			processing: true,
-			searching: true,
+			language: {
+				url: '//cdn.datatables.net/plug-ins/1.10.15/i18n/Vietnamese.json'
+			},
 			ajax: {
 				url: '/ajax/table/<?php echo $table ?>'
 			},
 			columnDefs: [
 				{title: "No.", orderable: false, targets: 0},
 				{title: "Tiêu đề", targets: 1},
-				{title: "Thời gian", targets: 2}
+				{title: "Thời gian", targets: 2},
+				{title: "Người đăng", orderable: false, targets: 3},
+				{title: "Số điện thoại", orderable: false, targets: 4}
 			]
 		});
 
@@ -46,6 +50,8 @@
 					<span class="input-group-addon"><span class="fa fa-clock-o"></span>
 				</div>
 			</td>
+			<td></td>
+			<td></td>
 		</tr>
 	</tfoot>
 </table>
