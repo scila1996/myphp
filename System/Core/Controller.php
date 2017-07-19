@@ -2,19 +2,38 @@
 
 namespace System\Core;
 
+use System\Core\Container;
 use System\Libraries\View\View;
 
+/**
+ * @property \System\Libraries\Http\Messages\Request $request
+ * @property \System\Libraries\Http\Messages\Response $response
+ * @property View $view
+ */
 class Controller
 {
 
-	/** @var \System\Libraries\Http\Messages\Request */
-	public $request = null;
+	/**
+	 * 
+	 * @param Container $container
+	 */
+	public function __construct(Container $container)
+	{
+		foreach ($container->getIterator() as $prop => $obj)
+		{
+			$this->{$prop} = $obj;
+		}
+	}
 
-	/** @var \System\Libraries\Http\Messages\Response */
-	public $response = null;
-
-	/** @var View */
-	public $view = null;
+	/**
+	 * 
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function __get($name)
+	{
+		return isset($this->{$name}) ? $this->{$name} : null;
+	}
 
 	/**
 	 * 

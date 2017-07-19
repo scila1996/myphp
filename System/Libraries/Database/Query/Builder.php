@@ -1310,7 +1310,6 @@ class Builder
 			'column' => $column,
 			'direction' => strtolower($direction) == 'asc' ? 'asc' : 'desc',
 		];
-
 		return $this;
 	}
 

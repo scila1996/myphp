@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Models\Lands;
+use App\Models\Lands\Lands;
 use DateInterval;
 use DateTime;
 
@@ -17,12 +17,8 @@ class Home extends MainCtrl
 	public function viewArticle($type = 'cms')
 	{
 		$this->view['menu']->{$type} = 'active';
-		$table = new Lands($this);
-		$table->setType($type);
-		$table->setDate($this->request->getQueryParam('date', null));
 		$this->view['content'] = $this->view->template('analytic');
-		$this->view['content']['search_date'] = $this->request->getQueryParam('date', date('Y-m-d'));
-		$this->view['content']['table'] = $table->getHtmlTable();
+		$this->view['content']['table'] = $type;
 	}
 
 	public function updateArticle()
@@ -31,9 +27,8 @@ class Home extends MainCtrl
 		$this->view['content'] = $this->view->template('update', [
 			'old' => (new DateTime())->sub(new DateInterval('P5D'))->format('Y-m-d'),
 			'new' => (new DateTime())->format('Y-m-d'),
-			'message' => $this->session->get('message')
+			'message' => $this->session->splice('message')
 		]);
-		$this->session->delete('message');
 	}
 
 	/**
@@ -63,6 +58,11 @@ class Home extends MainCtrl
 			$this->session->set('message', ["type" => "info", "str" => "Không có tin nào để cập nhật"]);
 		}
 		header("Location: " . $this->request->getUri()->getPath());
+	}
+
+	public function ajaxTable($type)
+	{
+		return $this->response->withJson((new Lands($this))->setType($type)->getDataTable());
 	}
 
 	public function logout()

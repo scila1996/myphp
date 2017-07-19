@@ -28,20 +28,34 @@ class App
 		]);
 
 		$handler = new Handler($container);
-		$outstream = null;
+		$response = $container['response'];
 		$dispatcher = new Dispatcher(Config::$route->getData(), $handler);
 		$ret = $dispatcher->dispatch($container['request']->getMethod(), $container['request']->getUri()->getPath());
 
 		if ($ret instanceof Response)
 		{
-			$outstream = $ret->getBody();
+			$response = $ret;
 		}
-		else if ($handler->getController()->view instanceof View)
+		else
 		{
-			$outstream = $handler->getController()->view->getContent();
+			$response->write($handler->getController()->view->getContent());
 		}
 
-		echo $outstream;
+		self::finish($response);
+	}
+
+	protected static function finish(Response $response)
+	{
+		// set Header
+		foreach ($response->getHeaders() as $name => $values)
+		{
+			foreach ($values as $value)
+			{
+				header("{$name}: {$value}", false);
+			}
+		}
+		// echo Response Content
+		echo $response->getBody();
 	}
 
 }

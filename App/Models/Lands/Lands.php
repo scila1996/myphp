@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Lands;
 
 use System\Core\Controller;
 use System\Core\Model;
 use System\Libraries\Database\SQL;
 use System\Libraries\Database\Query\Builder;
+use DateTime;
 
 class Lands extends Model
 {
@@ -16,7 +17,7 @@ class Lands extends Model
 	public function __construct(Controller $controller)
 	{
 		parent::__construct($controller);
-		$this->query = SQL::query()->table('fs_lands');
+		$this->query = SQL::query()->table('fs_lands'); //->select('id', 'title');
 	}
 
 	/**
@@ -55,18 +56,40 @@ class Lands extends Model
 	 */
 	public function setDate($date = null)
 	{
-		if ($date !== null)
+		if ($date)
 		{
 			$this->query->whereDate('land_date_start', $date);
 		}
 		return $this;
 	}
 
-	/** @return string */
-	public function getHtmlTable()
+	/**
+	 * 
+	 * @return \System\Libraries\Database\Collection
+	 */
+	public function getDataTable()
 	{
-		$table = new Table\LandsTable($this->query, $this->controller->request);
-		return $table->toHtml();
+		$this->query->limit($this->controller->request->getQueryParam('length'));
+		$this->query->orderBy(
+				["0" => "id", "1" => "title", "2" => "land_date_start"]
+				[$this->controller->request->getQueryParam('order')[0]["column"]], $this->controller->request->getQueryParam('order')[0]["dir"]
+		);
+		$this->query->limit($this->controller->request->getQueryParam('length'));
+		$this->query->offset($this->controller->request->getQueryParam('start'));
+
+		$this->query->where('title', 'like', "%{$this->controller->request->getQueryParam('search')['value']}%");
+
+		$this->setDate($this->controller->request->getQueryParam('columns')[2]['search']['value']);
+
+		$data = SQL::execute($this->query, true);
+		$no = $this->controller->request->getQueryParam('start') + 1;
+		return [
+			"data" => array_map(function ($row) use (&$no) {
+						return [$no++, $row->title, (new DateTime($row->land_date_start))->format('d/m/Y')];
+					}, iterator_to_array($data, false)),
+			"recordsTotal" => $data->getNumRows(),
+			"recordsFiltered" => $data->getNumRows()
+		];
 	}
 
 	/**

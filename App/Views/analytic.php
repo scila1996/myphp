@@ -5,26 +5,7 @@
 <script src="https://cdn.datatables.net/1.10.15/js/jquery.dataTables.min.js"></script>
 <script src="https://cdn.datatables.net/1.10.15/js/dataTables.bootstrap.min.js"></script>
 
-<div class="panel-group">
-	<div class="panel panel-default">
-		<div class="panel-heading">
-			<div class="panel-title">
-				<a data-toggle="collapse" href="#collapse1"><span class="fa fa-search"></span> Tìm kiếm </a>
-			</div>
-		</div>
-		<div id="collapse1" class="panel-collapse collapse">
-			<div class="panel-body">
-				<form method="get" class="form-group">
-					<label for="contain"> Thời gian </label>
-					<div class="form-group form-inline">
-						<input type="text" class="form-control datepicker" name="date" value="<?php echo $search_date ?>">
-					</div>
-					<button type="submit" class="btn btn-primary"> Search </button>
-				</form>
-			</div>
-		</div>
-	</div>
-</div>
+
 <style>
 	a:hover
 	{
@@ -32,20 +13,40 @@
 	}
 </style>
 <script>
-	$(document).ready(function (){
-		$('#data-table').DataTable();
+	$(document).ready(function () {
+		var table = $('#data-table').DataTable({
+			serverSide: true,
+			processing: true,
+			searching: true,
+			ajax: {
+				url: '/ajax/table/<?php echo $table ?>'
+			},
+			columnDefs: [
+				{title: "No.", orderable: false, targets: 0},
+				{title: "Tiêu đề", targets: 1},
+				{title: "Thời gian", targets: 2}
+			]
+		});
+
+		$('#data-table input.search-date').on('change', function () {
+			console.log($(this).val());
+			table.columns(2).search($(this).val()).draw();
+		});
+
 	});
 </script>
-<table id="data-table">
-	<thead>
+<table id="data-table" class="table table-striped table-hover table-bodered">
+	<tfoot>
 		<tr>
-			<th> No. </th>
-			<th> Name </th>
+			<td></td>
+			<td></td>
+			<td>
+				<div class="input-group">
+					<input type="text" class="form-control datepicker search-date" placeholder="Tìm theo ngày">
+					<span class="input-group-addon"><span class="fa fa-clock-o"></span>
+				</div>
+			</td>
 		</tr>
-	</thead>
-	<tbody>
-		
-	</tbody>
+	</tfoot>
 </table>
-<?php
-//echo $table;
+

@@ -33,12 +33,7 @@ class Handler implements HandlerResolverInterface
 
 		if (is_array($handler) && is_string($handler[0]))
 		{
-			$this->controller = new $handler[0]();
-
-			foreach ($this->container->getIterator() as $prop => $obj)
-			{
-				$this->controller->{$prop} = $obj;
-			}
+			$this->controller = new $handler[0]($this->container);
 		}
 
 		$this->controller->__init();

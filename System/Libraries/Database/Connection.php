@@ -26,14 +26,25 @@ class Connection implements DatabaseInterface
 	/**
 	 * 
 	 * @param Builder $query
+	 * @param integer $count
 	 * @return \System\Libraries\Database\Collection
 	 */
-	public function query(Builder $query)
+	public function query(Builder $query, $count = false)
 	{
 		$stmt = $this->runQuery($query->toSql(), $query->getBindings());
+
 		if ($stmt->columnCount())
 		{
-			return new Collection($stmt);
+			if ($count)
+			{
+				$count = clone $query;
+				$count->count()->offset(null);
+				return new Collection($stmt, $this->query($count, false)->first()->aggregate);
+			}
+			else
+			{
+				return new Collection($stmt);
+			}
 		}
 		else
 		{

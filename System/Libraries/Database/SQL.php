@@ -66,9 +66,9 @@ class SQL
 	}
 
 	/** @return integer|\System\Libraries\Database\Collection */
-	public static function execute(Builder $query)
+	public static function execute(Builder $query, $count = false)
 	{
-		return self::connection()->query($query);
+		return self::connection()->query($query, $count);
 	}
 
 }
