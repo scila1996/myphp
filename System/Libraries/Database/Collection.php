@@ -93,7 +93,7 @@ class Collection implements CollectionInterface
 	/** @return void */
 	public function rewind()
 	{
-		// Not Available */
+		return;
 	}
 
 	/** @return boolean */

@@ -2,22 +2,18 @@
 
 namespace App\Models\Lands;
 
-use System\Core\Controller;
-use System\Core\Model;
 use System\Libraries\Database\DB;
 use System\Libraries\Database\Query\Builder;
-use DateTime;
 
-class Lands extends Model
+class DataTable
 {
 
 	/** @var \System\Libraries\Database\Query\Builder */
 	protected $query = null;
 
-	public function __construct(Controller $controller)
+	public function __construct()
 	{
-		parent::__construct($controller);
-		$this->query = DB::query()->table('fs_lands'); //->select('id', 'title');
+		$this->query = DB::query();
 	}
 
 	/**
@@ -25,7 +21,7 @@ class Lands extends Model
 	 * @param string $type
 	 * @return $this
 	 */
-	public function setType($type)
+	public function searchByMemberType($type)
 	{
 		$type = is_array($type) ? $type : [$type];
 
@@ -54,7 +50,7 @@ class Lands extends Model
 	 * @param string $date
 	 * @return $this
 	 */
-	public function setDate($date = null)
+	public function searchByDate($date = null)
 	{
 		if ($date)
 		{

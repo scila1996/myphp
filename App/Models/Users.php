@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use System\Libraries\Database\SQL;
+use System\Libraries\Database\DB;
 
 class Users
 {
@@ -15,12 +15,12 @@ class Users
 
 	public function __construct()
 	{
-		$this->query = SQL::query()->table('fs_users');
+		$this->query = DB::query()->table('fs_users');
 	}
 
 	public function login($user, $pass)
 	{
-		return SQL::execute($this->query
+		return DB::execute($this->query
 								->where('username', $user)
 								->where('password', md5($pass))
 				)->fetch();
