@@ -13,35 +13,29 @@ class DataTable
 
 	public function __construct()
 	{
-		$this->query = DB::query();
+		$this->query = DB::query()->table('fs_lands');
 	}
 
 	/**
 	 * 
-	 * @param string $type
+	 * @param integer|null $type
 	 * @return $this
 	 */
-	public function searchByMemberType($type)
+	public function findByMemberType($type)
 	{
-		$type = is_array($type) ? $type : [$type];
-
-		if ($type)
-		{
-			$this->query->where(function (Builder $where) use ($type) {
-				foreach ($type as $t)
+		$this->query->where(function (Builder $where) use ($type) {
+			foreach ((array) $type as $t)
+			{
+				if ($t === null)
 				{
-					switch ($t)
-					{
-						case 'customer':
-							$where->orWhere('outweb', 1);
-							break;
-						case 'cms':
-							$where->orWhereNull('outweb');
-							break;
-					}
+					$where->orWhereNull('outweb');
 				}
-			});
-		}
+				else
+				{
+					$where->orWhere('outweb');
+				}
+			}
+		});
 		return $this;
 	}
 
@@ -50,7 +44,7 @@ class DataTable
 	 * @param string $date
 	 * @return $this
 	 */
-	public function searchByDate($date = null)
+	public function findByDate($date)
 	{
 		if ($date)
 		{
@@ -59,59 +53,62 @@ class DataTable
 		return $this;
 	}
 
+	public function findByTitle($title)
+	{
+		if ($title)
+		{
+			$this->query->where('title', 'like', "%{$title}%");
+		}
+		return $this;
+	}
+
+	public function length($n)
+	{
+		$this->query->limit($n);
+		return $this;
+	}
+
+	public function sort($col, $dir)
+	{
+		$map = [
+			"0" => "id",
+			"1" => "title",
+			"2" => "land_date_start"
+		];
+		$this->query->orderBy($map[strval($col)], $dir);
+		return $this;
+	}
+
 	/**
 	 * 
 	 * @return \System\Libraries\Database\Collection
 	 */
-	public function getDataTable()
+	public function get()
 	{
-		$this->query->limit($this->controller->request->getQueryParam('length'));
-		$this->query->orderBy(
-				["0" => "id", "1" => "title", "2" => "land_date_start"]
-				[$this->controller->request->getQueryParam('order')[0]["column"]], $this->controller->request->getQueryParam('order')[0]["dir"]
-		);
-		$this->query->limit($this->controller->request->getQueryParam('length'));
-		$this->query->offset($this->controller->request->getQueryParam('start'));
-
-		$this->query->where('title', 'like', "%{$this->controller->request->getQueryParam('search')['value']}%");
-
-		$this->setDate($this->controller->request->getQueryParam('columns')[2]['search']['value']);
-
-		$data = DB::execute($this->query, true);
-		$no = $this->controller->request->getQueryParam('start') + 1;
-		return [
-			"data" => array_map(function ($row) use (&$no) {
-						return [
-							$no++, "<a href=\"https://chobatdongsan.com.vn/d{$row->alias}-{$row->id}.html\" target=\"_blank\"> {$row->title} <a/>", (new DateTime($row->land_date_start))->format('d/m/Y'), $row->poster_name, $row->poster_mobile
-						];
-					}, iterator_to_array($data, false)),
-			"recordsTotal" => $data->getNumRows(),
-			"recordsFiltered" => $data->getNumRows()
-		];
-	}
-
-	/**
-	 * 
-	 * @param string $day
-	 * @return integer
-	 */
-	public function countByDay()
-	{
-		return DB::execute($this->query->count())->fetch()->aggregate;
+		return DB::get($this->query, true);
 	}
 
 	/**
 	 * 
 	 * @return integer
 	 */
-	public function updateLands($old, $new)
+	public function count()
 	{
-		$time = (object) ['old' => $old, 'new' => $new];
+		return $this->get()->first()->aggregate;
+	}
+
+	/**
+	 * 
+	 * @return integer
+	 */
+	public function updateDate($old, $new)
+	{
+		$this->findByDate($old);
 		$this->query->update([
 			'land_date_start' => $this->query->raw('land_date_start + INTERVAL DATEDIFF(?, ?) DAY'),
 			'land_date_finish' => $this->query->raw('land_date_finish + INTERVAL DATEDIFF(?, ?) DAY'),
-		])->setBindings([$time->new, $time->old, $time->new, $time->old]);
-		$this->setDate($time->old);
+		]);
+		$this->query->setBindings([$new, $old, $new, $old]);
 		return DB::execute($this->query);
 	}
 

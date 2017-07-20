@@ -62,7 +62,7 @@ class Home extends MainCtrl
 
 	public function ajaxTable($type)
 	{
-		return $this->response->withJson((new Lands($this))->setType($type)->getDataTable());
+		return $this->response->withJson((new Lands($this))->getDataTable($type));
 	}
 
 	public function logout()
