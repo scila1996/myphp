@@ -18,5 +18,5 @@ interface CollectionInterface extends Iterator, Countable
 	public function getNumRows();
 
 	/** @return array */
-	public function getFields();
+	public function getColumns();
 }

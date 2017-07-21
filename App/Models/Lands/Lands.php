@@ -2,10 +2,8 @@
 
 namespace App\Models\Lands;
 
-use System\Core\Controller;
 use System\Core\Model;
 use System\Libraries\Database\DB;
-use System\Libraries\Database\Query\Builder;
 use DateTime;
 
 class Lands extends Model
@@ -18,9 +16,9 @@ class Lands extends Model
 	public function getDataTable($type)
 	{
 		$datatable = new DataTable();
-		$datatable->length($this->controller->request->getQueryParam('length'));
+		$datatable->length($this->controller->request->getQueryParam('length'), $this->controller->request->getQueryParam('start'));
 		$datatable->sort($this->controller->request->getQueryParam('order')[0]["column"], $this->controller->request->getQueryParam('order')[0]["dir"]);
-		$datatable->findByMemberType($type == "cms" ? 1 : null);
+		$datatable->findByMemberType($type == "cms" ? null : 1);
 		$datatable->findByTitle($this->controller->request->getQueryParam('search')['value']);
 		$datatable->findByDate($this->controller->request->getQueryParam('columns')[2]['search']['value']);
 
@@ -45,7 +43,7 @@ class Lands extends Model
 	 */
 	public function countByDay()
 	{
-		return DB::execute($this->query->count())->fetch()->aggregate;
+		return (new DataTable())->findByDate($this->controller->request->getParsedBodyParam('date'))->count();
 	}
 
 	/**
@@ -54,13 +52,7 @@ class Lands extends Model
 	 */
 	public function updateLands($old, $new)
 	{
-		$time = (object) ['old' => $old, 'new' => $new];
-		$this->query->update([
-			'land_date_start' => $this->query->raw('land_date_start + INTERVAL DATEDIFF(?, ?) DAY'),
-			'land_date_finish' => $this->query->raw('land_date_finish + INTERVAL DATEDIFF(?, ?) DAY'),
-		])->setBindings([$time->new, $time->old, $time->new, $time->old]);
-		$this->setDate($time->old);
-		return DB::execute($this->query);
+		return (new DataTable())->updateDate($old, $new);
 	}
 
 }

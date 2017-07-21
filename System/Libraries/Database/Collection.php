@@ -12,7 +12,7 @@ class Collection implements CollectionInterface
 	private $pdoStmt = null;
 
 	/** @var array */
-	private $fields = array();
+	private $columns = [];
 
 	/** @var integer */
 	private $numRows = null;
@@ -26,23 +26,21 @@ class Collection implements CollectionInterface
 	/** @var integer */
 	private $key = 1;
 
-	private function _fields()
+	/** @return void */
+	protected function getColumnsFromPdoStmt()
 	{
-		for ($i = 0; $i < $this->pdoStmt->columnCount(); $i++)
+		for ($i = 0; $i < $this->pdoStmt->columnCount();)
 		{
-			$field = $this->pdoStmt->getColumnMeta($i);
-			if ($field)
-			{
-				array_push($this->fields, $field["name"]);
-			}
+			$this->columns[] = $this->pdoStmt->getColumnMeta($i++);
 		}
+		return;
 	}
 
 	public function __construct(PDOStatement $stmt, $numRows = null)
 	{
 		$this->pdoStmt = $stmt;
 		$this->numRows = $numRows === null ? $stmt->rowCount() : $numRows;
-		$this->_fields();
+		$this->getColumnsFromPdoStmt();
 		$this->next();
 	}
 
@@ -109,9 +107,9 @@ class Collection implements CollectionInterface
 	}
 
 	/** @return array */
-	public function getFields()
+	public function getColumns()
 	{
-		return $this->fields;
+		return $this->columns;
 	}
 
 	public function count()

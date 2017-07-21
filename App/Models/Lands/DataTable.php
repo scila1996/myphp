@@ -32,7 +32,7 @@ class DataTable
 				}
 				else
 				{
-					$where->orWhere('outweb');
+					$where->orWhereNotNull('outweb');
 				}
 			}
 		});
@@ -62,9 +62,9 @@ class DataTable
 		return $this;
 	}
 
-	public function length($n)
+	public function length($n, $o)
 	{
-		$this->query->limit($n);
+		$this->query->limit($n)->offset($o);
 		return $this;
 	}
 
@@ -85,7 +85,7 @@ class DataTable
 	 */
 	public function get()
 	{
-		return DB::get($this->query, true);
+		return DB::execute($this->query, true);
 	}
 
 	/**
