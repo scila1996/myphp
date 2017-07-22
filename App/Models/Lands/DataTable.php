@@ -2,50 +2,47 @@
 
 namespace App\Models\Lands;
 
-use System\Libraries\Database\DB;
+use System\Libraries\Http\Messages\Request;
 use System\Libraries\Database\Query\Builder;
 
-class DataTable
+class DataTable extends \App\Models\DataTable
 {
-
-	/** @var \System\Libraries\Database\Query\Builder */
-	protected $query = null;
-
-	public function __construct()
-	{
-		$this->query = DB::query()->table('fs_lands');
-	}
 
 	/**
 	 * 
-	 * @param integer|null $type
-	 * @return $this
+	 * @param Request $ajax
 	 */
-	public function findByMemberType($type)
+	public function __construct(Request $ajax)
 	{
-		$this->query->where(function (Builder $where) use ($type) {
-			foreach ((array) $type as $t)
-			{
-				if ($t === null)
-				{
-					$where->orWhereNull('outweb');
-				}
-				else
-				{
-					$where->orWhereNotNull('outweb');
-				}
-			}
-		});
+		parent::__construct($ajax, 'fs_lands');
+	}
+
+	/** @return $this */
+	public function findMemberType()
+	{
+		switch ($this->ajax->getQueryParam('columns')[5]['search']['value'])
+		{
+			case "1":
+				$this->query->where('outweb', 1)->where(function (Builder $where) {
+					$where->where('poster_id', 0)->orWhereNull('poster_id');
+				});
+				break;
+			case "2":
+				$this->query->where(function(Builder $where) {
+					$where->where('outweb', 1)->where('poster_id', '!=', 0)->whereNotNull('poster_id');
+				});
+				break;
+			case "3":
+				$this->query->whereNull('outweb');
+				break;
+		}
 		return $this;
 	}
 
-	/**
-	 * 
-	 * @param string $date
-	 * @return $this
-	 */
-	public function findByDate($date)
+	/** @return $this */
+	public function findDate()
 	{
+		$date = $this->ajax->getQueryParam('columns')[2]['search']['value'];
 		if ($date)
 		{
 			$this->query->whereDate('land_date_start', $date);
@@ -53,8 +50,10 @@ class DataTable
 		return $this;
 	}
 
-	public function findByTitle($title)
+	/** @return $this */
+	public function findTitle()
 	{
+		$title = $this->ajax->getQueryParam('search')['value'];
 		if ($title)
 		{
 			$this->query->where('title', 'like', "%{$title}%");
@@ -62,39 +61,17 @@ class DataTable
 		return $this;
 	}
 
-	public function length($n, $o)
-	{
-		$this->query->limit($n)->offset($o);
-		return $this;
-	}
-
-	public function sort($col, $dir)
+	public function sort()
 	{
 		$map = [
 			"0" => "id",
 			"1" => "title",
 			"2" => "land_date_start"
 		];
-		$this->query->orderBy($map[strval($col)], $dir);
+		$col = $this->ajax->getQueryParam('order')[0]['column'];
+		$dir = $this->ajax->getQueryParam('order')[0]['dir'];
+		$this->query->orderBy($map[$col], $dir);
 		return $this;
-	}
-
-	/**
-	 * 
-	 * @return \System\Libraries\Database\Collection
-	 */
-	public function get()
-	{
-		return DB::execute($this->query, true);
-	}
-
-	/**
-	 * 
-	 * @return integer
-	 */
-	public function count()
-	{
-		return $this->get()->first()->aggregate;
 	}
 
 	/**
@@ -109,7 +86,7 @@ class DataTable
 			'land_date_finish' => $this->query->raw('land_date_finish + INTERVAL DATEDIFF(?, ?) DAY'),
 		]);
 		$this->query->setBindings([$new, $old, $new, $old]);
-		return DB::execute($this->query);
+		return $this->exec();
 	}
 
 }

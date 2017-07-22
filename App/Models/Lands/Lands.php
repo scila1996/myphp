@@ -13,22 +13,21 @@ class Lands extends Model
 	 * 
 	 * @return \System\Libraries\Database\Collection
 	 */
-	public function getDataTable($type)
+	public function getDataTable()
 	{
-		$datatable = new DataTable();
-		$datatable->length($this->controller->request->getQueryParam('length'), $this->controller->request->getQueryParam('start'));
-		$datatable->sort($this->controller->request->getQueryParam('order')[0]["column"], $this->controller->request->getQueryParam('order')[0]["dir"]);
-		$datatable->findByMemberType($type == "cms" ? null : 1);
-		$datatable->findByTitle($this->controller->request->getQueryParam('search')['value']);
-		$datatable->findByDate($this->controller->request->getQueryParam('columns')[2]['search']['value']);
-
+		$datatable = new DataTable($this->controller->request);
+		$datatable->sort()->findDate()->findTitle();
 		$data = $datatable->get();
 		$no = $this->controller->request->getQueryParam('start') + 1;
 
 		return [
 			"data" => array_map(function ($row) use (&$no) {
 						return [
-							$no++, "<a href=\"https://chobatdongsan.com.vn/d{$row->alias}-{$row->id}.html\" target=\"_blank\"> {$row->title} <a/>", (new DateTime($row->land_date_start))->format('d/m/Y'), $row->poster_name, $row->poster_mobile
+							$no++,
+							"<a href=\"https://chobatdongsan.com.vn/d{$row->alias}-{$row->id}.html\" target=\"_blank\"> {$row->title} <a/>",
+							(new DateTime($row->land_date_start))->format('d/m/Y'),
+							$row->poster_name, $row->poster_mobile,
+							$row->outweb === null ? 'Quản trị viên' : ($row->poster_id ? 'Thành viên' : 'Khách')
 						];
 					}, iterator_to_array($data, false)),
 			"recordsTotal" => $data->getNumRows(),

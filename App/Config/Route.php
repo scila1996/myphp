@@ -16,8 +16,8 @@ Config::$route->group(['before' => 'auth'], function (RouteCollector $router) {
 
 	$router->any('/', ["App\\Controllers\\Home", "index"]);
 
-	$router->any('/view/{:customer|cms}', ["App\\Controllers\\Home", "viewArticle"]);
-	$router->any('/ajax/table/{:customer|cms}', ["App\\Controllers\\Home", "ajaxTable"]);
+	$router->any('/view/table', ["App\\Controllers\\Home", "viewArticle"]);
+	$router->any('/ajax/table', ["App\\Controllers\\Home", "ajaxTable"]);
 
 	$router->get('/update', ["App\\Controllers\\Home", "updateArticle"]);
 	$router->post('/update', ["App\\Controllers\\Home", "processUpdateArticle"]);

@@ -18,7 +18,6 @@ class Home extends MainCtrl
 	{
 		$this->view['menu']->{$type} = 'active';
 		$this->view['content'] = $this->view->template('analytic');
-		$this->view['content']['table'] = $type;
 	}
 
 	public function updateArticle()
@@ -60,9 +59,9 @@ class Home extends MainCtrl
 		header("Location: " . $this->request->getUri()->getPath());
 	}
 
-	public function ajaxTable($type)
+	public function ajaxTable()
 	{
-		return $this->response->withJson((new Lands($this))->getDataTable($type));
+		return $this->response->withJson((new Lands($this))->getDataTable());
 	}
 
 	public function logout()

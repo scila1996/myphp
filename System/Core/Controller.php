@@ -13,6 +13,15 @@ use System\Libraries\View\View;
 class Controller
 {
 
+	/** @var \System\Libraries\Http\Messages\Request */
+	protected $request = null;
+
+	/** @var \System\Libraries\Http\Messages\Response */
+	protected $response = null;
+
+	/** @var View */
+	protected $view = null;
+
 	/**
 	 * 
 	 * @param Container $container
