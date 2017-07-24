@@ -25,19 +25,25 @@
 			},
 			columnDefs: [
 				{title: "No.", orderable: false, targets: 0},
-				{title: "Tiêu đề", targets: 1},
+				{title: "Tiêu đề", render: function (data) {
+						return '<a href=\"' + data.link + '\" target="_blank">' + data.text + '</a>';
+					}, targets: 1},
 				{title: "Thời gian", targets: 2},
 				{title: "Người đăng", orderable: false, targets: 3},
 				{title: "Số điện thoại", orderable: false, targets: 4},
-				{title: "Loại", orderable: false, targets: 5}
-			]
+				{title: "Loại", render: function (data) {
+						return '<span class="text-info">' + data + '</span>';
+					}, orderable: false, targets: 5}
+			],
+			order: [[2, 'desc']]
 		});
 
 		$('#data-table input.search-date').on('change', function () {
 			table.columns(2).search($(this).val()).draw();
 		});
 
-		$('#data-table input.search-member-type').on('change', function () {
+		$('#data-table select.search-member-type').on('change', function () {
+			//alert('123');
 			table.columns(5).search($(this).val()).draw();
 		});
 	});

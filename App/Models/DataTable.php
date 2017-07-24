@@ -24,6 +24,30 @@ class DataTable
 
 	/**
 	 * 
+	 * @param type $map
+	 * @return $this
+	 */
+	public function sort($map)
+	{
+		foreach ($this->ajax->getQueryParam('order') as $order)
+		{
+			$this->query->orderBy($map[$order['column']], $order['dir']);
+		}
+
+		return $this;
+	}
+
+	/**
+	 * 
+	 * @return \System\Libraries\Database\Query\Builder
+	 */
+	public function query()
+	{
+		return $this->query;
+	}
+
+	/**
+	 * 
 	 * @return \System\Libraries\Database\Collection
 	 */
 	public function get()

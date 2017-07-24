@@ -29,7 +29,7 @@ class DataTable extends \App\Models\DataTable
 				break;
 			case "2":
 				$this->query->where(function(Builder $where) {
-					$where->where('outweb', 1)->where('poster_id', '!=', 0)->whereNotNull('poster_id');
+					$where->where('outweb', 1)->whereNotNull('poster_id')->where('poster_id', '!=', 0);
 				});
 				break;
 			case "3":
@@ -61,17 +61,13 @@ class DataTable extends \App\Models\DataTable
 		return $this;
 	}
 
-	public function sort()
+	public function sort($map = [
+		"0" => "id",
+		"1" => "title",
+		"2" => "land_date_start"
+	])
 	{
-		$map = [
-			"0" => "id",
-			"1" => "title",
-			"2" => "land_date_start"
-		];
-		$col = $this->ajax->getQueryParam('order')[0]['column'];
-		$dir = $this->ajax->getQueryParam('order')[0]['dir'];
-		$this->query->orderBy($map[$col], $dir);
-		return $this;
+		return parent::sort($map);
 	}
 
 	/**
