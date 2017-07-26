@@ -13,10 +13,22 @@ use PDO;
 class Connection implements DatabaseInterface
 {
 
-	/** @var \PDO  */
-	private $pdo = null;
-	private $driver = "";
+	/**
+	 *
+	 * @var PDO
+	 */
+	protected $pdo = null;
 
+	/**
+	 *
+	 * @var string
+	 */
+	protected $driver = "";
+
+	/**
+	 * 
+	 * @param PDO $pdo
+	 */
 	public function __construct(PDO $pdo)
 	{
 		$this->pdo = $pdo;

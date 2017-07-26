@@ -40,7 +40,7 @@ class LoginCtrl extends Controller
 		{
 			$this->session->set('message', ['type' => 'danger', 'str' => 'Sai tên tài khoản hoặc mật khẩu.']);
 		}
-		$this->redirect();
+		return $this->response->withHeader('Location', $this->request->getUri());
 	}
 
 }

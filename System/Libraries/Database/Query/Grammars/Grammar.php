@@ -710,6 +710,29 @@ class Grammar extends BaseGrammar
 	}
 
 	/**
+	 * 
+	 * @param Builder $query
+	 * @param Builder $select
+	 * @link https://www.w3schools.com/sql/sql_insert_into_select.asp
+	 */
+	public function compileInsertIntoSelect(Builder $query, Builder $select)
+	{
+
+		$table = $this->wrapTable($query->from);
+		/*
+		  $columns = $this->columnize(array_keys(reset($values)));
+
+		  // We need to build a list of parameter place-holders of values that are bound
+		  // to the query. Each insert should have the exact same amount of parameter
+		  // bindings so we will loop through the record and parameterize them all.
+		  $parameters = implode(', ', array_map(function ($record) {
+		  return '(' . $this->parameterize($record) . ')';
+		  }, $values));
+		 */
+		//return "insert into $table ($columns) select $parameters";
+	}
+
+	/**
 	 * Compile an update statement into SQL.
 	 *
 	 * @param  \System\Libraries\Database\Query\Builder  $query

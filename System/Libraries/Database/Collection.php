@@ -36,6 +36,11 @@ class Collection implements CollectionInterface
 		return;
 	}
 
+	/**
+	 * 
+	 * @param PDOStatement $stmt
+	 * @param integer $numRows
+	 */
 	public function __construct(PDOStatement $stmt, $numRows = null)
 	{
 		$this->pdoStmt = $stmt;
@@ -112,6 +117,7 @@ class Collection implements CollectionInterface
 		return $this->columns;
 	}
 
+	/** @return integer */
 	public function count()
 	{
 		return $this->getNumRows();

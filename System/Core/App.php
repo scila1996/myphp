@@ -8,45 +8,71 @@ use System\Libraries\Router\RouteCollector;
 use System\Libraries\Router\Dispatcher;
 use System\Libraries\View\View;
 use System\Libraries\Database\SQL;
+use System\Libraries\Router\Exception\HttpRouteNotFoundException;
+use Exception;
 
 class App
 {
 
-	public static function start()
+	/**
+	 * Run Application
+	 */
+	public static function run()
 	{
-		Config::$route = new RouteCollector();
-
-		require 'App/Config/Route.php';
-		require 'App/Config/Database.php';
-
-		SQL::$database = Config::$database;
-
-		$container = new Container([
-			'request' => Request::createFromGlobals($_SERVER),
-			'response' => new Response(),
-			'view' => (new View())->setTemplateDir('App/Views')
-		]);
-
-		$handler = new Handler($container);
-		$response = $container['response'];
-		$dispatcher = new Dispatcher(Config::$route->getData(), $handler);
-		$ret = $dispatcher->dispatch($container['request']->getMethod(), $container['request']->getUri()->getPath());
-
-		if ($ret instanceof Response)
+		try
 		{
-			$response = $ret;
+			$container = new Container();
+			$request = $container->request = Request::createFromGlobals($_SERVER);
+			$response = $container->response = new Response();
+			$view = $container->view = (new View())->setTemplateDir('App/Views');
+
+			Config::$route = new RouteCollector();
+			SQL::$database = &Config::$database;
+
+			require 'App/Config/Route.php';
+			require 'App/Config/Database.php';
+
+			$dispatcher = new Dispatcher(
+					Config::$route->getData(), new Handler($container, '\\App\\Controllers')
+			);
+
+
+			if (($data = $dispatcher->dispatch(
+					$request->getMethod(), $request->getUri()->getPath()
+					)) instanceof Response)
+			{
+				$response = $data;
+			}
+			else
+			{
+				$response->write($view->getContent());
+			}
 		}
-		else
+		catch (HttpRouteNotFoundException $e)
 		{
-			$response->write($handler->getController()->view->getContent());
+			$response = $response->withStatus(404);
+			$response->write($view->set('error/404')->render());
+		}
+		catch (Exception $e)
+		{
+			$view->set('error/exception')['e'] = $e;
+			$response->write($view->render());
 		}
 
-		self::finish($response);
+		self::send($response);
 	}
 
-	protected static function finish(Response $response)
+	/**
+	 * 
+	 * @param Response $response
+	 * @return void
+	 */
+	protected static function send(Response $response)
 	{
-		// set Header
+		// STATUS CODE
+		http_response_code($response->getStatusCode());
+
+		// Headers
 		foreach ($response->getHeaders() as $name => $values)
 		{
 			foreach ($values as $value)
@@ -54,8 +80,10 @@ class App
 				header("{$name}: {$value}", false);
 			}
 		}
-		// echo Response Content
+
+		// content
 		echo $response->getBody();
+		return;
 	}
 
 }

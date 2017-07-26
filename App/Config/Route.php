@@ -3,26 +3,28 @@
 use System\Core\Config;
 use System\Libraries\Router\RouteCollector;
 
-Config::$route->filter('login', ["App\\Controllers\\Middle", "validLogin"]);
-Config::$route->filter('auth', ["App\\Controllers\\Middle", "requireLogin"]);
+Config::$route->any('/test', ["TestCtrl", "index"]);
+
+Config::$route->filter('login', ["MiddleWare", "validLogin"]);
+Config::$route->filter('auth', ["MiddleWare", "requireLogin"]);
 
 // Route for login page
 Config::$route->group(['before' => 'login'], function (RouteCollector $router) {
-	Config::$route->get('/login', ["App\\Controllers\\LoginCtrl", "index"]);
-	Config::$route->post('/login', ["App\\Controllers\\LoginCtrl", "submitForm"]);
+	$router->get('/login', ["LoginCtrl", "index"]);
+	$router->post('/login', ["LoginCtrl", "submitForm"]);
 });
 
 Config::$route->group(['before' => 'auth'], function (RouteCollector $router) {
 
-	$router->any('/', ["App\\Controllers\\Home", "index"]);
+	$router->any('/', ["HomeCtrl", "index"]);
 
-	$router->any('/view/table', ["App\\Controllers\\Home", "viewArticle"]);
-	$router->any('/ajax/table', ["App\\Controllers\\Home", "ajaxTable"]);
+	$router->any('/view/table', ["HomeCtrl", "viewArticle"]);
+	$router->any('/ajax/table', ["HomeCtrl", "ajaxTable"]);
 
-	$router->get('/update', ["App\\Controllers\\Home", "updateArticle"]);
-	$router->post('/update', ["App\\Controllers\\Home", "processUpdateArticle"]);
+	$router->get('/update', ["HomeCtrl", "updateArticle"]);
+	$router->post('/update', ["HomeCtrl", "processUpdateArticle"]);
 
-	$router->get('/update/count', ["App\\Controllers\\Home", "countArticleByDay"]);
+	$router->get('/update/count', ["HomeCtrl", "countArticleByDay"]);
 
-	$router->any('/logout', ["App\\Controllers\\Home", "logout"]);
+	$router->any('/logout', ["HomeCtrl", "logout"]);
 });

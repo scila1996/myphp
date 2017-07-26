@@ -5,7 +5,7 @@ namespace App\Controllers;
 use System\Core\Controller;
 use App\Models\Session;
 
-class Middle extends Controller
+class MiddleWare extends Controller
 {
 
 	/**
@@ -14,18 +14,16 @@ class Middle extends Controller
 	 */
 	protected $session = null;
 
-	public function __construct()
+	public function __init()
 	{
 		$this->session = new Session();
 	}
 
 	public function requireLogin()
 	{
-
 		if (!$this->isLogin())
 		{
-			header('Location: /login');
-			return true;
+			return $this->response->withHeader('Location', '/login');
 		}
 	}
 
@@ -33,8 +31,7 @@ class Middle extends Controller
 	{
 		if ($this->isLogin())
 		{
-			header('Location: /');
-			return true;
+			return $this->response->withHeader('Location', '/');
 		}
 	}
 

@@ -6,7 +6,7 @@ use App\Models\Lands\Lands;
 use DateInterval;
 use DateTime;
 
-class Home extends MainCtrl
+class HomeCtrl extends MainCtrl
 {
 
 	public function index()
@@ -56,7 +56,7 @@ class Home extends MainCtrl
 		{
 			$this->session->set('message', ["type" => "info", "str" => "Không có tin nào để cập nhật"]);
 		}
-		header("Location: " . $this->request->getUri()->getPath());
+		return $this->response->withHeader('Location', $this->request->getUri()->getPath());
 	}
 
 	public function ajaxTable()
@@ -67,7 +67,7 @@ class Home extends MainCtrl
 	public function logout()
 	{
 		$this->session->delete('login');
-		$this->redirect();
+		return $this->response->withHeader('Location', '/login');
 	}
 
 }

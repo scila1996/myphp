@@ -6,9 +6,9 @@ use System\Core\Container;
 use System\Libraries\View\View;
 
 /**
- * @property \System\Libraries\Http\Messages\Request $request
- * @property \System\Libraries\Http\Messages\Response $response
- * @property View $view
+ * @property-read \System\Libraries\Http\Messages\Request $request
+ * @property-read \System\Libraries\Http\Messages\Response $response
+ * @property-read View $view
  */
 class Controller
 {
@@ -26,9 +26,9 @@ class Controller
 	 * 
 	 * @param Container $container
 	 */
-	public function __construct(Container $container)
+	final public function __construct(Container $container)
 	{
-		foreach ($container->getIterator() as $prop => $obj)
+		foreach ($container as $prop => $obj)
 		{
 			$this->{$prop} = $obj;
 		}
@@ -39,36 +39,19 @@ class Controller
 	 * @param string $name
 	 * @return mixed
 	 */
-	public function __get($name)
+	final public function __get($name)
 	{
 		return isset($this->{$name}) ? $this->{$name} : null;
 	}
 
 	/**
+	 * This method can override.
 	 * 
 	 * @return $this
 	 */
 	public function __init()
 	{
 		return $this;
-	}
-
-	/**
-	 * 
-	 * @param string $uri
-	 * @param array $data
-	 */
-	protected function redirect($uri = null, $data = [])
-	{
-		if ($uri === null)
-		{
-			$uri = $this->request->getUri();
-		}
-		else if ($data)
-		{
-			$uri .= "?" . http_build_query($data);
-		}
-		header("Location: {$uri}");
 	}
 
 }
