@@ -1567,34 +1567,39 @@ class Builder
 	/**
 	 * Insert a new record into the database.
 	 *
-	 * @param  array  $values
+	 * @param array|self $values
 	 * @return static
 	 */
-	public function insert(array $values)
+	public function insert($values)
 	{
 		// Since every insert gets treated like a batch insert, we will make sure the
 		// bindings are structured in a way that is convenient when building these
 		// inserts statements by verifying these elements are actually an array.
-		if (empty($values))
-		{
-			return $this;
-		}
+		// Add: INSERT INTO SELECT
 
-		if (!is_array(reset($values)))
+		if (!$values instanceof self)
 		{
-			$values = [$values];
-		}
-
-		// Here, we will sort the insert keys for every record so that each insert is
-		// in the same order for the record. We need to make sure this is the case
-		// so there are not any errors or problems when inserting these records.
-		else
-		{
-			foreach ($values as $key => $value)
+			if (empty($values))
 			{
-				ksort($value);
+				return $this;
+			}
 
-				$values[$key] = $value;
+			if (!is_array(reset($values)))
+			{
+				$values = [$values];
+			}
+
+			// Here, we will sort the insert keys for every record so that each insert is
+			// in the same order for the record. We need to make sure this is the case
+			// so there are not any errors or problems when inserting these records.
+			else
+			{
+				foreach ($values as $key => $value)
+				{
+					ksort($value);
+
+					$values[$key] = $value;
+				}
 			}
 		}
 
@@ -1657,21 +1662,18 @@ class Builder
 		switch ($this->compile)
 		{
 			case 'insert':
-				return $this->cleanBindings(Binding::flatten($this->insert, 1));
+				if ($this->{$this->compile} instanceof self)
+				{
+					return $this->cleanBindings($this->{$this->compile}->{__FUNCTION__}());
+				}
+				else
+				{
+					return $this->cleanBindings(Binding::flatten($this->{$this->compile}));
+				}
 			case 'update':
-				return $this->cleanBindings($this->grammar->prepareBindingsForUpdate($this->bindings, $this->update));
+				return $this->cleanBindings($this->grammar->prepareBindingsForUpdate($this->bindings, $this->{$this->compile}));
 		}
 		return Binding::flatten($this->bindings);
-	}
-
-	/**
-	 * Get the raw array of bindings.
-	 *
-	 * @return array
-	 */
-	public function getRawBindings()
-	{
-		return $this->bindings;
 	}
 
 	/**

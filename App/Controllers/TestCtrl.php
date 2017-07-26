@@ -12,8 +12,14 @@ class TestCtrl extends Controller
 	public function index()
 	{
 		$a = DB::query()->table('a');
-		$a->selectRaw('?, ?')->setBindings([1, 2]);
-		$this->response->write(var_export($a->getRawBindings(), true));
+		$b = DB::query()->table('b')->whereIn('id', [1, 2, 3]);
+		
+		$query = $a->insert($b)->toSql();
+		$param = var_export($a->getBindings(), true);
+		
+		$data = "<pre>{$query}\n{$param}</pre>";
+		
+		$this->response->write($data);
 		return $this->response;
 	}
 

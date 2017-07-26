@@ -669,15 +669,22 @@ class Grammar extends BaseGrammar
 	 * Compile an insert statement into SQL.
 	 *
 	 * @param  \System\Libraries\Database\Query\Builder  $query
-	 * @param  array  $values
+	 * @param  array|Builder  $values
 	 * @return string
 	 */
-	public function compileInsert(Builder $query, array $values)
+	public function compileInsert(Builder $query, $values)
 	{
 		// Essentially we will force every insert to be treated as a batch insert which
 		// simply makes creating the SQL easier for us since we can utilize the same
 		// basic routine regardless of an amount of records given to us to insert.
 		$table = $this->wrapTable($query->from);
+
+		if ($values instanceof Builder)
+		{
+			return is_array($query->columns) ?
+					"insert into $table ({$this->columnize($query->columns)}) {$values->toSql()}" :
+					"insert into $table {$values->toSql()}";
+		}
 
 		if (!is_array(reset($values)))
 		{
@@ -707,29 +714,6 @@ class Grammar extends BaseGrammar
 	public function compileInsertGetId(Builder $query, $values, $sequence)
 	{
 		return $this->compileInsert($query, $values);
-	}
-
-	/**
-	 * 
-	 * @param Builder $query
-	 * @param Builder $select
-	 * @link https://www.w3schools.com/sql/sql_insert_into_select.asp
-	 */
-	public function compileInsertIntoSelect(Builder $query, Builder $select)
-	{
-
-		$table = $this->wrapTable($query->from);
-		/*
-		  $columns = $this->columnize(array_keys(reset($values)));
-
-		  // We need to build a list of parameter place-holders of values that are bound
-		  // to the query. Each insert should have the exact same amount of parameter
-		  // bindings so we will loop through the record and parameterize them all.
-		  $parameters = implode(', ', array_map(function ($record) {
-		  return '(' . $this->parameterize($record) . ')';
-		  }, $values));
-		 */
-		//return "insert into $table ($columns) select $parameters";
 	}
 
 	/**
