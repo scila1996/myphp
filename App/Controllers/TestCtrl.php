@@ -13,12 +13,12 @@ class TestCtrl extends Controller
 	{
 		$a = DB::query()->table('a');
 		$b = DB::query()->table('b')->whereIn('id', [1, 2, 3]);
-		
-		$query = $a->insert($b)->toSql();
-		$param = var_export($a->getBindings(), true);
-		
-		$data = "<pre>{$query}\n{$param}</pre>";
-		
+
+		$col = ["id", "name"];
+
+		$query = $a->insert($col, $b);
+		$data = "<pre>{$query}\n</pre>";
+
 		$this->response->write($data);
 		return $this->response;
 	}

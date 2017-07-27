@@ -5,6 +5,7 @@ namespace System\Libraries\Database\Query\Grammars;
 use System\Libraries\Database\Query\Binding;
 use System\Libraries\Database\Query\Builder;
 use System\Libraries\Database\Query\JoinClause;
+use System\Libraries\Database\Query\Expression;
 
 class Grammar extends BaseGrammar
 {
@@ -669,7 +670,7 @@ class Grammar extends BaseGrammar
 	 * Compile an insert statement into SQL.
 	 *
 	 * @param  \System\Libraries\Database\Query\Builder  $query
-	 * @param  array|Builder  $values
+	 * @param  array|Expression  $values
 	 * @return string
 	 */
 	public function compileInsert(Builder $query, $values)
@@ -679,11 +680,13 @@ class Grammar extends BaseGrammar
 		// basic routine regardless of an amount of records given to us to insert.
 		$table = $this->wrapTable($query->from);
 
-		if ($values instanceof Builder)
+		if ($values instanceof Expression)
 		{
-			return is_array($query->columns) ?
-					"insert into $table ({$this->columnize($query->columns)}) {$values->toSql()}" :
-					"insert into $table {$values->toSql()}";
+			$expr = $values->getValue();
+			$columns = $this->columnize($expr['columns']);
+			return $columns ?
+					"insert into $table ({$columns}) {$expr['select']->toSql()}" :
+					"insert into $table {$expr['select']->toSql()}";
 		}
 
 		if (!is_array(reset($values)))

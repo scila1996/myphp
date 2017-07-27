@@ -1568,16 +1568,26 @@ class Builder
 	 * Insert a new record into the database.
 	 *
 	 * @param array|self $values
+	 * @param self $select
 	 * @return static
 	 */
-	public function insert($values)
+	public function insert($values, self $select = null)
 	{
 		// Since every insert gets treated like a batch insert, we will make sure the
 		// bindings are structured in a way that is convenient when building these
 		// inserts statements by verifying these elements are actually an array.
-		// Add: INSERT INTO SELECT
 
-		if (!$values instanceof self)
+		if ($values instanceof self)
+		{
+			$select = $values;
+			$values = [];
+		}
+
+		if ($select !== null)
+		{
+			$values = $this->raw(['columns' => array_values($values), 'select' => $select]);
+		}
+		else
 		{
 			if (empty($values))
 			{
@@ -1603,8 +1613,7 @@ class Builder
 			}
 		}
 
-		$this->compile = __FUNCTION__;
-		$this->{__FUNCTION__} = $values;
+		$this->{$this->compile = __FUNCTION__} = $values;
 		return $this;
 	}
 
@@ -1616,8 +1625,7 @@ class Builder
 	 */
 	public function update(array $values)
 	{
-		$this->compile = __FUNCTION__;
-		$this->{__FUNCTION__} = $values;
+		$this->{$this->compile = __FUNCTION__} = $values;
 		return $this;
 	}
 
@@ -1662,13 +1670,14 @@ class Builder
 		switch ($this->compile)
 		{
 			case 'insert':
-				if ($this->{$this->compile} instanceof self)
+				$data = $this->{$this->compile};
+				if ($data instanceof Expression)
 				{
-					return $this->cleanBindings($this->{$this->compile}->{__FUNCTION__}());
+					return $data->getValue()['select']->{__FUNCTION__}();
 				}
 				else
 				{
-					return $this->cleanBindings(Binding::flatten($this->{$this->compile}));
+					return $this->cleanBindings(Binding::flatten($data));
 				}
 			case 'update':
 				return $this->cleanBindings($this->grammar->prepareBindingsForUpdate($this->bindings, $this->{$this->compile}));
