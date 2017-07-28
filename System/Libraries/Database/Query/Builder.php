@@ -1670,8 +1670,7 @@ class Builder
 		switch ($this->compile)
 		{
 			case 'insert':
-				$data = $this->{$this->compile};
-				if ($data instanceof Expression)
+				if (($data = $this->{$this->compile}) instanceof Expression)
 				{
 					return $data->getValue()['select']->{__FUNCTION__}();
 				}

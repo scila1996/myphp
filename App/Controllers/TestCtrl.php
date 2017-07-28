@@ -17,7 +17,9 @@ class TestCtrl extends Controller
 		$col = ["id", "name"];
 
 		$query = $a->insert($col, $b);
-		$data = "<pre>{$query}\n</pre>";
+		$param = var_export($a->getBindings(), true);
+		
+		$data = "<pre>{$query}\n{$param}</pre>";
 
 		$this->response->write($data);
 		return $this->response;
