@@ -16,7 +16,8 @@
 						<a class="navbar-brand" href="/"> Thống kê tin đăng </a>
 					</div>
 					<ul class="nav navbar-nav">
-						<li class="<?php echo $menu->lands ?>"><a href="<?php echo $url->lands ?>"><span class="fa fa-home"></span> Tin BĐS </a></li>						
+						<li class="<?php echo $menu->lands ?>"><a href="<?php echo $url->lands ?>"><span class="fa fa-home"></span> Tin BĐS </a></li>				
+						<li class="<?php echo $menu->members ?>"><a href="<?php echo $url->members ?>"><span class="fa fa-user"></span> Thành viên </a></li>				
 						<li class="<?php echo $menu->update ?>"><a href="<?php echo $url->update ?>"><span class="fa fa-pencil-square"></span> Cập nhật tin đăng </a></li>
 					</ul>
 					<ul class="nav navbar-nav navbar-right">

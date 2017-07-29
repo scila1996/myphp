@@ -13,6 +13,26 @@ use Exception;
 
 class App
 {
+	/*
+	 * @var array
+	 */
+
+	public static $namespace = [
+		'controller' => '\\App\\Controllers'
+	];
+	/*
+	 * @var array
+	 */
+	public static $path = [
+		'view' => 'App/Views'
+	];
+	/*
+	 * @var array
+	 */
+	public static $config = [
+		'route' => 'App/Config/Route.php',
+		'database' => 'App/Config/Database.php'
+	];
 
 	/**
 	 * Run Application
@@ -24,28 +44,30 @@ class App
 			$container = new Container();
 			$request = $container->request = Request::createFromGlobals($_SERVER);
 			$response = $container->response = new Response();
-			$view = $container->view = (new View())->setTemplateDir('App/Views');
+			$view = $container->view = (new View())->setTemplateDir(self::$path['view']);
 
 			Config::$route = new RouteCollector();
 			SQL::$database = &Config::$database;
 
-			require 'App/Config/Route.php';
-			require 'App/Config/Database.php';
+			foreach (self::$config as $config)
+			{
+				require $config;
+			}
 
 			$dispatcher = new Dispatcher(
-					Config::$route->getData(), new Handler($container, '\\App\\Controllers')
+					Config::$route->getData(), new Handler($container, self::$namespace['controller'])
+			);
+			$data = $dispatcher->dispatch(
+					$request->getMethod(), $request->getUri()->getPath()
 			);
 
-
-			if (($data = $dispatcher->dispatch(
-					$request->getMethod(), $request->getUri()->getPath()
-					)) instanceof Response)
+			if ($data instanceof Response)
 			{
 				$response = $data;
 			}
 			else
 			{
-				$response->write($view->getContent());
+				$response->write($data ? strval($data) : $view->getContent());
 			}
 		}
 		catch (HttpRouteNotFoundException $e)

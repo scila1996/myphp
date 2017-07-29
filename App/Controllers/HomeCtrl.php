@@ -14,10 +14,14 @@ class HomeCtrl extends MainCtrl
 		$this->view['content'] = $this->view->template('home');
 	}
 
-	public function viewArticle($type = 'cms')
+	public function viewArticle()
 	{
-		$this->view['menu']->{$type} = 'active';
 		$this->view['content'] = $this->view->template('analytic');
+	}
+
+	public function viewMembers()
+	{
+		$this->view['content'] = $this->view->template('members');
 	}
 
 	public function updateArticle()

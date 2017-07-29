@@ -16,11 +16,17 @@ Config::$route->group(['before' => 'login'], function (RouteCollector $router) {
 
 Config::$route->group(['before' => 'auth'], function (RouteCollector $router) {
 
+	// Home
 	$router->any('/', ["HomeCtrl", "index"]);
 
-	$router->any('/view/table', ["HomeCtrl", "viewArticle"]);
-	$router->any('/ajax/table', ["HomeCtrl", "ajaxTable"]);
+	// Lands
+	$router->any('/view/lands', ["HomeCtrl", "viewArticle"]);
+	$router->any('/ajax/lands', ["HomeCtrl", "ajaxTable"]);
 
+	// Members
+	$router->any('/view/members', ["HomeCtrl", "viewMembers"]);
+
+	// Update
 	$router->get('/update', ["HomeCtrl", "updateArticle"]);
 	$router->post('/update', ["HomeCtrl", "processUpdateArticle"]);
 

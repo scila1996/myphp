@@ -11,18 +11,9 @@ class TestCtrl extends Controller
 
 	public function index()
 	{
-		$a = DB::query()->table('a');
-		$b = DB::query()->table('b')->whereIn('id', [1, 2, 3]);
-
-		$col = ["id", "name"];
-
-		$query = $a->insert($col, $b);
-		$param = var_export($a->getBindings(), true);
-		
-		$data = "<pre>{$query}\n{$param}</pre>";
-
-		$this->response->write($data);
-		return $this->response;
+		$query = DB::query();
+		$query->select('username')->selectRaw("count(id) as {$query->grammar->wrap('c')}");
+		return $query->toSql();
 	}
 
 }

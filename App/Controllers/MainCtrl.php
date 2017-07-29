@@ -21,7 +21,8 @@ class MainCtrl extends Controller
 		$this->view['admin'] = $this->session->get('login');
 		$this->view['title'] = 'Analytic';
 		$this->view['url'] = (object) [
-					'lands' => '/view/table',
+					'lands' => '/view/lands',
+					'members' => '/view/members',
 					//'update' => '/update',
 					'update' => 'javascript:void(0)',
 					'logout' => '/logout'

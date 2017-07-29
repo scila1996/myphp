@@ -158,7 +158,7 @@ class Builder
 	];
 
 	/** @var string */
-	private $compile = "select";
+	protected $compile = "select";
 
 	/**
 	 * Create a new query builder instance.
@@ -172,15 +172,6 @@ class Builder
 			$grammar = new Grammar();
 		}
 		$this->grammar = $grammar;
-	}
-
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getCompile()
-	{
-		return $this->compile;
 	}
 
 	/**
