@@ -13,110 +13,110 @@ use PDO;
 class Connection implements DatabaseInterface
 {
 
-	/**
-	 *
-	 * @var PDO
-	 */
-	protected $pdo = null;
+    /**
+     *
+     * @var PDO
+     */
+    protected $pdo = null;
 
-	/**
-	 *
-	 * @var Builder
-	 */
-	protected $query = null;
+    /**
+     *
+     * @var Builder
+     */
+    protected $query = null;
 
-	/**
-	 * 
-	 * @param string $driver
-	 * @return Builder
-	 */
-	protected function getQueryBuilder($driver)
-	{
-		switch ($driver)
-		{
-			case self::MYSQL:
-				return new Builder(new MySqlGrammar());
-			case self::SQLSRV:
-				return new Builder(new SqlServerGrammar());
-			case self::SQLITE:
-				return new Builder(new SQLiteGrammar());
-			case self::PGSQL:
-				return new Builder(new PostgresGrammar());
-		}
-		return new Builder();
-	}
+    /**
+     * 
+     * @param string $driver
+     * @return Builder
+     */
+    protected function getQueryBuilder($driver)
+    {
+        switch ($driver)
+        {
+            case self::MYSQL:
+                return new Builder(new MySqlGrammar());
+            case self::SQLSRV:
+                return new Builder(new SqlServerGrammar());
+            case self::SQLITE:
+                return new Builder(new SQLiteGrammar());
+            case self::PGSQL:
+                return new Builder(new PostgresGrammar());
+        }
+        return new Builder();
+    }
 
-	/**
-	 * 
-	 * @param PDO $pdo
-	 */
-	public function __construct(PDO $pdo)
-	{
-		$this->pdo = $pdo;
-		$this->query = $this->getQueryBuilder($pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
-	}
+    /**
+     * 
+     * @param PDO $pdo
+     */
+    public function __construct(PDO $pdo)
+    {
+        $this->pdo = $pdo;
+        $this->query = $this->getQueryBuilder($pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
+    }
 
-	/**
-	 * 
-	 * @param Builder $query
-	 * @param integer $count
-	 * @return \System\Libraries\Database\Collection
-	 */
-	public function query(Builder $query, $count = false)
-	{
-		$stmt = $this->runQuery($query->toSql(), $query->getBindings());
+    /**
+     * 
+     * @param Builder $query
+     * @param integer $count
+     * @return \System\Libraries\Database\Collection
+     */
+    public function query(Builder $query, $count = false)
+    {
+        $stmt = $this->runQuery($query->toSql(), $query->getBindings());
 
-		if ($stmt->columnCount())
-		{
-			if ($count)
-			{
-				$count = clone $query;
-				$count->count()->offset(null);
-				return new Collection($stmt, $this->query($count, false)->first()->aggregate);
-			}
-			else
-			{
-				return new Collection($stmt);
-			}
-		}
-		else
-		{
-			return $stmt->rowCount();
-		}
-	}
+        if ($stmt->columnCount())
+        {
+            if ($count)
+            {
+                $count = clone $query;
+                $count->count()->offset(null);
+                return new Collection($stmt, $this->query($count, false)->first()->aggregate);
+            }
+            else
+            {
+                return new Collection($stmt);
+            }
+        }
+        else
+        {
+            return $stmt->rowCount();
+        }
+    }
 
-	/** @return PDO */
-	public function getPdo()
-	{
-		return $this->pdo;
-	}
+    /** @return PDO */
+    public function getPdo()
+    {
+        return $this->pdo;
+    }
 
-	/** @return Builder */
-	public function getBuilder()
-	{
-		return $this->query;
-	}
+    /** @return Builder */
+    public function getBuilder()
+    {
+        return $this->query;
+    }
 
-	/**
-	 * 
-	 * @param string $str
-	 * @param array $param
-	 * @return \PDOStatement
-	 */
-	public function runQuery($str, array $param = null)
-	{
-		$stmt = $this->getPdo()->prepare($str);
+    /**
+     * 
+     * @param string $str
+     * @param array $param
+     * @return \PDOStatement
+     */
+    public function runQuery($str, array $param = null)
+    {
+        $stmt = $this->getPdo()->prepare($str);
 
-		if ($param)
-		{
-			foreach (array_keys($param) as $p => $key)
-			{
-				$stmt->bindParam($p + 1, $param[$key]);
-			}
-		}
+        if ($param)
+        {
+            foreach (array_keys($param) as $p => $key)
+            {
+                $stmt->bindParam($p + 1, $param[$key]);
+            }
+        }
 
-		$stmt->execute();
-		return $stmt;
-	}
+        $stmt->execute();
+        return $stmt;
+    }
 
 }

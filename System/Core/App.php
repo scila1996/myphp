@@ -13,99 +13,99 @@ use Exception;
 
 class App
 {
-	/*
-	 * @var array
-	 */
+    /*
+     * @var array
+     */
 
-	public static $namespace = [
-		'controller' => '\\App\\Controllers'
-	];
-	/*
-	 * @var array
-	 */
-	public static $path = [
-		'view' => 'App/Views'
-	];
-	/*
-	 * @var array
-	 */
-	public static $config = [
-		'route' => 'App/Config/Route.php',
-		'database' => 'App/Config/Database.php'
-	];
+    public static $namespace = [
+        'controller' => '\\App\\Controllers'
+    ];
+    /*
+     * @var array
+     */
+    public static $path = [
+        'view' => 'App/Views'
+    ];
+    /*
+     * @var array
+     */
+    public static $config = [
+        'route' => 'App/Config/Route.php',
+        'database' => 'App/Config/Database.php'
+    ];
 
-	/**
-	 * Run Application
-	 */
-	public static function run()
-	{
-		try
-		{
-			$container = new Container();
-			$request = $container->request = Request::createFromGlobals($_SERVER);
-			$response = $container->response = new Response();
-			$view = $container->view = (new View())->setTemplateDir(self::$path['view']);
+    /**
+     * Run Application
+     */
+    public static function run()
+    {
+        try
+        {
+            $container = new Container();
+            $request = $container->request = Request::createFromGlobals($_SERVER);
+            $response = $container->response = new Response();
+            $view = $container->view = (new View())->setTemplateDir(self::$path['view']);
 
-			Config::$route = new RouteCollector();
-			SQL::$database = &Config::$database;
+            Config::$route = new RouteCollector();
+            SQL::$database = &Config::$database;
 
-			foreach (self::$config as $config)
-			{
-				require $config;
-			}
+            foreach (self::$config as $config)
+            {
+                require $config;
+            }
 
-			$dispatcher = new Dispatcher(
-					Config::$route->getData(), new Handler($container, self::$namespace['controller'])
-			);
-			$data = $dispatcher->dispatch(
-					$request->getMethod(), $request->getUri()->getPath()
-			);
+            $dispatcher = new Dispatcher(
+                    Config::$route->getData(), new Handler($container, self::$namespace['controller'])
+            );
+            $data = $dispatcher->dispatch(
+                    $request->getMethod(), $request->getUri()->getPath()
+            );
 
-			if ($data instanceof Response)
-			{
-				$response = $data;
-			}
-			else
-			{
-				$response->write($data ? strval($data) : $view->getContent());
-			}
-		}
-		catch (HttpRouteNotFoundException $e)
-		{
-			$response = $response->withStatus(404);
-			$response->write($view->set('error/404')->render());
-		}
-		catch (Exception $e)
-		{
-			$view->set('error/exception')['e'] = $e;
-			$response->write($view->render());
-		}
+            if ($data instanceof Response)
+            {
+                $response = $data;
+            }
+            else
+            {
+                $response->write($data ? strval($data) : $view->getContent());
+            }
+        }
+        catch (HttpRouteNotFoundException $e)
+        {
+            $response = $response->withStatus(404);
+            $response->write($view->set('error/404')->render());
+        }
+        catch (Exception $e)
+        {
+            $view->set('error/exception')['e'] = $e;
+            $response->write($view->render());
+        }
 
-		self::send($response);
-	}
+        self::send($response);
+    }
 
-	/**
-	 * 
-	 * @param Response $response
-	 * @return void
-	 */
-	protected static function send(Response $response)
-	{
-		// STATUS CODE
-		http_response_code($response->getStatusCode());
+    /**
+     * 
+     * @param Response $response
+     * @return void
+     */
+    protected static function send(Response $response)
+    {
+        // STATUS CODE
+        http_response_code($response->getStatusCode());
 
-		// Headers
-		foreach ($response->getHeaders() as $name => $values)
-		{
-			foreach ($values as $value)
-			{
-				header("{$name}: {$value}", false);
-			}
-		}
+        // Headers
+        foreach ($response->getHeaders() as $name => $values)
+        {
+            foreach ($values as $value)
+            {
+                header("{$name}: {$value}", false);
+            }
+        }
 
-		// content
-		echo $response->getBody();
-		return;
-	}
+        // content
+        echo $response->getBody();
+        return;
+    }
 
 }

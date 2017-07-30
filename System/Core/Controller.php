@@ -13,45 +13,45 @@ use System\Libraries\View\View;
 class Controller
 {
 
-	/** @var \System\Libraries\Http\Messages\Request */
-	protected $request = null;
+    /** @var \System\Libraries\Http\Messages\Request */
+    protected $request = null;
 
-	/** @var \System\Libraries\Http\Messages\Response */
-	protected $response = null;
+    /** @var \System\Libraries\Http\Messages\Response */
+    protected $response = null;
 
-	/** @var View */
-	protected $view = null;
+    /** @var View */
+    protected $view = null;
 
-	/**
-	 * 
-	 * @param Container $container
-	 */
-	final public function __construct(Container $container)
-	{
-		foreach ($container as $prop => $obj)
-		{
-			$this->{$prop} = $obj;
-		}
-	}
+    /**
+     * 
+     * @param Container $container
+     */
+    final public function __construct(Container $container)
+    {
+        foreach ($container as $prop => $obj)
+        {
+            $this->{$prop} = $obj;
+        }
+    }
 
-	/**
-	 * 
-	 * @param string $name
-	 * @return mixed
-	 */
-	final public function __get($name)
-	{
-		return isset($this->{$name}) ? $this->{$name} : null;
-	}
+    /**
+     * 
+     * @param string $name
+     * @return mixed
+     */
+    final public function __get($name)
+    {
+        return isset($this->{$name}) ? $this->{$name} : null;
+    }
 
-	/**
-	 * This method can override.
-	 * 
-	 * @return $this
-	 */
-	public function __init()
-	{
-		return $this;
-	}
+    /**
+     * This method can override.
+     * 
+     * @return $this
+     */
+    public function __init()
+    {
+        return $this;
+    }
 
 }

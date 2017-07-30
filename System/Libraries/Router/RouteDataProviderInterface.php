@@ -9,8 +9,8 @@ namespace System\Libraries\Router;
 interface RouteDataProviderInterface
 {
 
-	/**
-	 * @return mixed
-	 */
-	public function getData();
+    /**
+     * @return mixed
+     */
+    public function getData();
 }

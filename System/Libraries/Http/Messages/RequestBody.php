@@ -8,16 +8,16 @@ namespace System\Libraries\Http\Messages;
 class RequestBody extends Body
 {
 
-	/**
-	 * Create a new RequestBody.
-	 */
-	public function __construct()
-	{
-		$stream = fopen('php://temp', 'w+');
-		stream_copy_to_stream(fopen('php://input', 'r'), $stream);
-		rewind($stream);
+    /**
+     * Create a new RequestBody.
+     */
+    public function __construct()
+    {
+        $stream = fopen('php://temp', 'w+');
+        stream_copy_to_stream(fopen('php://input', 'r'), $stream);
+        rewind($stream);
 
-		parent::__construct($stream);
-	}
+        parent::__construct($stream);
+    }
 
 }

@@ -7,9 +7,9 @@ use System\Core\Model;
 class Members extends Model
 {
 
-	public function getDataTable()
-	{
-		
-	}
+    public function getDataTable()
+    {
+        
+    }
 
 }

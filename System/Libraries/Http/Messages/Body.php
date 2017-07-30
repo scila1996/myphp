@@ -12,5 +12,5 @@ namespace System\Libraries\Http\Messages;
  */
 class Body extends Stream
 {
-	
+    
 }

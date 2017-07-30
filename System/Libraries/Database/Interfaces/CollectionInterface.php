@@ -8,15 +8,15 @@ use Countable;
 interface CollectionInterface extends Iterator, Countable
 {
 
-	/** @return mixed */
-	public function first();
+    /** @return mixed */
+    public function first();
 
-	/** @return mixed */
-	public function fetch();
+    /** @return mixed */
+    public function fetch();
 
-	/** @return integer */
-	public function getNumRows();
+    /** @return integer */
+    public function getNumRows();
 
-	/** @return array */
-	public function getColumns();
+    /** @return array */
+    public function getColumns();
 }
