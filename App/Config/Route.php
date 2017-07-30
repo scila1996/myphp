@@ -3,7 +3,7 @@
 use System\Core\Config;
 use System\Libraries\Router\RouteCollector;
 
-Config::$route->any('/test', ["TestCtrl", "index"]);
+Config::$route->get('/test', ["TestCtrl", "index"]);
 
 Config::$route->filter('login', ["MiddleWare", "validLogin"]);
 Config::$route->filter('auth', ["MiddleWare", "requireLogin"]);

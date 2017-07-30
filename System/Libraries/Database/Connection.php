@@ -21,9 +21,30 @@ class Connection implements DatabaseInterface
 
 	/**
 	 *
-	 * @var string
+	 * @var Builder
 	 */
-	protected $driver = "";
+	protected $query = null;
+
+	/**
+	 * 
+	 * @param string $driver
+	 * @return Builder
+	 */
+	protected function getQueryBuilder($driver)
+	{
+		switch ($driver)
+		{
+			case self::MYSQL:
+				return new Builder(new MySqlGrammar());
+			case self::SQLSRV:
+				return new Builder(new SqlServerGrammar());
+			case self::SQLITE:
+				return new Builder(new SQLiteGrammar());
+			case self::PGSQL:
+				return new Builder(new PostgresGrammar());
+		}
+		return new Builder();
+	}
 
 	/**
 	 * 
@@ -32,7 +53,7 @@ class Connection implements DatabaseInterface
 	public function __construct(PDO $pdo)
 	{
 		$this->pdo = $pdo;
-		$this->driver = $pdo->getAttribute(PDO::ATTR_DRIVER_NAME);
+		$this->query = $this->getQueryBuilder($pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
 	}
 
 	/**
@@ -64,8 +85,8 @@ class Connection implements DatabaseInterface
 		}
 	}
 
-	/** @return $this->pdo */
-	public function getPDO()
+	/** @return PDO */
+	public function getPdo()
 	{
 		return $this->pdo;
 	}
@@ -73,18 +94,7 @@ class Connection implements DatabaseInterface
 	/** @return Builder */
 	public function getBuilder()
 	{
-		switch ($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME))
-		{
-			case self::MYSQL:
-				return new Builder(new MySqlGrammar());
-			case self::SQLSRV:
-				return new Builder(new SqlServerGrammar());
-			case self::SQLITE:
-				return new Builder(new SQLiteGrammar());
-			case self::PGSQL:
-				return new Builder(new PostgresGrammar());
-		}
-		return new Builder();
+		return $this->query;
 	}
 
 	/**
@@ -93,11 +103,11 @@ class Connection implements DatabaseInterface
 	 * @param array $param
 	 * @return \PDOStatement
 	 */
-	protected function runQuery($str, $param = null)
+	public function runQuery($str, array $param = null)
 	{
-		$stmt = $this->pdo->prepare($str);
+		$stmt = $this->getPdo()->prepare($str);
 
-		if (is_array($param))
+		if ($param)
 		{
 			foreach (array_keys($param) as $p => $key)
 			{

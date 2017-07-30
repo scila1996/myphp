@@ -684,9 +684,12 @@ class Grammar extends BaseGrammar
 		{
 			$expr = $values->getValue();
 			$columns = $this->columnize($expr['columns']);
+			// @var $expr[select] Builder */
+			$select = $expr['select']->toSql();
+
 			return $columns ?
-					"insert into $table ({$columns}) {$expr['select']->toSql()}" :
-					"insert into $table {$expr['select']->toSql()}";
+					"insert into $table ($columns) $select" :
+					"insert into $table $select";
 		}
 
 		if (!is_array(reset($values)))

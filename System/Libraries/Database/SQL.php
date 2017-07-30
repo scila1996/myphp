@@ -44,19 +44,19 @@ class SQL
 	/** @return integer */
 	public static function begin()
 	{
-		return self::connection()->getPDO()->beginTransaction();
+		return self::connection()->getPdo()->beginTransaction();
 	}
 
 	/** @return integer */
 	public static function commit()
 	{
-		return self::connection()->getPDO()->commit();
+		return self::connection()->getPdo()->commit();
 	}
 
 	/** @return integer */
 	public static function rollback()
 	{
-		return self::connection()->getPDO()->rollBack();
+		return self::connection()->getPdo()->rollBack();
 	}
 
 	/** @return \System\Libraries\Database\Query\Builder */

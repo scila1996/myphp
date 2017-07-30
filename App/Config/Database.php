@@ -13,7 +13,7 @@ Config::$database = [
 	"prefix" => ""
 ];
 
-/*
+
 Config::$database = [
 	"driver" => "mysql",
 	"host" => "localhost",
@@ -24,4 +24,3 @@ Config::$database = [
 	"collation" => "utf8_unicode_ci",
 	"prefix" => ""
 ];
-*/
