@@ -29,7 +29,7 @@ abstract class BaseGrammar
     /**
      * Wrap a table in keyword identifiers.
      *
-     * @param  \System\Libraries\Database\Query\Expression|string  $table
+     * @param  \System\Libraries\Database\Query\Expression|string|array  $table
      * @return string
      */
     public function wrapTable($table)
@@ -45,12 +45,14 @@ abstract class BaseGrammar
                 return $this->wrap("{$this->tablePrefix}{$table[0]} as {$table[1]}", true);
             }
         }
-        else if (!$this->isExpression($table))
+        else if ($this->isExpression($table))
+        {
+            return $this->getValue($table);
+        }
+        else
         {
             return $this->wrap("{$this->tablePrefix}{$table}", true);
         }
-
-        return $this->getValue($table);
     }
 
     /**

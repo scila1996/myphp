@@ -4,6 +4,7 @@ namespace App\Models\Lands;
 
 use System\Libraries\Http\Messages\Request;
 use System\Libraries\Database\Query\Builder;
+use DateTime;
 
 class DataTable extends \App\Models\DataTable
 {
@@ -70,19 +71,19 @@ class DataTable extends \App\Models\DataTable
         return parent::sort($map);
     }
 
-    /**
-     * 
-     * @return integer
-     */
-    public function updateDate($old, $new)
+    public function rowData($number_order, $rowObj)
     {
-        $this->findByDate($old);
-        $this->query->update([
-            'land_date_start' => $this->query->raw('land_date_start + INTERVAL DATEDIFF(?, ?) DAY'),
-            'land_date_finish' => $this->query->raw('land_date_finish + INTERVAL DATEDIFF(?, ?) DAY'),
-        ]);
-        $this->query->setBindings([$new, $old, $new, $old]);
-        return $this->exec();
+
+        return [
+            $number_order,
+            [
+                "link" => "https://chobatdongsan.com.vn/d{$rowObj->alias}-{$rowObj->id}.html",
+                "text" => $rowObj->title
+            ],
+            (new DateTime($rowObj->land_date_start))->format('d/m/Y'),
+            $rowObj->poster_name, $rowObj->poster_mobile,
+            $rowObj->outweb === null ? 'Quản trị viên' : ($rowObj->poster_id ? 'Thành viên' : 'Khách')
+        ];
     }
 
 }

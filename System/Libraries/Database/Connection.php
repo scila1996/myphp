@@ -48,6 +48,23 @@ class Connection implements DatabaseInterface
 
     /**
      * 
+     * @param Builder $query
+     * @return integer
+     */
+    protected function getCountQuery(Builder $query)
+    {
+        $select = clone $query;
+        $count = $query->newQuery();
+
+        $select->offset = null;
+        $select->limit = null;
+        $select->orders = null;
+
+        return $this->query($count->count("id")->from($select, __FUNCTION__), false)->first()->aggregate;
+    }
+
+    /**
+     * 
      * @param PDO $pdo
      */
     public function __construct(PDO $pdo)
@@ -70,9 +87,7 @@ class Connection implements DatabaseInterface
         {
             if ($count)
             {
-                $count = clone $query;
-                $count->count()->offset(null);
-                return new Collection($stmt, $this->query($count, false)->first()->aggregate);
+                return new Collection($stmt, $this->getCountQuery($query));
             }
             else
             {

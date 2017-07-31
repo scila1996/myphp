@@ -21,10 +21,11 @@ Config::$route->group(['before' => 'auth'], function (RouteCollector $router) {
 
     // Lands
     $router->any('/view/lands', ["HomeCtrl", "viewArticle"]);
-    $router->any('/ajax/lands', ["HomeCtrl", "ajaxTable"]);
+    $router->get('/ajax/lands', ["HomeCtrl", "ajaxLands"]);
 
     // Members
     $router->any('/view/members', ["HomeCtrl", "viewMembers"]);
+    $router->get('/ajax/members', ["HomeCtrl", "ajaxMembers"]);
 
     // Update
     $router->get('/update', ["HomeCtrl", "updateArticle"]);

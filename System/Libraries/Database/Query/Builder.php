@@ -256,12 +256,13 @@ class Builder
         {
             if ($alias === null)
             {
-                throw new InvalidArgumentException("Alias MUST be set for subquery.");
+                throw new InvalidArgumentException("Every derived table must have its own alias.");
             }
             $this->bindings['sub']['select'] = $table->getBindings();
         }
-        $table = $alias ? [$table, $alias] : $table;
-        $this->from = $table;
+
+        $this->from = $alias ? func_get_args() : $table;
+
         return $this;
     }
 

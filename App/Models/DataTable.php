@@ -5,7 +5,7 @@ namespace App\Models;
 use System\Libraries\Database\DB;
 use System\Libraries\Http\Messages\Request;
 
-class DataTable
+abstract class DataTable
 {
 
     /** @var \System\Libraries\Database\Query\Builder */
@@ -52,7 +52,16 @@ class DataTable
      */
     public function get()
     {
-        return DB::execute($this->query, true);
+        $data = DB::execute($this->query, true);
+        $no = $this->ajax->getQueryParam('start') + 1;
+
+        return [
+            "data" => array_map(function ($row) use (&$no) {
+                        return $this->rowData($no++, $row);
+                    }, iterator_to_array($data, false)),
+            "recordsTotal" => $data->getNumRows(),
+            "recordsFiltered" => $data->getNumRows(),
+        ];
     }
 
     /**
@@ -65,12 +74,9 @@ class DataTable
     }
 
     /**
-     * 
-     * @return integer
+     * @param integer $number_order
+     * @param \stdClass $rowObj
+     * @return array
      */
-    public function count()
-    {
-        return $this->get()->first()->aggregate;
-    }
-
+    abstract public function rowData($number_order, $rowObj);
 }

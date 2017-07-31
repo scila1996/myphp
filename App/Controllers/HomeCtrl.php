@@ -3,6 +3,7 @@
 namespace App\Controllers;
 
 use App\Models\Lands\Lands;
+use App\Models\Members\Members;
 use DateInterval;
 use DateTime;
 
@@ -63,9 +64,14 @@ class HomeCtrl extends MainCtrl
         return $this->response->withHeader('Location', $this->request->getUri()->getPath());
     }
 
-    public function ajaxTable()
+    public function ajaxLands()
     {
         return $this->response->withJson((new Lands($this))->getDataTable());
+    }
+
+    public function ajaxMembers()
+    {
+        return $this->response->withJson((new Members($this))->getDataTable());
     }
 
     public function logout()
