@@ -36,6 +36,8 @@ class App
 
     /**
      * Run Application
+     * 
+     * @return void
      */
     public static function run()
     {

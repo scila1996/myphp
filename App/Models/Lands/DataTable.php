@@ -80,7 +80,10 @@ class DataTable extends \App\Models\DataTable
                 "link" => "https://chobatdongsan.com.vn/d{$rowObj->alias}-{$rowObj->id}.html",
                 "text" => $rowObj->title
             ],
-            (new DateTime($rowObj->land_date_start))->format('d/m/Y'),
+            [
+                "start" => (new DateTime($rowObj->land_date_start))->format('d/m/Y'),
+                "finish" => (new DateTime($rowObj->land_date_finish))->format('d/m/Y'),
+            ],
             $rowObj->poster_name, $rowObj->poster_mobile,
             $rowObj->outweb === null ? 'Quản trị viên' : ($rowObj->poster_id ? 'Thành viên' : 'Khách')
         ];

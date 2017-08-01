@@ -17,11 +17,13 @@ class HomeCtrl extends MainCtrl
 
     public function viewArticle()
     {
+        $this->view['menu']->lands = 'active';
         $this->view['content'] = $this->view->template('analytic');
     }
 
     public function viewMembers()
     {
+        $this->view['menu']->members = 'active';
         $this->view['content'] = $this->view->template('members');
     }
 
@@ -29,8 +31,7 @@ class HomeCtrl extends MainCtrl
     {
         $this->view['menu']->update = 'active';
         $this->view['content'] = $this->view->template('update', [
-            'old' => (new DateTime())->sub(new DateInterval('P5D'))->format('Y-m-d'),
-            'new' => (new DateTime())->format('Y-m-d'),
+            'day' => (new DateTime())->sub(new DateInterval('P5D'))->format('Y-m-d'),
             'message' => $this->session->splice('message')
         ]);
     }
@@ -51,11 +52,12 @@ class HomeCtrl extends MainCtrl
     public function processUpdateArticle()
     {
         $land = new Lands($this);
-        if ($land->updateLands(
-                        $this->request->getParam('old'), $this->request->getParam('new')
-                ))
+        if (($result = $land->updateLands()))
         {
-            $this->session->set('message', ["type" => "success", "str" => "Đã cập nhật thành công"]);
+            $this->session->set('message', [
+                "type" => "success",
+                "str" => "Đã cập nhật thành công, có $result tin đã được cập nhật"
+            ]);
         }
         else
         {

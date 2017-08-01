@@ -28,7 +28,9 @@
                 {title: "Tiêu đề", render: function (data) {
                         return '<a href=\"' + data.link + '\" target="_blank">' + data.text + '</a>';
                     }, targets: 1},
-                {title: "Thời gian", targets: 2},
+                {title: "Thời hạn tin", render: function (data) {
+                        return data['start'] + ' <span class="fa fa-arrows-h"></span> ' + data['finish'];
+                    }, targets: 2},
                 {title: "Người đăng", orderable: false, targets: 3},
                 {title: "Số điện thoại", orderable: false, targets: 4},
                 {title: "Loại", render: function (data) {

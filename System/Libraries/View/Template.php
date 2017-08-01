@@ -50,8 +50,7 @@ class Template implements ArrayAccess
         {
             $$variable = ($value instanceof self ? $value->render() : $value);
         }
-
-        eval('?>' . file_get_contents($this->file));
+        eval("?>" . file_get_contents($this->file));
         $str = ob_get_contents();
         ob_end_clean();
         return $str;

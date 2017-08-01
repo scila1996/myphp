@@ -23,8 +23,7 @@ class MainCtrl extends Controller
         $this->view['url'] = (object) [
                     'lands' => '/view/lands',
                     'members' => '/view/members',
-                    //'update' => '/update',
-                    'update' => 'javascript:void(0)',
+                    'update' => '/update',
                     'logout' => '/logout'
         ];
         $this->view['menu'] = (object) array_fill_keys(array_keys((array) $this->view['url']), null);

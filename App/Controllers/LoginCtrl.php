@@ -32,6 +32,7 @@ class LoginCtrl extends Controller
         $result = $model->login(
                 $this->request->getParam('user'), $this->request->getParam('pass')
         );
+
         if ($result)
         {
             $this->session->set('login', $result);
@@ -40,6 +41,7 @@ class LoginCtrl extends Controller
         {
             $this->session->set('message', ['type' => 'danger', 'str' => 'Sai tên tài khoản hoặc mật khẩu.']);
         }
+
         return $this->response->withHeader('Location', $this->request->getUri());
     }
 
