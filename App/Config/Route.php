@@ -31,7 +31,5 @@ Config::$route->group(['before' => 'auth'], function (RouteCollector $router) {
     $router->get('/update', ["HomeCtrl", "updateArticle"]);
     $router->post('/update', ["HomeCtrl", "processUpdateArticle"]);
 
-    $router->get('/update/count', ["HomeCtrl", "countArticleByDay"]);
-
     $router->any('/logout', ["HomeCtrl", "logout"]);
 });
