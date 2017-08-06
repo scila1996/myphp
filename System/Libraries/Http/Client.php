@@ -1,16 +1,70 @@
 <?php
 
-namespace Unirest;
+namespace System\Libraries\Http;
 
-class Request
+use System\Libraries\Http\Messages\Headers;
+use System\Libraries\Http\Messages\Response;
+
+class Client
 {
+
+    // RFC7231
+    const GET = 'GET';
+    const HEAD = 'HEAD';
+    const POST = 'POST';
+    const PUT = 'PUT';
+    const DELETE = 'DELETE';
+    const CONNECT = 'CONNECT';
+    const OPTIONS = 'OPTIONS';
+    const TRACE = 'TRACE';
+    // RFC3253
+    const BASELINE = 'BASELINE';
+    // RFC2068
+    const LINK = 'LINK';
+    const UNLINK = 'UNLINK';
+    // RFC3253
+    const MERGE = 'MERGE';
+    const BASELINECONTROL = 'BASELINE-CONTROL';
+    const MKACTIVITY = 'MKACTIVITY';
+    const VERSIONCONTROL = 'VERSION-CONTROL';
+    const REPORT = 'REPORT';
+    const CHECKOUT = 'CHECKOUT';
+    const CHECKIN = 'CHECKIN';
+    const UNCHECKOUT = 'UNCHECKOUT';
+    const MKWORKSPACE = 'MKWORKSPACE';
+    const UPDATE = 'UPDATE';
+    const LABEL = 'LABEL';
+    // RFC3648
+    const ORDERPATCH = 'ORDERPATCH';
+    // RFC3744
+    const ACL = 'ACL';
+    // RFC4437
+    const MKREDIRECTREF = 'MKREDIRECTREF';
+    const UPDATEREDIRECTREF = 'UPDATEREDIRECTREF';
+    // RFC4791
+    const MKCALENDAR = 'MKCALENDAR';
+    // RFC4918
+    const PROPFIND = 'PROPFIND';
+    const LOCK = 'LOCK';
+    const UNLOCK = 'UNLOCK';
+    const PROPPATCH = 'PROPPATCH';
+    const MKCOL = 'MKCOL';
+    const COPY = 'COPY';
+    const MOVE = 'MOVE';
+    // RFC5323
+    const SEARCH = 'SEARCH';
+    // RFC5789
+    const PATCH = 'PATCH';
+    // RFC5842
+    const BIND = 'BIND';
+    const UNBIND = 'UNBIND';
+    const REBIND = 'REBIND';
 
     private static $cookie = null;
     private static $cookieFile = null;
     private static $curlOpts = array();
     private static $defaultHeaders = array();
     private static $handle = null;
-    private static $jsonOpts = array();
     private static $socketTimeout = null;
     private static $verifyPeer = true;
     private static $verifyHost = true;
@@ -30,19 +84,6 @@ class Request
             'method' => CURLAUTH_BASIC
         )
     );
-
-    /**
-     * Set JSON decode mode
-     *
-     * @param bool $assoc When TRUE, returned objects will be converted into associative arrays.
-     * @param integer $depth User specified recursion depth.
-     * @param integer $options Bitmask of JSON decode options. Currently only JSON_BIGINT_AS_STRING is supported (default is to cast large integers as floats)
-     * @return array
-     */
-    public static function jsonOpts($assoc = false, $depth = 512, $options = 0)
-    {
-        return self::$jsonOpts = array($assoc, $depth, $options);
-    }
 
     /**
      * Verify SSL peer
@@ -232,7 +273,7 @@ class Request
      */
     public static function get($url, $headers = array(), $parameters = null, $username = null, $password = null)
     {
-        return self::send(Method::GET, $url, $parameters, $headers, $username, $password);
+        return self::send(self::GET, $url, $parameters, $headers, $username, $password);
     }
 
     /**
@@ -246,7 +287,7 @@ class Request
      */
     public static function head($url, $headers = array(), $parameters = null, $username = null, $password = null)
     {
-        return self::send(Method::HEAD, $url, $parameters, $headers, $username, $password);
+        return self::send(self::HEAD, $url, $parameters, $headers, $username, $password);
     }
 
     /**
@@ -260,7 +301,7 @@ class Request
      */
     public static function options($url, $headers = array(), $parameters = null, $username = null, $password = null)
     {
-        return self::send(Method::OPTIONS, $url, $parameters, $headers, $username, $password);
+        return self::send(self::OPTIONS, $url, $parameters, $headers, $username, $password);
     }
 
     /**
@@ -274,7 +315,7 @@ class Request
      */
     public static function connect($url, $headers = array(), $parameters = null, $username = null, $password = null)
     {
-        return self::send(Method::CONNECT, $url, $parameters, $headers, $username, $password);
+        return self::send(self::CONNECT, $url, $parameters, $headers, $username, $password);
     }
 
     /**
@@ -288,7 +329,7 @@ class Request
      */
     public static function post($url, $headers = array(), $body = null, $username = null, $password = null)
     {
-        return self::send(Method::POST, $url, $body, $headers, $username, $password);
+        return self::send(self::POST, $url, $body, $headers, $username, $password);
     }
 
     /**
@@ -302,7 +343,7 @@ class Request
      */
     public static function delete($url, $headers = array(), $body = null, $username = null, $password = null)
     {
-        return self::send(Method::DELETE, $url, $body, $headers, $username, $password);
+        return self::send(self::DELETE, $url, $body, $headers, $username, $password);
     }
 
     /**
@@ -316,7 +357,7 @@ class Request
      */
     public static function put($url, $headers = array(), $body = null, $username = null, $password = null)
     {
-        return self::send(Method::PUT, $url, $body, $headers, $username, $password);
+        return self::send(self::PUT, $url, $body, $headers, $username, $password);
     }
 
     /**
@@ -330,7 +371,7 @@ class Request
      */
     public static function patch($url, $headers = array(), $body = null, $username = null, $password = null)
     {
-        return self::send(Method::PATCH, $url, $body, $headers, $username, $password);
+        return self::send(self::PATCH, $url, $body, $headers, $username, $password);
     }
 
     /**
@@ -344,7 +385,7 @@ class Request
      */
     public static function trace($url, $headers = array(), $body = null, $username = null, $password = null)
     {
-        return self::send(Method::TRACE, $url, $body, $headers, $username, $password);
+        return self::send(self::TRACE, $url, $body, $headers, $username, $password);
     }
 
     /**
@@ -396,21 +437,21 @@ class Request
      * @param string $username Authentication username (deprecated)
      * @param string $password Authentication password (deprecated)
      * @throws \Unirest\Exception if a cURL error occurs
-     * @return Response
+     * @return Response|string
      */
     public static function send($method, $url, $body = null, $headers = array(), $username = null, $password = null)
     {
         self::$handle = curl_init();
 
-        if ($method !== Method::GET)
+        if ($method !== self::GET)
         {
-            if ($method === Method::POST)
+            if ($method === self::POST)
             {
                 curl_setopt(self::$handle, CURLOPT_POST, true);
             }
             else
             {
-                if ($method === Method::HEAD)
+                if ($method === self::HEAD)
                 {
                     curl_setopt(self::$handle, CURLOPT_NOBODY, true);
                 }
@@ -500,16 +541,76 @@ class Request
 
         if ($error)
         {
-            throw new Exception($error);
+            return $error;
         }
 
         // Split the full response in its headers and body
         $header_size = $info['header_size'];
-        $header = substr($response, 0, $header_size);
+        $header = new Headers(self::parseHeaders(substr($response, 0, $header_size)));
         $body = substr($response, $header_size);
         $httpCode = $info['http_code'];
 
-        return new Response($httpCode, $body, $header, self::$jsonOpts);
+        $res = new Response($httpCode, $header);
+        $res->write($body);
+
+        return $res;
+    }
+
+    /**
+     * if PECL_HTTP is not available use a fall back function
+     *
+     * thanks to ricardovermeltfoort@gmail.com
+     * http://php.net/manual/en/function.http-parse-headers.php#112986
+     * @param string $raw_headers raw headers
+     * @return array
+     */
+    private static function parseHeaders($raw_headers)
+    {
+        if (function_exists('http_parse_headers'))
+        {
+            return http_parse_headers($raw_headers);
+        }
+        else
+        {
+            $key = '';
+            $headers = array();
+
+            foreach (explode("\n", $raw_headers) as $i => $h)
+            {
+                $h = explode(':', $h, 2);
+
+                if (isset($h[1]))
+                {
+                    if (!isset($headers[$h[0]]))
+                    {
+                        $headers[$h[0]] = trim($h[1]);
+                    }
+                    elseif (is_array($headers[$h[0]]))
+                    {
+                        $headers[$h[0]] = array_merge($headers[$h[0]], array(trim($h[1])));
+                    }
+                    else
+                    {
+                        $headers[$h[0]] = array_merge(array($headers[$h[0]]), array(trim($h[1])));
+                    }
+
+                    $key = $h[0];
+                }
+                else
+                {
+                    if (substr($h[0], 0, 1) == "\t")
+                    {
+                        $headers[$key] .= "\r\n\t" . trim($h[0]);
+                    }
+                    elseif (!$key)
+                    {
+                        $headers[0] = trim($h[0]);
+                    }
+                }
+            }
+
+            return $headers;
+        }
     }
 
     public static function getInfo($opt = false)
@@ -597,8 +698,7 @@ class Request
 
     private static function getHeaderString($key, $val)
     {
-        $key = trim(strtolower($key));
-        return $key . ': ' . $val;
+        return trim(strtolower($key)) . ': ' . $val;
     }
 
     /**
@@ -608,8 +708,7 @@ class Request
      */
     private static function mergeCurlOptions(&$existing_options, $new_options)
     {
-        $existing_options = $new_options + $existing_options;
-        return $existing_options;
+        return $new_options + $existing_options;
     }
 
 }

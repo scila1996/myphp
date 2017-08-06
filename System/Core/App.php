@@ -7,7 +7,7 @@ use System\Libraries\Http\Messages\Response;
 use System\Libraries\Router\RouteCollector;
 use System\Libraries\Router\Dispatcher;
 use System\Libraries\View\View;
-use System\Libraries\Database\SQL;
+use System\Libraries\Database\DB;
 use System\Libraries\Router\Exception\HttpRouteNotFoundException;
 use Exception;
 
@@ -49,7 +49,7 @@ class App
             $view = $container->view = (new View())->setTemplateDir(self::$path['view']);
 
             Config::$route = new RouteCollector();
-            SQL::$database = &Config::$database;
+            DB::$database = &Config::$database;
 
             foreach (self::$config as $config)
             {
@@ -79,6 +79,7 @@ class App
         }
         catch (Exception $e)
         {
+            $view->setFileExtension('.php');
             $view->set('error/exception')['e'] = $e;
             $response->write($view->render());
         }

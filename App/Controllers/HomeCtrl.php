@@ -76,10 +76,4 @@ class HomeCtrl extends MainCtrl
         return $this->response->withJson((new Members($this))->getDataTable());
     }
 
-    public function logout()
-    {
-        $this->session->delete('login');
-        return $this->response->withHeader('Location', '/login');
-    }
-
 }

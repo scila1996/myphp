@@ -60,7 +60,7 @@ class Connection implements DatabaseInterface
         $select->limit = null;
         $select->orders = null;
 
-        return $this->query($count->count("id")->from($select, __FUNCTION__), false)->first()->aggregate;
+        return intval($this->query($count->count()->from($select, __FUNCTION__), false)->first()->aggregate);
     }
 
     /**

@@ -9,29 +9,32 @@ class Collection implements CollectionInterface
 {
 
     /** @var PDOStatement */
-    private $pdoStmt = null;
+    private $pdo_stmt = null;
 
     /** @var array */
     private $columns = [];
 
     /** @var integer */
-    private $numRows = null;
+    private $num_rows = null;
+
+    /** @var \stdClass */
+    private $first_row = null;
 
     /** @var \stdClass */
     private $row = null;
 
-    /** @var \stdClass */
-    private $firstRow = null;
-
     /** @var integer */
-    private $key = 1;
+    private $key = 0;
+
+    /** @var string */
+    private $class_name = 'stdClass';
 
     /** @return void */
     protected function getColumnsFromPdoStmt()
     {
-        for ($i = 0; $i < $this->pdoStmt->columnCount();)
+        for ($i = 0; $i < $this->pdo_stmt->columnCount();)
         {
-            $this->columns[] = $this->pdoStmt->getColumnMeta($i++);
+            $this->columns[] = $this->pdo_stmt->getColumnMeta($i++);
         }
         return;
     }
@@ -43,24 +46,44 @@ class Collection implements CollectionInterface
      */
     public function __construct(PDOStatement $stmt, $numRows = null)
     {
-        $this->pdoStmt = $stmt;
-        $this->numRows = $numRows === null ? $stmt->rowCount() : $numRows;
+        $this->pdo_stmt = $stmt;
+        $this->num_rows = $numRows === null ? $stmt->rowCount() : $numRows;
         $this->getColumnsFromPdoStmt();
-        $this->next();
+    }
+
+    /**
+     * 
+     * @param string $class
+     * @return $this
+     */
+    public function setObjectClass($class)
+    {
+        $this->class_name = $class;
+        return $this;
     }
 
     /** @return \stdClass */
     public function first()
     {
-        return $this->firstRow;
+        if ($this->first_row === null)
+        {
+            $this->first_row = $this->fetch();
+        }
+        return $this->first_row;
     }
 
-    /** @return \stdClass */
+    /**
+     * 
+     * @param string $class
+     * @return \stdClass
+     */
     public function fetch()
     {
-        $r = $this->current();
-        $this->next();
-        return $r;
+        if ($this->valid())
+        {
+            $this->next();
+        }
+        return $this->current();
     }
 
     /** @return \stdClass */
@@ -78,25 +101,20 @@ class Collection implements CollectionInterface
     /** @return void */
     public function next()
     {
-        $this->row = $this->pdoStmt->fetchObject();
-        if ($this->row !== FALSE)
+        if (($this->row = $this->pdo_stmt->fetchObject($this->class_name)) !== FALSE)
         {
             $this->key += 1;
-            if ($this->firstRow === null)
-            {
-                $this->firstRow = $this->row;
-            }
         }
         else
         {
-            $this->pdoStmt->closeCursor();
+            $this->pdo_stmt->closeCursor();
         }
     }
 
     /** @return void */
     public function rewind()
     {
-        return;
+        $this->fetch();
     }
 
     /** @return boolean */
@@ -108,7 +126,7 @@ class Collection implements CollectionInterface
     /** @return integer */
     public function getNumRows()
     {
-        return $this->numRows;
+        return $this->num_rows;
     }
 
     /** @return array */

@@ -3,7 +3,7 @@
 use System\Core\Config;
 use System\Libraries\Router\RouteCollector;
 
-Config::$route->get('/test', ["TestCtrl", "index"]);
+Config::$route->get('/test/{js:asset/[^\?]+}', ["TestCtrl", "index"]);
 
 Config::$route->filter('login', ["MiddleWare", "validLogin"]);
 Config::$route->filter('auth', ["MiddleWare", "requireLogin"]);
@@ -31,5 +31,5 @@ Config::$route->group(['before' => 'auth'], function (RouteCollector $router) {
     $router->get('/update', ["HomeCtrl", "updateArticle"]);
     $router->post('/update', ["HomeCtrl", "processUpdateArticle"]);
 
-    $router->any('/logout', ["HomeCtrl", "logout"]);
+    $router->any('/logout', ["LoginCtrl", "logout"]);
 });

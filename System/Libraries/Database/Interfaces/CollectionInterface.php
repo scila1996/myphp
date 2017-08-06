@@ -14,6 +14,9 @@ interface CollectionInterface extends Iterator, Countable
     /** @return mixed */
     public function fetch();
 
+    /** @param string $class */
+    public function setObjectClass($class);
+
     /** @return integer */
     public function getNumRows();
 

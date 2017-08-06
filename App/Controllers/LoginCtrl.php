@@ -45,4 +45,10 @@ class LoginCtrl extends Controller
         return $this->response->withHeader('Location', $this->request->getUri());
     }
 
+    public function logout()
+    {
+        $this->session->delete('login');
+        return $this->response->withHeader('Location', '/login');
+    }
+
 }

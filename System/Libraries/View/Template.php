@@ -3,6 +3,8 @@
 namespace System\Libraries\View;
 
 use ArrayAccess;
+use Exception;
+use System\Libraries\View\Exception\FileNotFoundException;
 
 class Template implements ArrayAccess
 {
@@ -44,16 +46,23 @@ class Template implements ArrayAccess
      */
     public function render()
     {
-        ob_start();
-
         foreach ((array) $this->data as $variable => $value)
         {
             $$variable = ($value instanceof self ? $value->render() : $value);
         }
-        eval("?>" . file_get_contents($this->file));
-        $str = ob_get_contents();
-        ob_end_clean();
-        return $str;
+
+        ob_start();
+
+        try
+        {
+            eval('?>' . file_get_contents($this->file));
+        }
+        catch (Exception $ex)
+        {
+            throw new FileNotFoundException($ex->getMessage(), $ex->getCode());
+        }
+
+        return ob_get_clean();
     }
 
     /**
