@@ -6,7 +6,11 @@ use ArrayAccess;
 use Exception;
 use System\Libraries\View\Exception\FileNotFoundException;
 
-class Template implements ArrayAccess
+/**
+ * @property-read string $file
+ * @property-read array $data
+ */
+class File implements ArrayAccess
 {
 
     /** @var string */
@@ -25,19 +29,6 @@ class Template implements ArrayAccess
     {
         $this->file = $file;
         $this->data = $data;
-    }
-
-    /** @return string */
-    public function getFilePath()
-    {
-        return $this->file;
-    }
-
-    /* @return array */
-
-    public function getData()
-    {
-        return $this->data;
     }
 
     /**
@@ -65,15 +56,6 @@ class Template implements ArrayAccess
         return ob_get_clean();
     }
 
-    /**
-     * 
-     * @return string
-     */
-    public function __toString()
-    {
-        return $this->render();
-    }
-
     public function offsetExists($offset)
     {
         return isset($this->data[$offset]);
@@ -92,6 +74,25 @@ class Template implements ArrayAccess
     public function offsetUnset($offset)
     {
         unset($this->data[$offset]);
+    }
+
+    /**
+     * 
+     * @param string $name
+     * @return mixed
+     */
+    public function __get($name)
+    {
+        return $this->{$name};
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function __toString()
+    {
+        return $this->render();
     }
 
 }

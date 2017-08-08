@@ -3,7 +3,9 @@
 use System\Core\Config;
 use System\Libraries\Router\RouteCollector;
 
-Config::$route->get('/test/{js:asset/[^\?]+}', ["TestCtrl", "index"]);
+Config::$route->get('/test', ["TestCtrl"]);
+
+Config::$route->get('{:asset/[^\?]+}', ["HomeCtrl", "asset"]);
 
 Config::$route->filter('login', ["MiddleWare", "validLogin"]);
 Config::$route->filter('auth', ["MiddleWare", "requireLogin"]);
@@ -17,7 +19,7 @@ Config::$route->group(['before' => 'login'], function (RouteCollector $router) {
 Config::$route->group(['before' => 'auth'], function (RouteCollector $router) {
 
     // Home
-    $router->any('/', ["HomeCtrl", "index"]);
+    $router->any('/', ["HomeCtrl"]);
 
     // Lands
     $router->any('/view/lands', ["HomeCtrl", "viewArticle"]);

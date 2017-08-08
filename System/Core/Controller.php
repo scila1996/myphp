@@ -3,7 +3,6 @@
 namespace System\Core;
 
 use System\Core\Container;
-use System\Libraries\View\View;
 
 /**
  * @property-read \System\Libraries\Http\Messages\Request $request
@@ -19,7 +18,7 @@ class Controller
     /** @var \System\Libraries\Http\Messages\Response */
     protected $response = null;
 
-    /** @var View */
+    /** @var \System\Libraries\View\View */
     protected $view = null;
 
     /**

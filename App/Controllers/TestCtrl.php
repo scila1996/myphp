@@ -7,9 +7,9 @@ use System\Core\Controller;
 class TestCtrl extends Controller
 {
 
-    public function index($js)
+    public function index()
     {
-        $this->view->setFileExtension('')->set($js);
+        $this->view->set('test');
     }
 
 }

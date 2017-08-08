@@ -13,22 +13,18 @@ use Exception;
 
 class App
 {
-    /*
-     * @var array
-     */
 
+    /** @var array */
     public static $namespace = [
         'controller' => '\\App\\Controllers'
     ];
-    /*
-     * @var array
-     */
+
+    /** @var array */
     public static $path = [
         'view' => 'App/Views'
     ];
-    /*
-     * @var array
-     */
+
+    /** @var array */
     public static $config = [
         'route' => 'App/Config/Route.php',
         'database' => 'App/Config/Database.php'
@@ -56,9 +52,8 @@ class App
                 require $config;
             }
 
-            $dispatcher = new Dispatcher(
-                    Config::$route->getData(), new Handler($container, self::$namespace['controller'])
-            );
+            $handler = new Handler($container, self::$namespace['controller']);
+            $dispatcher = new Dispatcher(Config::$route->getData(), $handler);
             $data = $dispatcher->dispatch(
                     $request->getMethod(), $request->getUri()->getPath()
             );
@@ -69,7 +64,7 @@ class App
             }
             else
             {
-                $response->write($data ? strval($data) : $view->getContent());
+                $response->write($data ? strval($data) : $handler->controller->view->getContent());
             }
         }
         catch (HttpRouteNotFoundException $e)

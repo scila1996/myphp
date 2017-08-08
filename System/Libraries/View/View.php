@@ -2,7 +2,7 @@
 
 namespace System\Libraries\View;
 
-class View extends Template
+class View extends File
 {
 
     /** @var string */
@@ -15,6 +15,11 @@ class View extends Template
     {
         $this->file = 'php://temp';
         $this->data = [];
+    }
+
+    private function getViewPath($file)
+    {
+        return preg_replace('#[\\\/]#', DIRECTORY_SEPARATOR, "{$this->dir}/{$file}{$this->fileExt}");
     }
 
     /**
@@ -43,11 +48,14 @@ class View extends Template
      * 
      * @param string $file
      * @param array $data
-     * @return Template
+     * @return self
      */
     public function template($file, $data = [])
     {
-        return new Template($this->getViewPath($file), $data);
+        $view = clone $this;
+        $view->set($file);
+        $view->data = $data;
+        return $view;
     }
 
     /**
@@ -66,11 +74,6 @@ class View extends Template
     public function getContent()
     {
         return $this->render();
-    }
-
-    private function getViewPath($file)
-    {
-        return $this->dir . DIRECTORY_SEPARATOR . $file . $this->fileExt;
     }
 
 }
