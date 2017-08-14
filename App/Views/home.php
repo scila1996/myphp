@@ -1,3 +1,4 @@
 <div class="well">
-    Welcome
+    <p> Welcome </p>
+    <div> <?= $text ?> </div>
 </div>

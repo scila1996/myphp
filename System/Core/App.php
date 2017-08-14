@@ -64,6 +64,7 @@ class App
             }
             else
             {
+                $response = $handler->controller->response;
                 $response->write($data ? strval($data) : $handler->controller->view->getContent());
             }
         }

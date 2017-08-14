@@ -12,7 +12,9 @@ class HomeCtrl extends MainCtrl
 
     public function index()
     {
-        $this->view['content'] = $this->view->template('home');
+        $this->view['content'] = $this->view->template('home', [
+            'text' => $this->request->getUri()->getQuery()
+        ]);
     }
 
     public function asset($file)
