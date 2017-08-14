@@ -5,8 +5,14 @@ use System\Libraries\Router\RouteCollector;
 
 Config::$route->get('/test', ["TestCtrl"]);
 
-Config::$route->get('{:asset/[^\?]+}', ["HomeCtrl", "asset"]);
+Config::$route->get('/asset/{:[^\?]+}', ["Asset"]);
 
+
+// Route for LIST BDS
+Config::$route->get('/batdongsan', ["LandsCtrl"]);
+Config::$route->get('/ajax/batdongsan', ["LandsCtrl", "ajaxGetData"]);
+
+// Filter
 Config::$route->filter('login', ["MiddleWare", "validLogin"]);
 Config::$route->filter('auth', ["MiddleWare", "requireLogin"]);
 
