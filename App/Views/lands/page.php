@@ -21,11 +21,17 @@
         <link rel="stylesheet" type="text/css" media="screen" href="https://chobatdongsan.com.vn/blocks/location/assets/css/location.css" />
     </head>
     <body>
+        <script type="text/javascript" src="https://chobatdongsan.com.vn/libraries/jquery/jquery-1.10.0.min.js"></script>
+        <script type="text/javascript" src="https://chobatdongsan.com.vn//libraries/jquery/jquery.ui/jquery-ui.js"></script>
+        <script type="text/javascript" src="https://chobatdongsan.com.vn//libraries/jquery/jquery.ui/vi.js"></script>
+        <script src="/asset/lands/js/refresh.js"></script>
         <div class="container">
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="col-content-bgs content-bds-video cf">
-                        <?= $content ?>
+                    <div>
+                        <img src="https://chobatdongsan.com.vn/images/config/_1499747458.gif" />
+                    </div>
+                    <div class="col-content-bgs content-bds-video cf" id="data" style="width: 100% !important">
                     </div>
                 </div>
             </div>

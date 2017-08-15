@@ -10,7 +10,7 @@ Config::$route->get('/asset/{:[^\?]+}', ["Asset"]);
 
 // Route for LIST BDS
 Config::$route->get('/batdongsan', ["LandsCtrl"]);
-Config::$route->get('/ajax/batdongsan', ["LandsCtrl", "ajaxGetData"]);
+Config::$route->get('/html/batdongsan/{:\d+}', ["LandsCtrl", "getHtml"]);
 
 // Filter
 Config::$route->filter('login', ["MiddleWare", "validLogin"]);

@@ -6,23 +6,23 @@
 
 function lands()
 {
-    var u = '/ajax/batdongsan';
+    var u = '/html/batdongsan';
+    var i = 1;
     this.load = function ()
     {
+        if (i++ >= 10)
+        {
+            i = 1;
+        }
         $.ajax({
-            url: u,
+            url: u + '/' + i,
             type: 'GET',
-            dataType: 'json',
+            dataType: 'html',
             async: false
         }).done(function (response) {
-            var ul = $('#list ul');
-            ul.empty();
-            for (item in response)
-            {
-                item = response[item];
-                ul.append("<li class=\"list-group-item\"><b class=\"text-success\">" + item.title + "</b> <b class=\"text-info\"> <span class=\"pull-right\"><span class=\"text-muted fa fa-phone\"></span> " + item.poster_mobile + "</span> </b></li>");
-            }
-            console.log(response);
+            var area = $('#data');
+            area.empty();
+            area.html(response);
         });
     }
 }
@@ -30,7 +30,9 @@ function lands()
 $(document).ready(function () {
     var obj = new lands();
     obj.load();
+
     setInterval(function () {
         obj.load();
     }, 10000);
+
 });
