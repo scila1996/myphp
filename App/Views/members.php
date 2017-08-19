@@ -28,9 +28,10 @@
                 {title: "Thành viên", targets: 1},
                 {title: "Họ và tên", orderable: false, targets: 2},
                 {title: "Số điện thoại", orderable: false, targets: 3},
-                {title: "Tổng số tin đăng", targets: 4}
+                {title: "Email", orderable: false, targets: 4},
+                {title: "Tổng số tin đăng", targets: 5}
             ],
-            order: [[4, 'desc']]
+            order: [[5, 'desc']]
         });
 
     });

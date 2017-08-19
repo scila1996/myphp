@@ -1,6 +1,6 @@
 <?php
 
-namespace System\Libraries\Util\File;
+namespace System\Libraries\View;
 
 interface Mime
 {

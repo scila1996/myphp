@@ -4,35 +4,24 @@
  * and open the template in the editor.
  */
 
-function lands()
+function News()
 {
-    var u = '/html/batdongsan';
-    var i = 1;
+    var u = '/ajax/news';
     this.load = function ()
     {
-        if (i++ >= 10)
-        {
-            i = 1;
-        }
         $.ajax({
-            url: u + '/' + i,
+            url: u,
             type: 'GET',
-            dataType: 'html',
+            dataType: 'json',
             async: false
         }).done(function (response) {
-            var area = $('#data');
-            area.empty();
-            area.html(response);
+            console.log(response);
         });
-    }
+    };
 }
 
 $(document).ready(function () {
-    var obj = new lands();
-    obj.load();
-
-    setInterval(function () {
-        obj.load();
-    }, 10000);
+    var news = new News();
+    news.load();
 
 });
