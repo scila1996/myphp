@@ -20,19 +20,13 @@ class Connection implements DatabaseInterface
     protected $pdo = null;
 
     /**
-     *
-     * @var Builder
-     */
-    protected $query = null;
-
-    /**
      * 
      * @param string $driver
      * @return Builder
      */
-    protected function getQueryBuilder($driver)
+    protected function getQueryBuilder()
     {
-        switch ($driver)
+        switch ($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME))
         {
             case self::MYSQL:
                 return new Builder(new MySqlGrammar());
@@ -70,7 +64,6 @@ class Connection implements DatabaseInterface
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
-        $this->query = $this->getQueryBuilder($pdo->getAttribute(PDO::ATTR_DRIVER_NAME));
     }
 
     /**
@@ -109,7 +102,7 @@ class Connection implements DatabaseInterface
     /** @return Builder */
     public function getBuilder()
     {
-        return $this->query;
+        return $this->getQueryBuilder();
     }
 
     /**
