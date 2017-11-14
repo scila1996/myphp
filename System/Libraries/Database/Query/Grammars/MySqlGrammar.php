@@ -206,15 +206,16 @@ class MySqlGrammar extends Grammar
      * Compile a delete statement into SQL.
      *
      * @param  \System\Libraries\Database\Query\Builder  $query
+     * @param mixed $delete
      * @return string
      */
-    public function compileDelete(Builder $query)
+    public function compileDelete(Builder $query, $delete = null)
     {
         $table = $this->wrapTable($query->from);
 
         $where = is_array($query->wheres) ? $this->compileWheres($query) : '';
 
-        return isset($query->joins) ? $this->compileDeleteWithJoins($query, $table, $where) : $this->compileDeleteWithoutJoins($query, $table, $where);
+        return isset($query->joins) ? $this->compileDeleteWithJoins($query, $table, $where, $delete) : $this->compileDeleteWithoutJoins($query, $table, $where);
     }
 
     /**
@@ -251,13 +252,19 @@ class MySqlGrammar extends Grammar
      * @param  \System\Libraries\Database\Query\Builder  $query
      * @param  string  $table
      * @param  array  $where
+     * @param mixed $delete
      * @return string
      */
-    protected function compileDeleteWithJoins($query, $table, $where)
+    protected function compileDeleteWithJoins($query, $table, $where, $delete)
     {
         $joins = ' ' . $this->compileJoins($query, $query->joins);
 
         $alias = strpos(strtolower($table), ' as ') !== false ? explode(' as ', $table)[1] : $table;
+
+        if ($delete)
+        {
+            $alias = $this->wrapTable($delete);
+        }
 
         return trim("delete {$alias} from {$table}{$joins} {$where}");
     }

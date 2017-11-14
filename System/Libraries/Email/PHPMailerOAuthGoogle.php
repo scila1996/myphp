@@ -1,4 +1,5 @@
 <?php
+
 /**
  * PHPMailer - PHP email creation and transport class.
  * PHP Version 5.4
@@ -16,7 +17,6 @@
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE.
  */
-
 /**
  * PHPMailerOAuthGoogle - Wrapper for League OAuth2 Google provider.
  * @package PHPMailer
@@ -29,6 +29,7 @@ namespace System\Libraries\Email;
 
 class PHPMailerOAuthGoogle
 {
+
     private $oauthUserEmail = '';
     private $oauthRefreshToken = '';
     private $oauthClientId = '';
@@ -41,11 +42,9 @@ class PHPMailerOAuthGoogle
      * @param string $RefreshToken
      */
     public function __construct(
-        $UserEmail,
-        $ClientSecret,
-        $ClientId,
-        $RefreshToken
-    ) {
+    $UserEmail, $ClientSecret, $ClientId, $RefreshToken
+    )
+    {
         $this->oauthClientId = $ClientId;
         $this->oauthClientSecret = $ClientSecret;
         $this->oauthRefreshToken = $RefreshToken;
@@ -77,4 +76,5 @@ class PHPMailerOAuthGoogle
         $token = $this->getToken();
         return base64_encode("user=" . $this->oauthUserEmail . "\001auth=Bearer " . $token . "\001\001");
     }
+
 }

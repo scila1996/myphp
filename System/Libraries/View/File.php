@@ -33,6 +33,18 @@ class File implements ArrayAccess
 
     /**
      * 
+     * @param string $html
+     * @return string
+     */
+    protected function replaceTemplateTags($html)
+    {
+        $pattern = "#\{{2}\s*([^{}\s]+)\s*\}{2}#";
+        $replace = '<?= (isset($$1)) ? $$1 : "NULL" ?>';
+        return preg_replace($pattern, $replace, $html);
+    }
+
+    /**
+     * 
      * @return string
      */
     public function render()
@@ -46,7 +58,7 @@ class File implements ArrayAccess
 
         try
         {
-            eval('?>' . file_get_contents($this->file));
+            eval("?> {$this->replaceTemplateTags(file_get_contents($this->file))}");
         }
         catch (Exception $ex)
         {

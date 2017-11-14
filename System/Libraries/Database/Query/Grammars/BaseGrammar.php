@@ -183,7 +183,7 @@ abstract class BaseGrammar
      * @param  \System\Libraries\Database\Query\Expression  $expression
      * @return string
      */
-    public function getValue($expression)
+    public function getValue(Expression $expression)
     {
         return $expression->getValue();
     }

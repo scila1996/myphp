@@ -67,6 +67,11 @@ class App
                 $response = $handler->controller->response;
                 $response->write($data ? strval($data) : $handler->controller->view->getContent());
             }
+
+            if ($response->getStatusCode() == 404)
+            {
+                throw new HttpRouteNotFoundException('404 not found');
+            }
         }
         catch (HttpRouteNotFoundException $e)
         {

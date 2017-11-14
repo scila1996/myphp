@@ -64,9 +64,13 @@ class View extends File
      * @param array $data
      * @return $this
      */
-    public function set($file)
+    public function set($file, $data = null)
     {
         $this->file = $this->getViewPath($file);
+        if ($data !== null)
+        {
+            $this->data = $data;
+        }
         return $this;
     }
 

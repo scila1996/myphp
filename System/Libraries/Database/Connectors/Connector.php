@@ -3,7 +3,6 @@
 namespace System\Libraries\Database\Connectors;
 
 use PDO;
-use Exception;
 
 class Connector
 {

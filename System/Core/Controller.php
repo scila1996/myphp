@@ -53,4 +53,19 @@ class Controller
         return $this;
     }
 
+    /**
+     * 
+     * @param string $link
+     * @param object|array $params
+     * @return \System\Libraries\Http\Messages\Response
+     */
+    protected function redirect($link, $params = null)
+    {
+        if ($params !== null)
+        {
+            $link .= '?' . http_build_query($params);
+        }
+        return $this->response = $this->response->withHeader('Location', $link);
+    }
+
 }

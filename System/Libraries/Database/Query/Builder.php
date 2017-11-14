@@ -1624,11 +1624,13 @@ class Builder
     /**
      * Delete a record from the database.
      *
+     * @param string|array|Expression $tables
      * @return $this
      */
-    public function delete()
+    public function delete($tables = null)
     {
-        $this->compile = __FUNCTION__;
+        $this->{$this->compile = __FUNCTION__} = $tables;
+        return $this;
     }
 
     /**
@@ -1639,6 +1641,16 @@ class Builder
     public function newQuery()
     {
         return new static($this->grammar);
+    }
+
+    /**
+     * Clone Query Object
+     * 
+     * @return self
+     */
+    public function copyQuery()
+    {
+        return clone $this;
     }
 
     /**
